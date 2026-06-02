@@ -1,0 +1,84 @@
+// Block: footer
+.footer {
+  background: $color-dark-base;
+  color: var(--text-inverse);
+  padding-block: 64px 32px;
+
+  &__container {
+    max-width: var(--container);
+    margin-inline: auto;
+    padding-inline: $spacing-page-x;
+
+    @include respond-from(md) { padding-inline: $spacing-page-x-lg; }
+  }
+
+  &__top {
+    display: grid;
+    grid-template-columns: 1.4fr repeat(3, 1fr);
+    gap: 48px;
+
+    @include respond-to(md) {
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+    }
+    @include respond-to(sm) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__brand {
+    font-family: $font-accent;
+    font-size: $fs-h2;
+    font-weight: $fw-bold;
+    background: $gradient-footer;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    margin-bottom: 12px;
+  }
+
+  &__tagline { color: rgba(255,255,255,0.7); font-size: $fs-sm; max-width: 320px; }
+
+  &__col-title {
+    font-size: $fs-sm;
+    font-weight: $fw-semibold;
+    color: #fff;
+    margin-bottom: 16px;
+    text-transform: uppercase;
+    letter-spacing: $ls-caps;
+  }
+
+  &__link-list { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+
+  &__link {
+    color: rgba(255,255,255,0.7);
+    font-size: $fs-sm;
+    transition: $transition-color;
+    &:hover { color: #fff; }
+
+    &--wip::after {
+      content: 'soon';
+      margin-left: 6px;
+      font-size: 9px;
+      padding: 1px 5px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 4px;
+    }
+  }
+
+  &__bottom {
+    margin-top: 48px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    font-size: $fs-xs;
+    color: rgba(255,255,255,0.5);
+
+    @include respond-to(sm) {
+      flex-direction: column;
+      text-align: center;
+    }
+  }
+}

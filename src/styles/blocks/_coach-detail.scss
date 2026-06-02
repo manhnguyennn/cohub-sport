@@ -1,0 +1,1483 @@
+// ============================================================
+// /coaches/[id] — Coach Profile Detail
+// ============================================================
+
+// ── Figma palette (Coach Detail — node 194:954) ─────────────
+$amber-50:   #F59E0B;   // primary orange — bars, dots, stars
+$amber-89:   #F7EBCF;   // border, skill chip bg
+$amber-90:   #FDEACE;   // big rating card bg
+$amber-91:   #FFFDF8;   // card body bg
+$amber-100:  #FFF2E5;   // progress bar track
+$ink-900:    #1D2026;
+$ink-700:    #4E5566;
+$ink-600:    #6E7485;
+$azure-45:   #637381;
+$divider-91: #E5E7EB;
+
+// ── Hero ────────────────────────────────────────────────────
+.coach-hero-detail {
+  position: relative;
+  background: $color-dark-base;
+  color: var(--text-inverse);
+  padding-top: 0;
+
+  &__cover {
+    position: relative;
+    height: 200px;
+    width: 100%;
+    overflow: hidden;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(13, 10, 44, 0.2) 0%, rgba(13, 10, 44, 0.8) 100%);
+    }
+  }
+
+  &__container {
+    width: 100%;
+    max-width: $container;
+    margin-inline: auto;
+    padding-inline: $spacing-page-x;
+
+    @include respond-from(md) { padding-inline: $spacing-page-x-lg; }
+  }
+
+  &__bar {
+    margin-top: -56px;
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    gap: 20px;
+    padding-bottom: 24px;
+    flex-wrap: wrap;
+  }
+
+  &__avatar {
+    position: relative;
+    width: 110px;
+    height: 110px;
+    border-radius: $radius-full;
+    overflow: hidden;
+    border: 4px solid $color-dark-base;
+    background: $color-dark-glass;
+    flex-shrink: 0;
+
+    img { width: 100%; height: 100%; object-fit: cover; }
+  }
+
+  &__main {
+    flex: 1 1 auto;
+    min-width: 240px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-bottom: 8px;
+  }
+
+  &__name-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  &__name {
+    font-size: 22px;
+    font-weight: $fw-bold;
+    color: #fff;
+  }
+
+  &__verified {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px;
+    background: $color-white-alpha-10;
+    border: 1px solid $color-white-alpha-15;
+    border-radius: $radius-pill;
+    font-size: 11px;
+    font-weight: $fw-semibold;
+    color: $color-accent-green-bright;
+  }
+
+  &__role {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  &__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.85);
+
+    span { display: inline-flex; align-items: center; gap: 6px; }
+    strong { color: #fff; }
+  }
+
+  &__star { color: #F4B43F; }
+
+  &__top-rated {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px;
+    border-radius: $radius-pill;
+    background: rgba(244, 180, 63, 0.18);
+    color: #F4B43F;
+    font-size: 11px;
+    font-weight: $fw-semibold;
+  }
+
+  &__actions {
+    display: flex;
+    gap: 10px;
+    padding-bottom: 8px;
+    align-items: center;
+  }
+
+  &__icon-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: $radius-full;
+    background: $color-white-alpha-10;
+    border: 1px solid $color-white-alpha-15;
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: $transition-button;
+
+    &:hover { background: $color-white-alpha-20; }
+  }
+}
+
+// ── Tabs ────────────────────────────────────────────────────
+.coach-tabs {
+  position: sticky;
+  top: $header-height;
+  z-index: $z-sticky;
+  background: var(--bg-elevated);
+  border-bottom: 1px solid var(--border);
+
+  &__container {
+    width: 100%;
+    max-width: $container;
+    margin-inline: auto;
+    padding-inline: $spacing-page-x;
+
+    @include respond-from(md) { padding-inline: $spacing-page-x-lg; }
+  }
+
+  &__list {
+    display: flex;
+    gap: 24px;
+    list-style: none;
+    overflow-x: auto;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar { display: none; }
+  }
+
+  &__link {
+    display: inline-block;
+    padding: 14px 4px;
+    font-size: 14px;
+    font-weight: $fw-medium;
+    color: var(--text-secondary);
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    transition: $transition-color;
+
+    &:hover { color: var(--text-primary); }
+    &--active {
+      color: var(--brand);
+      border-bottom-color: var(--brand);
+      font-weight: $fw-semibold;
+    }
+  }
+}
+
+// ── Layout: 2-col detail body ───────────────────────────────
+.coach-detail {
+  background: var(--bg-base);
+  padding-block: 32px;
+
+  &__container {
+    width: 100%;
+    max-width: $container;
+    margin-inline: auto;
+    padding-inline: $spacing-page-x;
+
+    @include respond-from(md) { padding-inline: $spacing-page-x-lg; }
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 340px;
+    gap: 32px;
+    margin-bottom: 40px;
+
+    @include respond-to(lg) { grid-template-columns: 1fr; }
+  }
+
+  &__main {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    min-width: 0;
+
+    // Section separator theo Figma — đường line 1px ngăn cách giữa các section
+    // Dùng `.coach-section + .coach-section` thay vì `section + section` để có
+    // specificity (0,3,0) đủ thắng override reset `.coach-detail .coach-section`
+    // (specificity 0,2,0) bên dưới.
+    > .coach-section + .coach-section {
+      padding-top: 24px;
+      border-top: 1px solid $divider-91;
+    }
+  }
+
+  &__sidebar {
+    @include respond-from(lg) {
+      position: sticky;
+      top: calc(#{$header-height} + 72px);
+      align-self: start;
+    }
+  }
+}
+
+// ── Section header — Figma title 22px semibold ───────────────
+// Scope reset cần thiết vì .coach-section bị conflict với _feature.scss
+// (Home page Featured Coaches marquee có padding-block 80px).
+.coach-detail .coach-section,
+.coach-detail__main .coach-section {
+  padding-block: 0;
+  background: transparent;
+}
+
+.coach-section {
+  &__title {
+    font-size: 22px;
+    font-weight: $fw-semibold;
+    color: #000;
+    letter-spacing: -0.44px;
+    line-height: 1.3;
+    margin: 0 0 24px;
+  }
+}
+
+// ── About section ───────────────────────────────────────────
+.coach-about {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+
+  // Video hero — 18px radius theo Figma
+  &__video {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: 18px;
+    overflow: hidden;
+    background: var(--bg-subtle);
+
+    img { width: 100%; height: 100%; object-fit: cover; }
+  }
+
+  &__video-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.3);
+    pointer-events: none;
+  }
+
+  &__play {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80px;
+    height: 80px;
+    border-radius: $radius-full;
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(5px);
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all $duration-normal $ease-expo-out;
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.75);
+      transform: translate(-50%, -50%) scale(1.05);
+    }
+  }
+
+  &__bio {
+    font-size: 15px;
+    line-height: 1.45;
+    color: $ink-900;
+  }
+
+  &__group {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  // Label uppercase 10px Figma spec
+  &__sub-label {
+    font-size: 10px;
+    font-weight: $fw-bold;
+    color: $ink-900;
+    letter-spacing: 1px;
+    line-height: 13.75px;
+    text-transform: uppercase;
+  }
+
+  &__focus-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 14px;
+      font-weight: $fw-medium;
+      color: $ink-900;
+      line-height: 20px;
+    }
+  }
+
+  &__bullet {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+  }
+
+  // Skill chips — orange theme Figma
+  &__skills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  &__skill {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 12px;
+    background: $amber-89;
+    color: $ink-900;
+    border-radius: 24px;
+    font-size: 10px;
+    font-weight: $fw-semibold;
+    letter-spacing: 1px;
+    line-height: 13.75px;
+    text-transform: uppercase;
+  }
+}
+
+// ── Experience + Certificates ────────────────────────────────
+.coach-experience-section {
+  display: block;
+}
+
+.coach-experience-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  align-items: start;
+
+  @include respond-to(md) { grid-template-columns: 1fr; }
+
+  > div {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    h2.coach-section__title { margin-bottom: 0; }
+  }
+}
+
+// Kinh nghiệm — orange card với timeline
+.exp-card {
+  background: $amber-91;
+  border: 1px solid $amber-89;
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+
+  &__row {
+    display: flex;
+    gap: 14px;
+    align-items: stretch;
+
+    &:last-child .exp-card__body { padding-bottom: 0; }
+  }
+
+  &__rail {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100%;
+    width: 8px;
+    flex-shrink: 0;
+  }
+
+  &__rail-line {
+    width: 1px;
+    flex: 1;
+    background: $amber-89;
+
+    &--top { height: 6px; flex: 0 0 6px; }
+    &--bottom { flex: 1; min-height: 4px; }
+  }
+
+  &__rail-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: $radius-full;
+    background: $amber-91;
+    border: 1px solid $amber-50;
+    flex-shrink: 0;
+    margin-top: 6px;
+  }
+
+  &__body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-bottom: 24px;
+  }
+
+  &__year {
+    font-size: 13px;
+    font-weight: $fw-medium;
+    color: $azure-45;
+    line-height: 1.45;
+  }
+
+  &__org {
+    font-size: 14px;
+    font-weight: $fw-semibold;
+    color: $ink-900;
+    line-height: 1.45;
+  }
+
+  &__role {
+    font-size: 13px;
+    color: $ink-900;
+    line-height: 1.45;
+  }
+}
+
+// Chứng chỉ — list cards
+.cert-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.cert-card {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  padding: 16px;
+  background: $amber-91;
+  border: 1px solid $amber-89;
+  border-radius: 12px;
+
+  &__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+  }
+
+  &__body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    strong {
+      font-size: 14px;
+      font-weight: $fw-semibold;
+      color: $ink-900;
+      line-height: 1.45;
+    }
+
+    small {
+      font-size: 13px;
+      font-weight: $fw-regular;
+      color: $azure-45;
+      line-height: 1.45;
+    }
+  }
+}
+
+// ── Short videos — 4-col + nav arrows ──────────────────────
+.coach-videos {
+  &__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+  }
+
+  &__nav {
+    display: flex;
+    gap: 9px;
+  }
+
+  &__nav-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: $radius-full;
+    border: 0.64px solid #000;
+    background: #fff;
+    color: $ink-900;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: $transition-button;
+
+    &:hover { background: #f5f5f5; }
+
+    &--solid {
+      background: #000;
+      color: #fff;
+
+      &:hover { background: $ink-900; }
+    }
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+
+    @include respond-to(lg) { grid-template-columns: repeat(3, 1fr); }
+    @include respond-to(md) { grid-template-columns: repeat(2, 1fr); }
+    @include respond-to(sm) { grid-template-columns: 1fr 1fr; }
+  }
+
+  &__card {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  &__item {
+    position: relative;
+    aspect-ratio: 187 / 224;
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--bg-subtle);
+    cursor: pointer;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform $duration-slow $ease-expo-out;
+    }
+
+    &:hover img { transform: scale(1.04); }
+  }
+
+  &__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.3);
+    pointer-events: none;
+  }
+
+  &__play {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60px;
+    height: 60px;
+    border-radius: $radius-full;
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(5px);
+    color: #fff;
+    cursor: pointer;
+    transition: all $duration-normal $ease-expo-out;
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.75);
+      transform: translate(-50%, -50%) scale(1.08);
+    }
+  }
+
+  &__title {
+    font-size: 14px;
+    font-weight: $fw-semibold;
+    color: $ink-900;
+    line-height: 1.35;
+    margin: 0;
+  }
+}
+
+// ── Reviews block (Figma node 2013:7043) ────────────────────
+.coach-reviews {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+
+  &__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  // Sort pill button (Figma: "Nổi bật" with chevron)
+  &__sort {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 24px;
+    background: #fff;
+    border: 1px solid $divider-91;
+    border-radius: 9999px;
+    backdrop-filter: blur(8.5px);
+    cursor: pointer;
+    font-family: $font-sans;
+
+    span {
+      font-size: 14px;
+      font-weight: $fw-medium;
+      color: #4B5563;
+      letter-spacing: -0.07px;
+    }
+
+    svg { flex-shrink: 0; }
+  }
+
+  // Big rating card + bars
+  &__overview {
+    display: flex;
+    gap: 24px;
+    align-items: center;
+    justify-content: space-between;
+
+    @include respond-to(md) {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  }
+
+  // Big amber score box
+  .rev-score {
+    flex-shrink: 0;
+    background: $amber-90;
+    border-radius: 24px;
+    padding: 31px 48px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    min-width: 240px;
+
+    &__num {
+      font-size: 48px;
+      font-weight: $fw-semibold;
+      line-height: 52px;
+      letter-spacing: -0.96px;
+      color: $ink-900;
+      text-align: center;
+    }
+
+    &__total {
+      font-size: 14px;
+      font-weight: $fw-medium;
+      color: $ink-900;
+      letter-spacing: -0.14px;
+      line-height: 20px;
+    }
+  }
+
+  // Bar rows
+  .rev-bars {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 550px;
+  }
+
+  .rev-bar {
+    display: flex;
+    gap: 24px;
+    align-items: center;
+
+    &__label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+
+      span {
+        font-size: 14px;
+        color: $ink-600;
+        letter-spacing: -0.14px;
+        line-height: 22px;
+        width: 40px;
+        text-align: right;
+      }
+    }
+
+    &__track {
+      flex: 1;
+      height: 8px;
+      background: $amber-100;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    &__fill {
+      display: block;
+      height: 100%;
+      background: $amber-50;
+      border-radius: 12px;
+      transition: width $duration-slow $ease-expo-out;
+    }
+
+    &__pct {
+      width: 40px;
+      text-align: right;
+      font-size: 14px;
+      font-weight: $fw-medium;
+      color: $ink-900;
+      letter-spacing: -0.14px;
+      line-height: 20px;
+    }
+  }
+
+  &__divider {
+    border: 0;
+    border-top: 1px solid $divider-91;
+    margin: 0;
+    width: 100%;
+  }
+
+  &__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  &__more {
+    display: flex;
+    justify-content: flex-start;
+    margin-top: 4px;
+  }
+
+  &__more-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 24px;
+    background: #fff;
+    border: 1px solid $divider-91;
+    border-radius: 12px;
+    cursor: pointer;
+    font-family: $font-sans;
+    color: $ink-900;
+    transition: $transition-button;
+
+    span {
+      font-size: 14px;
+      font-weight: $fw-semibold;
+      line-height: 24px;
+    }
+
+    &:hover {
+      background: $amber-91;
+      border-color: $amber-89;
+    }
+  }
+}
+
+// Review item
+.rev-item {
+  display: flex;
+  gap: 16px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid $divider-91;
+
+  &:last-child { border-bottom: 0; padding-bottom: 0; }
+
+  &__avatar {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: $radius-full;
+    overflow: hidden;
+    background: var(--bg-subtle);
+
+    img { width: 100%; height: 100%; object-fit: cover; border-radius: $radius-full; }
+  }
+
+  &__body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-width: 0;
+  }
+
+  &__head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: $font-sans;
+
+    strong {
+      font-size: 14px;
+      font-weight: $fw-medium;
+      color: $ink-900;
+      letter-spacing: -0.14px;
+      line-height: 20px;
+    }
+    time {
+      font-size: 12px;
+      color: $ink-600;
+      line-height: 16px;
+    }
+  }
+
+  &__sep {
+    color: $ink-600;
+    font-size: 12px;
+  }
+
+  &__comment {
+    font-size: 14px;
+    color: $ink-700;
+    line-height: 22px;
+    letter-spacing: -0.14px;
+    margin: 0;
+  }
+}
+
+// Star with overlay fill (used by Stars component)
+.rev__stars {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.rev__star {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+}
+
+.rev__star-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  display: inline-block;
+}
+
+// ── Courses ─────────────────────────────────────────────────
+.coach-courses {
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+
+    @include respond-to(lg) { grid-template-columns: 1fr 1fr; }
+    @include respond-to(sm) { grid-template-columns: 1fr; }
+  }
+}
+
+.coach-course-card {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: $radius-card;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: $transition-hover;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+  }
+
+  &__media {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    background: var(--bg-subtle);
+
+    img { width: 100%; height: 100%; object-fit: cover; }
+  }
+
+  &__badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: $color-danger;
+    color: #fff;
+    font-size: 11px;
+    font-weight: $fw-semibold;
+    padding: 3px 8px;
+    border-radius: $radius-xs;
+  }
+
+  &__body {
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+  }
+
+  &__title {
+    font-size: 15px;
+    font-weight: $fw-bold;
+    color: var(--text-primary);
+    line-height: 1.35;
+  }
+
+  &__subtitle {
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+
+  &__desc {
+    font-size: 12.5px;
+    color: var(--text-secondary);
+    line-height: 1.55;
+  }
+
+  &__meta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  &__bullets {
+    list-style: none;
+    padding: 0;
+    margin: 4px 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    li {
+      position: relative;
+      padding-left: 16px;
+      font-size: 12px;
+      color: var(--text-secondary);
+
+      &::before {
+        content: '✓';
+        position: absolute;
+        left: 0;
+        top: 0;
+        color: var(--success);
+        font-weight: $fw-bold;
+      }
+    }
+  }
+
+  &__footer {
+    margin-top: auto;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--divider);
+  }
+
+  &__price {
+    display: flex;
+    flex-direction: column;
+
+    small { font-size: 11px; color: var(--text-muted); }
+    strong { font-size: 15px; font-weight: $fw-bold; color: var(--text-primary); }
+    s { font-size: 11px; color: var(--text-muted); margin-left: 4px; }
+  }
+}
+
+// ── Booking sidebar panel ───────────────────────────────────
+.coach-booking-panel {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: $radius-card;
+  padding: 18px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  &__avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: $radius-full;
+    overflow: hidden;
+    background: var(--bg-subtle);
+    flex-shrink: 0;
+
+    img { width: 100%; height: 100%; object-fit: cover; }
+  }
+
+  &__name {
+    font-size: 14px;
+    font-weight: $fw-semibold;
+    color: var(--text-primary);
+  }
+
+  &__role {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  &__stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    text-align: center;
+    border-top: 1px solid var(--divider);
+    border-bottom: 1px solid var(--divider);
+    padding: 12px 0;
+    gap: 6px;
+  }
+
+  &__stat-num {
+    font-size: 18px;
+    font-weight: $fw-bold;
+    color: var(--text-primary);
+  }
+
+  &__stat-label {
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  &__info-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+
+  &__info-row strong { color: var(--text-primary); font-weight: $fw-semibold; }
+
+  &__rating {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+
+    svg { color: #F4B43F; }
+    strong { color: var(--text-primary); }
+  }
+
+  &__price-block {
+    background: var(--bg-subtle);
+    border-radius: $radius-md;
+    padding: 12px 14px;
+
+    small { font-size: 11px; color: var(--text-muted); }
+    strong { font-size: 22px; font-weight: $fw-bold; color: var(--text-primary); }
+    span { font-size: 13px; color: var(--text-muted); margin-left: 4px; }
+  }
+
+  &__cta {
+    width: 100%;
+  }
+
+  &__next {
+    background: $color-brand-tint;
+    border-radius: $radius-md;
+    padding: 10px 12px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+
+    strong { color: var(--brand); font-weight: $fw-semibold; }
+  }
+}
+
+// ── Similar coaches strip ───────────────────────────────────
+.coach-similar {
+  background: var(--bg-subtle);
+  padding-block: 40px;
+
+  &__container {
+    width: 100%;
+    max-width: $container;
+    margin-inline: auto;
+    padding-inline: $spacing-page-x;
+
+    @include respond-from(md) { padding-inline: $spacing-page-x-lg; }
+  }
+
+  &__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+
+  &__title {
+    font-size: 22px;
+    font-weight: $fw-bold;
+  }
+
+  &__see-all {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border: 1px solid var(--border);
+    border-radius: $radius-pill;
+    background: var(--bg-elevated);
+    font-size: 13px;
+    color: var(--text-primary);
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+
+    @include respond-to(lg) { grid-template-columns: repeat(3, 1fr); }
+    @include respond-to(md) { grid-template-columns: repeat(2, 1fr); }
+    @include respond-to(sm) { grid-template-columns: 1fr; }
+  }
+}
+
+.coach-similar-card {
+  position: relative;
+  border-radius: $radius-card;
+  overflow: hidden;
+  aspect-ratio: 3 / 4;
+  background: var(--bg-elevated);
+  color: #fff;
+  display: block;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform $duration-slow $ease-expo-out;
+  }
+
+  &:hover img { transform: scale(1.05); }
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 30%, rgba(13, 10, 44, 0.85) 100%);
+  }
+
+  &__top {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 2;
+  }
+
+  &__verified {
+    width: 26px;
+    height: 26px;
+    border-radius: $radius-full;
+    background: rgba(255, 255, 255, 0.9);
+    color: var(--success);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__body {
+    position: absolute;
+    inset: auto 0 0 0;
+    padding: 14px;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  &__name {
+    font-size: 15px;
+    font-weight: $fw-bold;
+  }
+
+  &__role {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.75);
+  }
+
+  &__meta {
+    display: flex;
+    gap: 12px;
+    font-size: 12px;
+    align-items: center;
+
+    span { display: inline-flex; align-items: center; gap: 4px; }
+    svg { color: #F4B43F; }
+  }
+}
+
+// ── Why CoHub comparison ────────────────────────────────────
+.coach-why {
+  background: var(--bg-base);
+  padding-block: 64px;
+
+  &__container {
+    width: 100%;
+    max-width: $container;
+    margin-inline: auto;
+    padding-inline: $spacing-page-x;
+
+    @include respond-from(md) { padding-inline: $spacing-page-x-lg; }
+  }
+
+  &__title {
+    font-size: 28px;
+    font-weight: $fw-bold;
+    text-align: center;
+    margin-bottom: 8px;
+  }
+
+  &__sub {
+    font-size: 14px;
+    color: var(--text-secondary);
+    text-align: center;
+    margin-bottom: 32px;
+  }
+
+  &__table {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+
+    @include respond-to(md) { grid-template-columns: 1fr; }
+  }
+
+  &__col {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: $radius-card;
+    overflow: hidden;
+
+    &--brand {
+      background: linear-gradient(180deg, #EAF7EF 0%, #DCF6E5 100%);
+      border-color: rgba(46, 177, 111, 0.3);
+    }
+  }
+
+  &__col-head {
+    padding: 16px 20px;
+    font-size: 14px;
+    font-weight: $fw-semibold;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-primary);
+
+    &--brand {
+      color: $color-accent-green;
+      border-bottom-color: rgba(46, 177, 111, 0.25);
+    }
+  }
+
+  &__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 14px 20px;
+      border-top: 1px solid var(--divider);
+      font-size: 13.5px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+
+      &:first-child { border-top: 0; }
+    }
+  }
+
+  &__icon-x { color: $color-danger; flex-shrink: 0; margin-top: 2px; }
+  &__icon-check { color: $color-accent-green; flex-shrink: 0; margin-top: 2px; }
+}
+
+// ── FAQ ────────────────────────────────────────────────────
+.coach-faq {
+  background: $color-dark-base;
+  color: var(--text-inverse);
+  padding-block: 64px;
+
+  &__container {
+    width: 100%;
+    max-width: 900px;
+    margin-inline: auto;
+    padding-inline: $spacing-page-x;
+
+    @include respond-from(md) { padding-inline: $spacing-page-x-lg; }
+  }
+
+  &__title {
+    font-size: 28px;
+    font-weight: $fw-bold;
+    margin-bottom: 24px;
+  }
+
+  &__item {
+    border-bottom: 1px solid $color-white-alpha-10;
+  }
+
+  &__btn {
+    width: 100%;
+    background: transparent;
+    color: inherit;
+    border: 0;
+    text-align: left;
+    padding: 18px 0;
+    font-size: 16px;
+    font-weight: $fw-medium;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  &__icon {
+    transition: transform $duration-normal $ease-expo-out;
+    flex-shrink: 0;
+  }
+
+  &__item--open &__icon { transform: rotate(180deg); }
+
+  &__body {
+    padding: 0 0 18px 0;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.75);
+    line-height: 1.6;
+  }
+}
+
+// ── Final CTAs ──────────────────────────────────────────────
+.coach-final-cta {
+  background: $color-dark-base;
+  padding-block: 0 64px;
+
+  &__container {
+    width: 100%;
+    max-width: $container;
+    margin-inline: auto;
+    padding-inline: $spacing-page-x;
+
+    @include respond-from(md) { padding-inline: $spacing-page-x-lg; }
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+
+    @include respond-to(md) { grid-template-columns: 1fr; }
+  }
+
+  &__card {
+    position: relative;
+    overflow: hidden;
+    border-radius: $radius-card-lg;
+    padding: 32px;
+    min-height: 240px;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background-size: cover;
+    background-position: center;
+
+    &--coach {
+      background: linear-gradient(135deg, #0050FF 0%, #5F71FF 100%);
+    }
+    &--sport {
+      background: linear-gradient(135deg, #2EB16F 0%, #42DC8F 100%);
+    }
+  }
+
+  &__card-title {
+    font-size: 22px;
+    font-weight: $fw-bold;
+    margin-bottom: 8px;
+  }
+
+  &__card-text {
+    font-size: 13.5px;
+    color: rgba(255, 255, 255, 0.85);
+    line-height: 1.55;
+    margin-bottom: 16px;
+    max-width: 520px;
+  }
+
+  &__card-btn {
+    align-self: flex-start;
+    background: #fff;
+    color: var(--text-primary);
+    padding: 10px 18px;
+    border-radius: $radius-pill;
+    font-size: 13px;
+    font-weight: $fw-semibold;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: $transition-button;
+
+    &:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); }
+  }
+}

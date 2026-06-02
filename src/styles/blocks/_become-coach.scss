@@ -1,0 +1,323 @@
+// ── /become-coach landing pitch ───────────────────────────────
+.become-coach {
+  background: var(--bg-base);
+
+  &__container {
+    width: 100%;
+    max-width: $container;
+    margin-inline: auto;
+    padding-inline: $spacing-page-x;
+    @include respond-from(md) { padding-inline: $spacing-page-x-lg; }
+  }
+
+  &__section-title {
+    font-size: clamp(24px, 3vw, 36px);
+    font-weight: $fw-bold;
+    color: var(--text-primary);
+    text-align: center;
+    letter-spacing: -0.03em;
+    line-height: 1.2;
+    margin-bottom: 12px;
+  }
+
+  &__section-sub {
+    font-size: 14.5px;
+    color: var(--text-secondary);
+    text-align: center;
+    max-width: 60ch;
+    margin: 0 auto 32px;
+    line-height: 1.55;
+  }
+
+  // ── Hero ───────────────────────────────────────────────────
+  &__hero {
+    background: linear-gradient(135deg, $color-dark-base 0%, $color-dark-navy 100%);
+    color: #fff;
+    padding-block: clamp(48px, 8vw, 96px);
+    position: relative;
+    overflow: hidden;
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at top right, rgba(92, 120, 255, 0.25) 0%, transparent 60%);
+      pointer-events: none;
+    }
+  }
+
+  &__hero-container {
+    width: 100%;
+    max-width: $container;
+    margin-inline: auto;
+    padding-inline: $spacing-page-x;
+    @include respond-from(md) { padding-inline: $spacing-page-x-lg; }
+    position: relative;
+    z-index: 1;
+  }
+
+  &__hero-eyebrow {
+    display: inline-block;
+    padding: 6px 14px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: $radius-pill;
+    font-size: 12px;
+    font-weight: $fw-semibold;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: $color-accent-green-bright;
+    margin-bottom: 20px;
+  }
+
+  &__hero-title {
+    font-size: clamp(32px, 5vw, 56px);
+    font-weight: $fw-bold;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    color: #fff;
+    margin-bottom: 18px;
+    max-width: 900px;
+  }
+
+  &__hero-sub {
+    font-size: clamp(15px, 1.5vw, 18px);
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1.6;
+    max-width: 60ch;
+    margin-bottom: 32px;
+  }
+
+  &__hero-cta {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 48px;
+
+    .btn--secondary {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.2);
+      color: #fff;
+      &:hover { background: rgba(255, 255, 255, 0.18); }
+    }
+  }
+
+  &__stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 20px;
+    padding-top: 32px;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+
+    > div {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+
+      strong {
+        font-size: clamp(24px, 3vw, 34px);
+        font-weight: $fw-bold;
+        color: $color-accent-green-bright;
+        line-height: 1;
+      }
+      span {
+        font-size: 12.5px;
+        color: rgba(255, 255, 255, 0.65);
+      }
+    }
+  }
+
+  // ── Benefits ───────────────────────────────────────────────
+  &__benefits {
+    padding-block: clamp(48px, 7vw, 80px);
+  }
+
+  &__benefits-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 18px;
+  }
+
+  &__benefit {
+    padding: 24px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: $radius-card;
+    transition: $transition-hover;
+
+    &:hover {
+      border-color: var(--brand);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    h3 {
+      font-size: 16px;
+      font-weight: $fw-bold;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+    p {
+      font-size: 13.5px;
+      color: var(--text-secondary);
+      line-height: 1.55;
+    }
+  }
+
+  &__benefit-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: $radius-md;
+    background: $color-brand-tint;
+    font-size: 22px;
+    margin-bottom: 14px;
+  }
+
+  // ── Process ────────────────────────────────────────────────
+  &__process {
+    background: $color-surface;
+    padding-block: clamp(48px, 7vw, 80px);
+  }
+
+  &__process-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+    counter-reset: process;
+
+    li {
+      display: grid;
+      grid-template-columns: 48px 1fr;
+      gap: 14px;
+      padding: 20px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: $radius-card;
+
+      strong {
+        display: block;
+        font-size: 15px;
+        font-weight: $fw-bold;
+        color: var(--text-primary);
+        margin-bottom: 4px;
+      }
+      p {
+        font-size: 13px;
+        color: var(--text-secondary);
+        line-height: 1.5;
+      }
+    }
+  }
+
+  &__process-num {
+    width: 36px;
+    height: 36px;
+    border-radius: $radius-full;
+    background: var(--brand);
+    color: #fff;
+    font-size: 16px;
+    font-weight: $fw-bold;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  // ── Testimonials ───────────────────────────────────────────
+  &__testimonials {
+    padding-block: clamp(48px, 7vw, 80px);
+  }
+
+  &__testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+  }
+
+  &__testimonial {
+    padding: 24px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: $radius-card-lg;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    position: relative;
+
+    &::before {
+      content: '"';
+      position: absolute;
+      top: 12px;
+      right: 20px;
+      font-size: 60px;
+      line-height: 1;
+      color: $color-brand-tint;
+      font-family: serif;
+    }
+  }
+
+  &__testimonial-revenue {
+    display: inline-block;
+    align-self: flex-start;
+    padding: 4px 12px;
+    background: var(--success-light);
+    color: var(--success);
+    border-radius: $radius-pill;
+    font-size: 12.5px;
+    font-weight: $fw-bold;
+  }
+
+  &__testimonial-quote {
+    font-size: 14.5px;
+    color: var(--text-primary);
+    line-height: 1.65;
+    flex: 1;
+  }
+
+  &__testimonial-author {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-top: 16px;
+    border-top: 1px solid var(--divider);
+
+    img { border-radius: $radius-full; object-fit: cover; }
+
+    strong { display: block; font-size: 14px; color: var(--text-primary); }
+    span { display: block; font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+  }
+
+  // ── Final CTA ──────────────────────────────────────────────
+  &__final-cta {
+    background: linear-gradient(135deg, $color-brand-deep 0%, $color-brand 100%);
+    color: #fff;
+    padding-block: clamp(48px, 7vw, 80px);
+    text-align: center;
+
+    h2 {
+      font-size: clamp(24px, 3vw, 36px);
+      font-weight: $fw-bold;
+      letter-spacing: -0.03em;
+      margin-bottom: 12px;
+    }
+    p {
+      font-size: 15px;
+      color: rgba(255, 255, 255, 0.85);
+      margin-bottom: 24px;
+    }
+    small {
+      display: block;
+      margin-top: 16px;
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.7);
+
+      a { color: #fff; text-decoration: underline; }
+    }
+  }
+}

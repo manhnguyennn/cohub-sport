@@ -1,0 +1,117 @@
+// ──────────────────────────────────────────────────────────────
+// Global styles — imported once in app/layout.tsx
+//
+// Order matters:
+//  1) tokens (defines :root vars + SCSS vars)
+//  2) reset
+//  3) base typography + layout helpers
+//  4) BEM blocks
+// ──────────────────────────────────────────────────────────────
+
+@import './tokens';
+@import './reset.css';
+
+// ── Base ─────────────────────────────────────────────────────
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
+  font-family: var(--font-sans);
+  color: var(--text-primary);
+  background: var(--bg-base);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+body { line-height: $lh-body; }
+
+a { color: inherit; text-decoration: none; }
+img { max-width: 100%; height: auto; display: block; }
+button { font: inherit; cursor: pointer; }
+
+// ── Layout helpers ────────────────────────────────────────────
+.container {
+  width: 100%;
+  max-width: var(--container);
+  margin-inline: auto;
+  padding-inline: $spacing-page-x;
+
+  @include respond-from(md) {
+    padding-inline: $spacing-page-x-lg;
+  }
+}
+
+.section {
+  @include fluid-section;
+}
+
+.section--dark {
+  background: $color-dark-base;
+  color: var(--text-inverse);
+}
+
+.background--black {
+  background: $color-dark-base;
+  color: var(--text-inverse);
+}
+
+// ── Typography utilities ──────────────────────────────────────
+.heading-display { font-size: var(--fs-display); line-height: $lh-display; font-weight: $fw-bold; letter-spacing: $ls-display; }
+.heading-h1      { font-size: var(--fs-h1);      line-height: $lh-h1;      font-weight: $fw-bold; letter-spacing: $ls-heading; }
+.heading-h2      { font-size: var(--fs-h2);      line-height: $lh-h2;      font-weight: $fw-bold; letter-spacing: $ls-heading; }
+.heading-h3      { font-size: var(--fs-h3);      line-height: $lh-h3;      font-weight: $fw-semibold; letter-spacing: $ls-heading; }
+.text-lead       { font-size: var(--fs-lead);    line-height: $lh-lead;    color: var(--text-secondary); }
+.text-body       { font-size: var(--fs-body);    line-height: $lh-body;    color: var(--text-primary); }
+.text-sm         { font-size: var(--fs-sm);      line-height: $lh-sm;      color: var(--text-secondary); }
+.text-xs         { font-size: var(--fs-xs);      line-height: $lh-xs;      color: var(--text-muted); }
+.text-muted      { color: var(--text-muted); }
+
+.text-gradient {
+  background: $gradient-brand-h;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+// ── Focus visible (WCAG) ──────────────────────────────────────
+:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+
+// Disable reduced-motion animations
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+// ── BEM blocks ────────────────────────────────────────────────
+@import './blocks/header';
+@import './blocks/footer';
+@import './blocks/button';
+@import './blocks/card';
+@import './blocks/input';
+@import './blocks/badge';
+@import './blocks/coach-card';
+@import './blocks/sport-card';
+@import './blocks/home-hero';
+@import './blocks/home-categories';
+@import './blocks/showcase';
+@import './blocks/coach-list';
+@import './blocks/coach-detail';
+@import './blocks/toast';
+@import './blocks/demo-panel';
+@import './blocks/skeleton';
+@import './blocks/responsive';
+@import './blocks/auth';
+@import './blocks/booking';
+@import './blocks/my-bookings';
+@import './blocks/courses';
+@import './blocks/become-coach';
+@import './blocks/onboarding';
+
+// Legacy Features sections — ported nguyên trạng làm Home mới
+@import './feature';

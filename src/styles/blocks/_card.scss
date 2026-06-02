@@ -1,0 +1,31 @@
+// Block: card (shared UI)
+.card {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: $radius-card;
+  overflow: hidden;
+  transition: $transition-hover;
+
+  &--soft { border: 0; box-shadow: $shadow-sm; }
+  &--elevated { border: 0; box-shadow: $shadow-md; }
+  &--interactive {
+    cursor: pointer;
+    &:hover { box-shadow: $shadow-md; transform: translateY(-2px); }
+  }
+
+  &__media {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+  }
+
+  &__body { padding: $spacing-card; }
+  &__body--sm { padding: $spacing-card-sm; }
+
+  &__title { font-size: $fs-h3; font-weight: $fw-semibold; margin-bottom: 8px; }
+  &__text  { font-size: $fs-sm; color: var(--text-secondary); }
+  &__footer {
+    padding: $spacing-card-sm $spacing-card;
+    border-top: 1px solid var(--divider);
+  }
+}

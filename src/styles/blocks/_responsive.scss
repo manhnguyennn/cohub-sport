@@ -1,0 +1,255 @@
+// ============================================================
+// Mobile-first responsive utilities
+//
+// Pattern: viết mobile mặc định, dùng `@include respond-from(md)`
+// để TĂNG breakpoint thay vì max-width override.
+//
+// Helpers:
+//   .hide-mobile          ẩn ở < 768px
+//   .show-mobile-only     hiện chỉ < 768px
+//   .hide-tablet-down     ẩn ở < 1024px (mobile + tablet)
+//   .show-tablet-up       chỉ hiện từ tablet trở lên
+//   .bottom-safe-pad      padding-bottom an toàn cho sticky bottom bar (avoid iOS safe-area)
+//   .scroll-x-snap        horizontal scroll snap container (cho mobile chip rows)
+// ============================================================
+
+// Utility classes
+.hide-mobile {
+  @include respond-to(md) { display: none !important; }
+}
+
+.show-mobile-only {
+  display: none;
+  @include respond-to(md) { display: block; }
+}
+
+.show-mobile-only-flex {
+  display: none;
+  @include respond-to(md) { display: flex; }
+}
+
+.hide-tablet-down {
+  @include respond-to(lg) { display: none !important; }
+}
+
+.show-tablet-up {
+  display: none;
+  @include respond-from(lg) { display: block; }
+}
+
+// Reserve space for sticky bottom bar (mobile detail pages)
+.bottom-safe-pad {
+  @include respond-to(md) {
+    padding-bottom: 88px;     // sticky bar height ~72px + buffer
+    padding-bottom: calc(72px + env(safe-area-inset-bottom, 16px));
+  }
+}
+
+// Horizontal scroll snap (chip rows, tabs that overflow on mobile)
+.scroll-x-snap {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding-bottom: 4px;
+
+  &::-webkit-scrollbar { display: none; }
+
+  > * {
+    scroll-snap-align: start;
+    flex-shrink: 0;
+  }
+}
+
+// ============================================================
+// Mobile sticky bottom bar (MobileStickyBar component)
+// ============================================================
+.mobile-sticky-bar {
+  display: none;
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: $z-sticky;
+  background: var(--bg-elevated);
+  border-top: 1px solid var(--border);
+  padding: 12px 16px;
+  padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.06);
+  align-items: center;
+  gap: 12px;
+
+  @include respond-to(md) {
+    display: flex;
+  }
+
+  &__info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  &__label {
+    font-size: 11px;
+    color: var(--text-muted);
+    line-height: 1.2;
+  }
+
+  &__price {
+    font-size: 18px;
+    font-weight: $fw-bold;
+    color: var(--text-primary);
+    line-height: 1.2;
+
+    small {
+      font-size: 12px;
+      font-weight: $fw-regular;
+      color: var(--text-muted);
+      margin-left: 2px;
+    }
+  }
+
+  &__action {
+    flex-shrink: 0;
+
+    // Button inside should be 44px+ tap target
+    .btn { min-height: 44px; }
+  }
+}
+
+// ============================================================
+// Mobile filter drawer (bottom sheet)
+// ============================================================
+.mobile-filter-trigger {
+  display: none;
+
+  @include respond-to(md) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 16px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: $radius-pill;
+    font: inherit;
+    font-size: 13.5px;
+    font-weight: $fw-medium;
+    color: var(--text-primary);
+    cursor: pointer;
+    min-height: 40px;
+
+    &:hover { background: var(--bg-hover); }
+    &--active { background: $color-brand-tint; color: var(--brand); border-color: var(--brand); }
+
+    span.badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 18px;
+      height: 18px;
+      padding: 0 6px;
+      background: var(--brand);
+      color: #fff;
+      border-radius: $radius-full;
+      font-size: 11px;
+      font-weight: $fw-bold;
+    }
+  }
+}
+
+.mobile-drawer {
+  // Hidden by default — visible when open via class
+  @include respond-from(md) { display: none !important; }
+
+  &__backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(13, 10, 44, 0.4);
+    z-index: $z-modal;
+    animation: drawer-fade-in $duration-fast linear;
+  }
+
+  &__sheet {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: calc(#{$z-modal} + 1);
+    background: var(--bg-elevated);
+    border-radius: 20px 20px 0 0;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    animation: drawer-slide-up $duration-normal $ease-expo-out;
+    box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.18);
+  }
+
+  &__handle {
+    width: 40px;
+    height: 4px;
+    background: var(--border);
+    border-radius: $radius-full;
+    margin: 10px auto 6px;
+    flex-shrink: 0;
+  }
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 20px 12px;
+    border-bottom: 1px solid var(--divider);
+
+    h3 {
+      font-size: 16px;
+      font-weight: $fw-bold;
+      color: var(--text-primary);
+    }
+  }
+
+  &__close {
+    background: transparent;
+    border: 0;
+    width: 32px;
+    height: 32px;
+    border-radius: $radius-full;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 1;
+
+    &:hover { background: var(--bg-hover); color: var(--text-primary); }
+  }
+
+  &__body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px 20px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  &__footer {
+    padding: 12px 20px;
+    padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+    border-top: 1px solid var(--divider);
+    display: flex;
+    gap: 8px;
+
+    .btn { flex: 1; min-height: 44px; }
+  }
+}
+
+@keyframes drawer-slide-up {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
+
+@keyframes drawer-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}

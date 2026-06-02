@@ -1,0 +1,265 @@
+// Block: header
+.header {
+  position: sticky;
+  top: 0;
+  z-index: $z-header;
+  height: var(--header-h);
+  background: rgba(250, 251, 255, 0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--divider);
+
+  &__container {
+    height: 100%;
+    max-width: var(--container);
+    margin-inline: auto;
+    padding-inline: $spacing-page-x;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+
+    @include respond-from(md) { padding-inline: $spacing-page-x-lg; }
+  }
+
+  &__left { display: flex; align-items: center; gap: 32px; }
+
+  &__brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: $font-accent;
+    font-weight: $fw-bold;
+    font-size: 22px;
+    color: var(--brand);
+  }
+
+  &__logo-icon { height: 32px; width: auto; }
+
+  &__nav {
+    display: none;
+    align-items: center;
+    gap: 4px;
+
+    @include respond-from(lg) { display: flex; }
+  }
+
+  &__nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 12px;
+    border-radius: $radius-sm;
+    font-size: $fs-sm;
+    font-weight: $fw-medium;
+    color: var(--text-secondary);
+    transition: $transition-color;
+
+    &:hover { color: var(--text-primary); background: var(--bg-hover); }
+
+    &--active {
+      color: var(--brand);
+      background: $color-brand-tint;
+    }
+
+    &--wip {
+      opacity: 0.65;
+      &::after {
+        content: 'WIP';
+        font-size: 9px;
+        background: var(--warning-light);
+        color: var(--warning);
+        padding: 1px 5px;
+        border-radius: $radius-xs;
+        margin-left: 4px;
+      }
+    }
+  }
+
+  &__actions { display: flex; align-items: center; gap: 10px; }
+
+  // Demo Mode trigger — ẩn nho nhỏ trong header
+  &__demo-trigger {
+    width: 32px;
+    height: 32px;
+    border-radius: $radius-full;
+    border: 1px solid var(--border);
+    background: var(--bg-elevated);
+    color: var(--text-muted);
+    font-size: 14px;
+    cursor: pointer;
+    transition: $transition-button;
+
+    &:hover {
+      color: var(--brand);
+      border-color: var(--brand);
+      background: $color-brand-tint;
+    }
+  }
+
+  // User chip + dropdown menu
+  &__user-wrap {
+    position: relative;
+  }
+
+  &__user {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 12px 4px 4px;
+    border-radius: $radius-pill;
+    border: 1px solid var(--border);
+    background: var(--bg-elevated);
+    cursor: pointer;
+    transition: $transition-button;
+
+    &:hover {
+      border-color: var(--border-hover);
+      background: var(--bg-hover);
+    }
+  }
+
+  &__user-avatar {
+    border-radius: $radius-full;
+    object-fit: cover;
+  }
+
+  &__user-name {
+    font-size: 13px;
+    font-weight: $fw-semibold;
+    color: var(--text-primary);
+
+    @include respond-to(md) { display: none; }
+  }
+
+  &__user-role {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    padding: 2px 6px;
+    border-radius: $radius-xs;
+    background: var(--bg-subtle);
+
+    @include respond-to(sm) { display: none; }
+  }
+
+  &__user-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    width: 260px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: $radius-md;
+    box-shadow: var(--shadow-lg);
+    z-index: $z-dropdown;
+    overflow: hidden;
+    animation: header-menu-in $duration-fast $ease-expo-out;
+  }
+
+  &__user-menu-head {
+    padding: 14px 16px;
+    background: var(--bg-subtle);
+    border-bottom: 1px solid var(--divider);
+
+    strong { display: block; font-size: 14px; color: var(--text-primary); }
+    small  { display: block; font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+  }
+
+  &__user-menu-section {
+    padding: 6px;
+    border-bottom: 1px solid var(--divider);
+
+    &:last-child { border-bottom: 0; }
+  }
+
+  &__user-menu-label {
+    display: block;
+    padding: 6px 10px;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+  }
+
+  &__user-menu-item {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 10px;
+    background: transparent;
+    border: 0;
+    border-radius: $radius-sm;
+    text-align: left;
+    color: var(--text-primary);
+    font: inherit;
+    font-size: 13px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: $transition-color;
+
+    &:hover:not(:disabled) { background: var(--bg-hover); }
+    &--active { color: var(--brand); font-weight: $fw-semibold; }
+    &--danger { color: var(--danger); &:hover { background: var(--danger-light); } }
+  }
+
+  &__burger {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+    width: 32px;
+    height: 32px;
+    background: transparent;
+    border: 0;
+
+    @include respond-from(lg) { display: none; }
+
+    span {
+      display: block;
+      width: 22px;
+      height: 2px;
+      background: var(--text-primary);
+      transition: $transition-hover;
+    }
+  }
+
+  &__mobile-menu {
+    position: fixed;
+    inset: var(--header-h) 0 0 0;
+    background: var(--bg-base);
+    transform: translateY(-100%);
+    transition: transform $duration-slow $ease-expo-out;
+    pointer-events: none;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    z-index: $z-header - 1;
+
+    &--open {
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    @include respond-from(lg) { display: none; }
+  }
+
+  &__mobile-nav-item {
+    display: block;
+    padding: 14px 16px;
+    border-radius: $radius-md;
+    font-size: $fs-body;
+    font-weight: $fw-medium;
+    color: var(--text-primary);
+
+    &:hover { background: var(--bg-hover); }
+    &--active { background: $color-brand-tint; color: var(--brand); }
+  }
+}
+
+@keyframes header-menu-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}

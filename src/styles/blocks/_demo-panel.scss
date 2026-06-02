@@ -1,0 +1,188 @@
+// ── Demo Mode panel (FSD §5) — hidden tool ────────────────────
+.demo-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 380px;
+  max-width: 100vw;
+  background: var(--bg-elevated);
+  border-left: 1px solid var(--border);
+  box-shadow: var(--shadow-xl);
+  z-index: $z-modal;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  animation: demo-slide-in $duration-normal $ease-expo-out;
+  font-family: $font-sans;
+
+  &__backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(13, 10, 44, 0.4);
+    z-index: calc(#{$z-modal} - 1);
+    animation: demo-fade-in $duration-fast linear;
+  }
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--divider);
+    background: var(--bg-subtle);
+
+    strong {
+      display: block;
+      font-size: 14px;
+      font-weight: $fw-bold;
+      color: var(--text-primary);
+    }
+  }
+
+  &__hint {
+    display: block;
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+
+  &__close {
+    background: transparent;
+    border: 0;
+    padding: 4px 8px;
+    font-size: 22px;
+    line-height: 1;
+    color: var(--text-muted);
+    cursor: pointer;
+
+    &:hover { color: var(--text-primary); }
+  }
+
+  &__section {
+    padding: 18px 20px;
+    border-bottom: 1px solid var(--divider);
+
+    h4 {
+      font-size: 11px;
+      font-weight: $fw-semibold;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      margin: 0 0 10px;
+
+      &:not(:first-child) { margin-top: 18px; }
+    }
+  }
+
+  &__active {
+    padding: 12px;
+    background: $color-brand-tint;
+    border-radius: $radius-md;
+    margin-bottom: 16px;
+
+    strong { font-size: 13px; color: var(--brand); display: block; }
+    p { font-size: 12px; color: var(--text-secondary); margin: 4px 0 0; line-height: 1.45; }
+  }
+
+  &__personas {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  &__persona {
+    text-align: left;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: $radius-md;
+    background: var(--bg-elevated);
+    cursor: pointer;
+    transition: $transition-button;
+
+    &:hover:not(:disabled) {
+      background: var(--bg-subtle);
+      border-color: var(--border-hover);
+    }
+
+    &.is-active {
+      border-color: var(--brand);
+      background: $color-brand-tint;
+      cursor: default;
+    }
+
+    &:disabled { opacity: 0.85; }
+
+    strong {
+      display: block;
+      font-size: 13px;
+      font-weight: $fw-semibold;
+      color: var(--text-primary);
+    }
+
+    small {
+      display: block;
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+      line-height: 1.4;
+    }
+  }
+
+  &__toggle {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 0;
+    cursor: pointer;
+    border-top: 1px solid var(--divider);
+
+    &:first-of-type { border-top: 0; padding-top: 0; }
+
+    input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      margin-top: 2px;
+      accent-color: var(--brand);
+      cursor: pointer;
+    }
+
+    div { flex: 1; min-width: 0; }
+
+    strong { display: block; font-size: 13px; font-weight: $fw-semibold; color: var(--text-primary); }
+    small  { display: block; font-size: 11px; color: var(--text-muted); margin-top: 2px; line-height: 1.4; }
+  }
+
+  &__btn {
+    display: block;
+    width: 100%;
+    padding: 10px 14px;
+    margin-top: 8px;
+    border: 1px solid var(--brand);
+    background: var(--brand);
+    color: #fff;
+    border-radius: $radius-sm;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: $fw-medium;
+    cursor: pointer;
+    transition: $transition-button;
+
+    &:hover { background: var(--brand-hover); border-color: var(--brand-hover); }
+
+    &--ghost {
+      background: transparent;
+      color: var(--brand);
+
+      &:hover { background: $color-brand-tint; }
+    }
+  }
+}
+
+@keyframes demo-slide-in {
+  from { transform: translateX(100%); }
+  to   { transform: translateX(0); }
+}
+@keyframes demo-fade-in {
+  from { opacity: 0; } to { opacity: 1; }
+}

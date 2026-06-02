@@ -1,0 +1,116 @@
+// ── Toast viewport & item ────────────────────────────────────
+.toast-viewport {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: $z-toast;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+  max-width: 380px;
+  width: calc(100vw - 48px);
+
+  @include respond-to(sm) {
+    right: 12px;
+    bottom: 12px;
+    width: calc(100vw - 24px);
+  }
+}
+
+.toast {
+  pointer-events: auto;
+  display: grid;
+  grid-template-columns: 32px 1fr auto;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: $radius-card;
+  box-shadow: var(--shadow-lg);
+  font-family: $font-sans;
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--text-primary);
+  animation: toast-slide-in $duration-normal $ease-expo-out;
+
+  &__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: $radius-full;
+    font-weight: $fw-bold;
+    color: #fff;
+    flex-shrink: 0;
+  }
+
+  &__body {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  &__title {
+    font-weight: $fw-semibold;
+    color: var(--text-primary);
+  }
+
+  &__message {
+    color: var(--text-secondary);
+    word-wrap: break-word;
+  }
+
+  &__action {
+    margin-top: 6px;
+    align-self: flex-start;
+    background: transparent;
+    border: 0;
+    padding: 0;
+    color: var(--brand);
+    font: inherit;
+    font-weight: $fw-semibold;
+    cursor: pointer;
+
+    &:hover { text-decoration: underline; }
+  }
+
+  &__close {
+    background: transparent;
+    border: 0;
+    padding: 0 4px;
+    font-size: 20px;
+    line-height: 1;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: color $duration-fast;
+
+    &:hover { color: var(--text-primary); }
+  }
+
+  // Variants
+  &--success {
+    border-color: rgba(46, 177, 111, 0.3);
+    .toast__icon { background: $color-accent-green; }
+  }
+  &--error {
+    border-color: rgba(220, 38, 38, 0.3);
+    .toast__icon { background: $color-danger; }
+  }
+  &--warning {
+    border-color: rgba(217, 119, 6, 0.3);
+    .toast__icon { background: $color-warning; }
+  }
+  &--info {
+    border-color: rgba(0, 102, 204, 0.3);
+    .toast__icon { background: $color-info; }
+  }
+}
+
+@keyframes toast-slide-in {
+  from { opacity: 0; transform: translateX(40px); }
+  to   { opacity: 1; transform: translateX(0); }
+}

@@ -1,0 +1,166 @@
+// ── /my/bookings ──────────────────────────────────────────────
+.my-bookings-page {
+  background: var(--bg-base);
+  min-height: calc(100vh - var(--header-h));
+  padding-block: clamp(24px, 4vw, 48px);
+
+  &__container {
+    width: 100%;
+    max-width: 900px;
+    margin-inline: auto;
+    padding-inline: $spacing-page-x;
+    @include respond-from(md) { padding-inline: $spacing-page-x-lg; }
+  }
+
+  &__head {
+    margin-bottom: 24px;
+
+    h1 {
+      font-size: clamp(24px, 2.8vw, 32px);
+      font-weight: $fw-bold;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+    }
+    p { font-size: 14px; color: var(--text-secondary); }
+  }
+}
+
+.my-bookings-tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 16px;
+  overflow-x: auto;
+  scrollbar-width: none;
+
+  &__btn {
+    padding: 12px 18px;
+    background: transparent;
+    border: 0;
+    border-bottom: 2px solid transparent;
+    font: inherit;
+    font-size: 14px;
+    font-weight: $fw-medium;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: $transition-color;
+    white-space: nowrap;
+
+    &:hover { color: var(--text-primary); }
+
+    &--active {
+      color: var(--brand);
+      border-bottom-color: var(--brand);
+      font-weight: $fw-semibold;
+    }
+  }
+}
+
+.my-bookings-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.my-booking-row {
+  display: grid;
+  grid-template-columns: 56px 1fr auto;
+  gap: 16px;
+  padding: 16px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: $radius-card;
+  transition: $transition-hover;
+
+  &:hover {
+    border-color: var(--border-hover);
+    box-shadow: var(--shadow-sm);
+  }
+
+  @include respond-to(sm) {
+    grid-template-columns: 48px 1fr;
+
+    &__side {
+      grid-column: 1 / -1;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--divider);
+      padding-top: 12px;
+      margin-top: 4px;
+    }
+  }
+
+  &__avatar img {
+    border-radius: $radius-full;
+    object-fit: cover;
+  }
+
+  &__body {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  &__head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  &__title {
+    font-size: 16px;
+    font-weight: $fw-semibold;
+    color: var(--text-primary);
+    text-decoration: none;
+    &:hover { color: var(--brand); }
+  }
+
+  &__badge {
+    padding: 3px 10px;
+    border-radius: $radius-pill;
+    font-size: 11.5px;
+    font-weight: $fw-semibold;
+    white-space: nowrap;
+
+    &--warn    { background: var(--warning-light); color: var(--warning); }
+    &--info    { background: $color-brand-tint;    color: var(--brand); }
+    &--success { background: var(--success-light); color: var(--success); }
+    &--danger  { background: var(--danger-light);  color: var(--danger); }
+  }
+
+  &__meta {
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+
+  &__note {
+    font-size: 12.5px;
+    color: var(--text-muted);
+    line-height: 1.4;
+    padding: 6px 10px;
+    background: var(--bg-subtle);
+    border-radius: $radius-sm;
+    align-self: flex-start;
+  }
+
+  &__side {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+
+    strong {
+      font-size: 15px;
+      color: var(--text-primary);
+      font-weight: $fw-bold;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    gap: 6px;
+  }
+}

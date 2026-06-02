@@ -1,0 +1,493 @@
+// Block: coach-list (page /coaches theo design PDF)
+
+// ── Hero strip ─────────────────────────────────────────────────
+.coach-hero {
+  position: relative;
+  background:
+    linear-gradient(90deg, rgba(13, 10, 44, 0.85) 0%, rgba(13, 10, 44, 0.45) 100%),
+    var(--bg-subtle);
+  background-size: cover;
+  background-position: center;
+  color: #fff;
+  padding-block: 56px 24px;
+  overflow: hidden;
+
+  &__container {
+    max-width: var(--container);
+    margin-inline: auto;
+    padding-inline: $spacing-page-x;
+    @include respond-from(md) { padding-inline: $spacing-page-x-lg; }
+  }
+
+  &__title {
+    font-size: clamp(28px, 4vw, 40px);
+    font-weight: $fw-bold;
+    letter-spacing: $ls-heading;
+    margin-bottom: 20px;
+  }
+
+  &__tabs {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    &::-webkit-scrollbar { display: none; }
+  }
+
+  &__tab {
+    flex-shrink: 0;
+    padding: 8px 16px;
+    border-radius: $radius-full;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    color: #fff;
+    font-size: $fs-sm;
+    font-weight: $fw-medium;
+    cursor: pointer;
+    transition: $transition-color;
+    text-decoration: none;
+    backdrop-filter: blur(8px);
+
+    &:hover { background: rgba(255, 255, 255, 0.22); }
+
+    &--active {
+      background: #fff;
+      color: var(--text-primary);
+      border-color: #fff;
+    }
+  }
+}
+
+// ── Page layout ────────────────────────────────────────────────
+.coach-list {
+  background: var(--bg-base);
+  padding-block: 32px 64px;
+
+  &__container {
+    max-width: var(--container);
+    margin-inline: auto;
+    padding-inline: $spacing-page-x;
+    @include respond-from(md) { padding-inline: $spacing-page-x-lg; }
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 32px;
+    align-items: start;
+
+    @include respond-to(lg) { grid-template-columns: 1fr; }
+  }
+}
+
+// ── Sidebar filter ────────────────────────────────────────────
+.coach-filter {
+  position: sticky;
+  top: calc(var(--header-h) + 16px);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: $radius-card;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-height: calc(100vh - var(--header-h) - 32px);
+  overflow-y: auto;
+
+  @include respond-to(lg) {
+    position: static;
+    max-height: none;
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--divider);
+
+    &-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: $fs-body;
+      font-weight: $fw-semibold;
+    }
+
+    &-reset {
+      font-size: $fs-xs;
+      color: var(--brand);
+      background: transparent;
+      border: 0;
+      cursor: pointer;
+      &:hover { text-decoration: underline; }
+    }
+  }
+
+  &__group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  &__label {
+    font-size: $fs-sm;
+    font-weight: $fw-semibold;
+    color: var(--text-primary);
+  }
+
+  &__select {
+    width: 100%;
+    height: 40px;
+    padding-inline: 12px;
+    border: 1px solid var(--border);
+    border-radius: $radius-sm;
+    background: var(--bg-elevated);
+    font-size: $fs-sm;
+    color: var(--text-primary);
+    cursor: pointer;
+
+    &:focus {
+      outline: none;
+      border-color: var(--border-focus);
+      box-shadow: $shadow-focus;
+    }
+  }
+
+  &__city-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  &__chip {
+    padding: 5px 12px;
+    border-radius: $radius-full;
+    background: var(--bg-subtle);
+    border: 1px solid var(--border);
+    font-size: $fs-xs;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: $transition-color;
+    user-select: none;
+
+    &:hover { background: var(--bg-hover); }
+    &--active {
+      background: $color-brand-tint;
+      color: var(--brand);
+      border-color: $color-brand-alpha-20;
+    }
+  }
+
+  &__price {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    &-track {
+      position: relative;
+      height: 4px;
+      background: var(--bg-hover);
+      border-radius: 2px;
+    }
+    &-bar {
+      position: absolute;
+      height: 100%;
+      background: var(--brand);
+      border-radius: 2px;
+    }
+    &-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: $fs-xs;
+      color: var(--text-secondary);
+    }
+  }
+
+  &__radio-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  &__radio {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: $fs-sm;
+    color: var(--text-secondary);
+    cursor: pointer;
+    user-select: none;
+
+    input[type='radio'] {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--brand);
+      cursor: pointer;
+    }
+
+    &:hover { color: var(--text-primary); }
+  }
+}
+
+// ── List content area ─────────────────────────────────────────
+.coach-list__content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.coach-list-header {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0;
+  flex-wrap: wrap;
+
+  &__title {
+    font-size: $fs-h3;
+    font-weight: $fw-semibold;
+  }
+
+  &__actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex: 1;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+  }
+
+  &__search {
+    position: relative;
+    min-width: 240px;
+
+    input {
+      width: 100%;
+      height: 40px;
+      padding: 0 12px 0 36px;
+      border: 1px solid var(--border);
+      border-radius: $radius-full;
+      background: var(--bg-elevated);
+      font-size: $fs-sm;
+      color: var(--text-primary);
+
+      &:focus {
+        outline: none;
+        border-color: var(--border-focus);
+        box-shadow: $shadow-focus;
+      }
+    }
+
+    svg {
+      position: absolute;
+      top: 50%;
+      left: 12px;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+    }
+  }
+
+  &__sort {
+    height: 40px;
+    padding-inline: 14px;
+    border: 1px solid var(--border);
+    border-radius: $radius-full;
+    background: var(--bg-elevated);
+    font-size: $fs-sm;
+    color: var(--text-primary);
+    cursor: pointer;
+
+    &:focus { outline: none; border-color: var(--border-focus); }
+  }
+}
+
+// ── Horizontal coach item ─────────────────────────────────────
+.coach-item {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 20px;
+  padding: 16px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: $radius-card;
+  transition: $transition-hover;
+  position: relative;
+
+  &:hover {
+    box-shadow: $shadow-md;
+    border-color: var(--border-hover);
+  }
+
+  @include respond-to(md) {
+    grid-template-columns: 1fr;
+  }
+
+  &__media {
+    position: relative;
+    display: block;
+    aspect-ratio: 4 / 3;
+    border-radius: $radius-md;
+    overflow: hidden;
+    background: var(--bg-subtle);
+    cursor: pointer;
+
+    img {
+      transition: transform $duration-slow $ease-expo-out;
+    }
+
+    &:hover img { transform: scale(1.04); }
+
+    @include respond-to(md) { aspect-ratio: 16 / 9; }
+  }
+
+  &__top-badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    z-index: 2;
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+  }
+
+  &__top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  &__name-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  &__name {
+    font-size: $fs-lead;
+    font-weight: $fw-semibold;
+    color: var(--text-primary);
+    text-decoration: none;
+    transition: color $duration-fast $ease-standard;
+
+    &:hover { color: var(--brand); }
+  }
+
+  &__verified-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    border-radius: $radius-full;
+    background: $color-brand-tint;
+    color: var(--brand);
+    font-size: $fs-xs;
+    font-weight: $fw-medium;
+  }
+
+  &__top-rated {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    border-radius: $radius-full;
+    background: var(--success-light);
+    color: var(--success);
+    font-size: $fs-xs;
+    font-weight: $fw-semibold;
+  }
+
+  &__meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    font-size: $fs-sm;
+    color: var(--text-secondary);
+  }
+
+  &__meta-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  &__bio {
+    color: var(--text-secondary);
+    font-size: $fs-sm;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  &__footer {
+    margin-top: auto;
+    padding-top: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  &__price {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+
+    span {
+      font-size: $fs-xs;
+      color: var(--text-muted);
+    }
+    strong {
+      font-size: $fs-h3;
+      font-weight: $fw-bold;
+      color: var(--brand);
+      small { font-size: $fs-xs; color: var(--text-muted); font-weight: $fw-regular; }
+    }
+  }
+
+  &__actions {
+    display: flex;
+    gap: 8px;
+  }
+}
+
+// ── Bottom CTA dark ───────────────────────────────────────────
+.coach-cta {
+  background: $color-dark-base;
+  color: #fff;
+  padding-block: 64px;
+  text-align: center;
+
+  &__container {
+    max-width: 720px;
+    margin-inline: auto;
+    padding-inline: $spacing-page-x;
+  }
+
+  &__title {
+    font-size: $fs-h2;
+    font-weight: $fw-bold;
+    letter-spacing: $ls-heading;
+    margin-bottom: 24px;
+    line-height: 1.3;
+
+    .text-gradient-green {
+      background: linear-gradient(90deg, #3DD999 0%, #52F3B1 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+  }
+}

@@ -1,0 +1,52 @@
+// Block: button (shared UI)
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 44px;
+  padding-inline: 16px;
+  border: 0;
+  border-radius: $radius-button;
+  font-family: inherit;
+  font-size: $fs-sm;
+  font-weight: $fw-semibold;
+  cursor: pointer;
+  transition: $transition-button;
+  text-decoration: none;
+  white-space: nowrap;
+
+  &:disabled { opacity: 0.45; cursor: not-allowed; }
+
+  // ── Variants ────────────────────────────────
+  &--primary {
+    background: $gradient-brand-v;
+    color: #fff;
+    &:hover { box-shadow: $shadow-brand-md; transform: translateY(-1px); }
+  }
+
+  &--secondary {
+    background: #fff;
+    color: var(--text-primary);
+    border: 1px solid var(--border);
+    &:hover { border-color: var(--border-hover); background: var(--bg-hover); }
+  }
+
+  &--ghost {
+    background: transparent;
+    color: var(--brand);
+    &:hover { background: $color-brand-tint; }
+  }
+
+  &--danger {
+    background: var(--danger);
+    color: #fff;
+    &:hover { background: darken(#DC2626, 8%); }
+  }
+
+  // ── Sizes ───────────────────────────────────
+  &--sm { height: 36px; padding-inline: 12px; font-size: $fs-xs; }
+  &--lg { height: 52px; padding-inline: 24px; font-size: $fs-body; }
+
+  &--block { width: 100%; }
+}

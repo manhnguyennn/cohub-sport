@@ -1,0 +1,65 @@
+// ── Skeleton primitive + presets ──────────────────────────────
+.skeleton {
+  display: block;
+  background: linear-gradient(
+    90deg,
+    var(--bg-subtle) 25%,
+    var(--bg-hover) 37%,
+    var(--bg-subtle) 63%
+  );
+  background-size: 400% 100%;
+  animation: skeleton-shimmer 1.4s ease-in-out infinite;
+
+  &--sm   { border-radius: $radius-sm; }
+  &--md   { border-radius: $radius-md; }
+  &--lg   { border-radius: $radius-lg; }
+  &--full { border-radius: $radius-full; }
+}
+
+.skeleton-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: $radius-card;
+}
+
+.skeleton-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+
+  &__row {
+    display: grid;
+    grid-template-columns: 48px 1fr;
+    gap: 12px;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--divider);
+
+    &:last-child { border-bottom: 0; }
+  }
+
+  &__col {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+}
+
+.skeleton-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+@keyframes skeleton-shimmer {
+  0%   { background-position: 100% 50%; }
+  100% { background-position: 0 50%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton { animation: none; }
+}

@@ -1,0 +1,41 @@
+// Block: showcase (legacy preview wrapper)
+.showcase-banner {
+  background: var(--warning-light);
+  border-bottom: 1px solid var(--warning);
+  color: var(--warning);
+  text-align: center;
+  padding: 12px 24px;
+  font-size: $fs-sm;
+  font-weight: $fw-medium;
+
+  strong { color: $color-text-primary; }
+
+  a { color: var(--brand); margin-left: 8px; text-decoration: underline; }
+}
+
+.placeholder-page {
+  min-height: calc(100vh - var(--header-h) - 200px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 80px 24px;
+  gap: 16px;
+
+  &__icon {
+    width: 96px;
+    height: 96px;
+    border-radius: $radius-full;
+    background: $color-brand-tint;
+    color: var(--brand);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+  }
+
+  &__title { font-size: $fs-h1; font-weight: $fw-bold; }
+  &__subtitle { color: var(--text-secondary); max-width: 500px; }
+  &__actions { margin-top: 16px; display: flex; gap: 12px; }
+}

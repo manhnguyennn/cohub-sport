@@ -1,0 +1,1766 @@
+// ============================================================
+// HOME PAGE — Section blocks (legacy Features page port)
+//
+// Rewrite v2 (rico optimize — A):
+//  - Khử pattern calc(N / 1440 * 100vw) (31 chỗ) → clamp() + tokens
+//  - Container width 1320 → 1200 (khớp --container)
+//  - Magic numbers (285.438px, 320px, 312.48px) → CSS grid responsive
+//  - Section padding theo $spacing-section (80px / 48px / 40px)
+//  - Hover background-size:105% → transform: scale (animate transform thay vì layout)
+//  - Diagram bỏ 2 ô trống → grid 3 cột thực
+//  - Ponder 7 absolute bubble → CSS grid layout
+//  - Coach 2 Swiper rời → 1 grid 4-cột responsive (Swiper bị giữ trong .line cho tương thích)
+//
+// Class hierarchy giữ NGUYÊN để TSX không break.
+// ============================================================
+
+
+// ── Shared dropdown (Hero search) ─────────────────────────────
+.dropdownIcon {
+  cursor: pointer;
+  margin-left: 8px;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  width: 100%;
+  background: #141414;
+  border-radius: $radius-md;
+  overflow: hidden;
+  z-index: $z-dropdown;
+  box-shadow: var(--shadow-lg);
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.dropdown-item {
+  padding: 10px 14px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 14px;
+  transition: $transition-color;
+
+  &:hover { background: rgba(255, 255, 255, 0.08); }
+}
+
+
+// ── FEATURE HERO ──────────────────────────────────────────────
+.feature-hero {
+  &__container {
+    width: 100%;
+    min-height: clamp(480px, 60vh, 640px);
+    padding: clamp(40px, 6vw, 80px) $spacing-page-x;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    background:
+      linear-gradient(209deg, rgba(2, 12, 3, 0) 4.74%, #020c03 87.38%),
+      url("../../../public/images/feature.png") $color-dark-base center top 29% / cover no-repeat;
+
+    @include respond-from(md) {
+      padding-inline: $spacing-page-x-lg;
+      padding-block: clamp(60px, 7vw, 100px);
+    }
+  }
+
+  &__content {
+    width: 100%;
+    max-width: $container;
+    margin-inline: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: clamp(20px, 2.5vw, 32px);
+    margin-top: clamp(48px, 8vh, 100px);
+  }
+
+  &__title {
+    color: #fff;
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+    font-family: $font-sans;
+    font-size: clamp(32px, 5vw, 56px);
+    font-weight: $fw-semibold;
+    line-height: 1.07;
+    letter-spacing: -0.03em;
+    text-align: left;
+
+    .highlight { color: $color-accent-green-bright; }
+  }
+
+  &__subtitle {
+    color: #fff;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    font-family: $font-sans;
+    font-size: clamp(15px, 1.4vw, 18px);
+    font-weight: $fw-regular;
+    line-height: 1.55;
+    max-width: 60ch;
+  }
+
+  &__buttons {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+
+    .search-container {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-start;
+      gap: 12px;
+      width: 100%;
+      max-width: 640px;
+
+      @include respond-to(sm) { flex-direction: column; }
+    }
+
+    .search-bar {
+      flex: 1;
+      min-width: 0;
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 20px;
+      border-radius: $radius-pill;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(8.5px);
+
+      .search-icon { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
+      .search    { display: inline-flex; }
+      .divider   { display: none; }  // legacy artifact
+
+      .text {
+        flex: 1;
+        min-width: 0;
+        background: transparent;
+        border: none;
+        outline: none;
+        color: #fff;
+        font-family: $font-sans;
+        font-size: 15px;
+        font-weight: $fw-medium;
+
+        &::placeholder { color: rgba(255, 255, 255, 0.65); }
+      }
+    }
+
+    .search-button {
+      flex-shrink: 0;
+      cursor: pointer;
+      padding: 12px 24px;
+      border-radius: $radius-pill;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(8.5px);
+      white-space: nowrap;
+      color: #fff;
+      font-family: $font-sans;
+      font-size: 15px;
+      font-weight: $fw-medium;
+      transition: $transition-button;
+
+      &:hover {
+        border-color: #fff;
+        color: $color-ink;
+        background: #fff;
+      }
+    }
+
+    .dropdownIcon {
+      flex-shrink: 0;
+      fill: rgba(255, 255, 255, 0.5);
+      margin-left: auto;
+    }
+
+    .hero-category {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px 20px;
+      color: #fff;
+
+      .category-icon { display: inline-flex; }
+
+      .category-item {
+        color: #fff;
+        font-family: $font-sans;
+        font-size: 14px;
+        font-weight: $fw-medium;
+        line-height: 1.45;
+        cursor: pointer;
+        transition: $transition-color;
+        white-space: nowrap;
+
+        &:hover { color: $color-accent-green-bright; }
+      }
+    }
+  }
+}
+
+
+// ── Swiper pagination chung ───────────────────────────────────
+.swiper--pagination {
+  display: flex;
+  gap: 10px;
+  width: fit-content !important;
+  margin-inline: auto;
+
+  @include respond-to(md) { display: none; }
+
+  .swiper-pagination-bullet {
+    width: 12px;
+    height: 4px;
+    border-radius: 4px;
+    opacity: 0.2;
+    background: $color-ink;
+
+    &-active {
+      background: $color-accent-green-bright;
+      opacity: 1;
+    }
+  }
+}
+
+
+// ── EXPLORE — Sport categories ────────────────────────────────
+.explore-section {
+  &__page {
+    padding-block: $spacing-section;
+    @include respond-to(md) { padding-block: $spacing-section-sm; }
+    padding-inline: $spacing-page-x;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(28px, 3vw, 40px);
+
+    @include respond-from(md) { padding-inline: $spacing-page-x-lg; }
+  }
+
+  &__container {
+    width: 100%;
+    max-width: $container;
+    margin-inline: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  &__head {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  &__title {
+    color: $color-ink;
+    font-family: $font-sans;
+    font-size: var(--fs-h2);
+    font-weight: $fw-semibold;
+    line-height: $lh-h2;
+    letter-spacing: $ls-heading;
+  }
+
+  &__subtitle {
+    color: $color-text-secondary;
+    font-family: $font-sans;
+    font-size: $fs-body;
+    font-weight: $fw-regular;
+    line-height: $lh-body;
+
+    .highlight { font-weight: $fw-bold; color: $color-ink; }
+  }
+
+  &__line {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+
+  &__controller {
+    display: flex;
+    gap: 12px;
+
+    @include respond-to(md) { display: none; }
+  }
+
+  &__control-btn {
+    display: flex;
+    width: 44px;
+    height: 44px;
+    justify-content: center;
+    align-items: center;
+    border-radius: $radius-full;
+    border: 1px solid var(--border);
+    background: #fff;
+    cursor: pointer;
+    transition: $transition-button;
+
+    &:hover {
+      background: $color-ink;
+      svg path { fill: #fff; }
+    }
+    &:active { transform: scale(0.95); }
+  }
+
+  &__body {
+    width: 100%;
+    margin-top: 8px;
+
+    .sports__container {
+      width: 100%;
+      max-width: $container;
+      margin-inline: auto;
+    }
+
+    // Cards — Swiper slide (block riêng — không xung đột với .coach-section)
+    .sport-grid {
+      width: 100%;
+
+      .line {
+        width: 100%;
+      }
+
+      .card {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        width: clamp(240px, 22vw, 285px) !important;
+        aspect-ratio: 285 / 407;
+        border-radius: $radius-card;
+        background-size: cover !important;
+        background-position: center !important;
+        cursor: pointer;
+        overflow: hidden;
+        transition: transform $duration-normal $ease-expo-out;
+        padding: 14px;
+
+        &:hover {
+          transform: translateY(-4px);
+          .arrow { background: rgba(0, 0, 0, 0.85); transform: rotate(45deg); }
+        }
+
+        .overlay {
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+          padding: 14px;
+          border-radius: $radius-md;
+          border: 1px solid rgba(255, 255, 255, 0.10);
+          background: rgba(0, 0, 0, 0.45);
+          backdrop-filter: blur(10px);
+          color: #fff;
+          text-decoration: none;
+        }
+
+        .title-container {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          gap: 8px;
+
+          .title {
+            color: #fff;
+            font-family: $font-sans;
+            font-size: 18px;
+            font-weight: $fw-medium;
+            line-height: 1.3;
+            letter-spacing: -0.2px;
+          }
+
+          .arrow {
+            display: inline-flex;
+            width: 30px;
+            height: 30px;
+            justify-content: center;
+            align-items: center;
+            border-radius: $radius-full;
+            background: rgba(0, 0, 0, 0.6);
+            flex-shrink: 0;
+            transition: all $duration-normal $ease-expo-out;
+            svg { width: 18px; height: 18px; }
+          }
+        }
+
+        .role {
+          color: $color-accent-green-bright;
+          font-family: $font-sans;
+          font-size: 13px;
+          font-weight: $fw-medium;
+          line-height: 1.4;
+        }
+      }
+    }
+  }
+
+  // Bottom CTA
+  .show-all--btn,
+  & ~ .show-all--btn {
+    margin-inline: auto;
+    margin-top: 8px;
+  }
+}
+
+
+// ── PONDER — Bubbles (refactor absolute → grid) ──────────────
+.ponder-section {
+  background: var(--bg-base);
+
+  &__container {
+    width: 100%;
+    max-width: $container;
+    margin-inline: auto;
+    padding-inline: $spacing-page-x;
+    padding-block: $spacing-section;
+    @include respond-from(md) { padding-inline: $spacing-page-x-lg; }
+    @include respond-to(md)   { padding-block: $spacing-section-sm; }
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+  }
+
+  &__title {
+    color: $color-ink;
+    text-align: center;
+    font-family: $font-sans;
+    font-size: clamp(28px, 4vw, 48px);
+    font-weight: $fw-semibold;
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+    max-width: 900px;
+
+    .highlight { color: $color-danger; }
+  }
+
+  &__subtitle {
+    color: $color-text-secondary;
+    text-align: center;
+    font-family: $font-sans;
+    font-size: $fs-lead;
+    font-weight: $fw-regular;
+    line-height: $lh-lead;
+    max-width: 720px;
+  }
+
+  // Absolute layout "nghệ thuật" — 6 bubble scattered + 1 center (đè nhau)
+  // (mobile fallback: stack thẳng)
+  &__content {
+    width: 100%;
+    max-width: 1100px;
+    position: relative;
+    height: 460px;
+
+    @include respond-to(md) {
+      height: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .opacity-0 { display: none; }
+  }
+
+  &__item {
+    position: absolute;
+    display: inline-flex;
+    width: fit-content;
+    max-width: 420px;
+    padding: 20px 28px;
+    border-radius: $radius-md;
+    color: $color-ink;
+    font-family: $font-sans;
+    font-size: 22px;
+    font-weight: $fw-medium;
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+    box-shadow: var(--shadow-md);
+    opacity: 0;                          // is-visible → fade-in + slide
+    transition: opacity 600ms $ease-expo-out, transform 600ms $ease-expo-out;
+    transform: translateY(16px) scale(0.96);
+
+    &.red    { background: $color-danger;        color: #fff; }
+    &.yellow { background: $color-warning-light; color: $color-ink; }
+    &.gray   { background: var(--bg-subtle);     color: $color-ink; }
+
+    &.is-visible {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    // Vị trí tạo cảm giác đè nhau (bubble dịch sát vào tâm)
+    &.b1 { top:  20px;  left:  60px;  z-index: 50; }   // trên-trái
+    &.b2 { top: 130px;  left: 220px;  z-index: 52; }   // sát trên-phải tâm
+    &.b3 { top: 320px;  left:  40px;  z-index: 54; }   // dưới-trái
+    &.b4 { top:  40px;  right: 60px;  z-index: 51; }   // trên-phải
+    &.b5 { top: 200px;  right: 220px; z-index: 53; }   // sát trên-trái tâm
+    &.b6 { top: 320px;  right:  20px; z-index: 55; }   // dưới-phải
+
+    &.center {
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.92);
+      padding: 24px 40px;
+      font-size: 24px;
+      font-weight: $fw-semibold;
+      max-width: 480px;
+      z-index: 60;
+      box-shadow: 0 10px 32px rgba(220, 38, 38, 0.35), var(--shadow-md);
+
+      &.is-visible {
+        transform: translate(-50%, -50%) scale(1);
+      }
+    }
+
+    @include respond-to(lg) {
+      max-width: 360px;
+      font-size: 18px;
+      padding: 16px 22px;
+
+      &.b1 { left: 20px;   top:  20px; }
+      &.b2 { left: 160px;  top: 110px; }
+      &.b3 { left: 20px;   top: 280px; }
+      &.b4 { right: 20px;  top:  40px; }
+      &.b5 { right: 160px; top: 170px; }
+      &.b6 { right: 20px;  top: 290px; }
+      &.center {
+        font-size: 20px;
+        padding: 20px 32px;
+        max-width: 400px;
+      }
+    }
+
+    @include respond-to(md) {
+      position: static;
+      width: 100%;
+      max-width: 100%;
+      font-size: 17px;
+      padding: 16px 22px;
+      transform: none;
+
+      &.is-visible { transform: none; }
+
+      &.center {
+        top: auto;
+        left: auto;
+        transform: none;
+        order: 4;
+        max-width: 100%;
+        &.is-visible { transform: none; }
+      }
+    }
+  }
+
+  &__grid { display: none; }
+
+  // Marquee dải xanh
+  &__masonry {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 12px;
+    background: $color-accent-green-bright;
+    width: 100%;
+    height: 62px;
+    white-space: nowrap;
+
+    .text {
+      color: #031609;
+      font-family: $font-sans;
+      font-size: clamp(20px, 2vw, 28px);
+      font-weight: $fw-medium;
+      line-height: 1.3;
+      letter-spacing: -0.32px;
+      text-transform: uppercase;
+    }
+
+    .star-container {
+      width: 28px;
+      height: 28px;
+      flex-shrink: 0;
+      background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='33' viewBox='0 0 32 33' fill='none'><path d='M24.0479 15.9061C20.1219 15.5278 17.0153 12.4227 16.6375 8.50006L16 1.87646L15.3625 8.50006C14.9846 12.4234 11.8781 15.5285 7.95211 15.9061L1.33331 16.5431L7.95211 17.1802C11.8781 17.5585 14.9846 20.6635 15.3625 24.5862L16 31.2098L16.6375 24.5862C17.0153 20.6629 20.1219 17.5578 24.0479 17.1802L30.6666 16.5431L24.0479 15.9061Z' fill='%23031609'/></svg>") no-repeat center / contain;
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+
+// ── DIAGRAM — 3 cột thực (bỏ 2 ô trống) ──────────────────────
+.diagram-section {
+  background: $color-surface;
+
+  &__container {
+    width: 100%;
+    max-width: $container;
+    margin-inline: auto;
+    padding-inline: $spacing-page-x;
+    padding-block: $spacing-section;
+    @include respond-from(md) { padding-inline: $spacing-page-x-lg; }
+    @include respond-to(md)   { padding-block: $spacing-section-sm; }
+    display: flex;
+    flex-direction: column;
+    gap: clamp(28px, 3.5vw, 48px);
+    align-items: stretch;
+  }
+
+  &__title {
+    color: $color-ink;
+    text-align: center;
+    font-family: $font-sans;
+    font-size: clamp(28px, 3.8vw, 44px);
+    font-weight: $fw-semibold;
+    line-height: 1.2;
+    letter-spacing: -0.03em;
+
+    &.highlight { color: $color-accent-green; }
+  }
+
+  // GRID 3 cột: 1 card lớn bên trái + 2 card nhỏ stacked bên phải
+  &__body {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 20px;
+    align-items: stretch;
+
+    @include respond-to(lg) { grid-template-columns: 1fr; }
+
+    .half-1 {
+      cursor: pointer;
+      position: relative;
+      display: flex;
+      align-items: flex-end;
+      min-height: clamp(360px, 42vw, 560px);
+      border-radius: $radius-card-lg;
+      overflow: hidden;
+      background:
+        linear-gradient(199deg, rgba(2, 12, 3, 0) 26.95%, #020c03 87.19%),
+        url("../../../public/images/half.jpg") center 30% / cover no-repeat;
+
+      .overlay {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        padding: clamp(20px, 2.4vw, 32px);
+        width: 100%;
+        color: #fff;
+
+        .title {
+          color: #fff;
+          font-family: $font-sans;
+          font-size: clamp(28px, 3.5vw, 48px);
+          font-weight: $fw-semibold;
+          line-height: 1.1;
+          letter-spacing: -0.03em;
+        }
+
+        .subtitle-container {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          gap: 16px;
+
+          .content-container {
+            max-width: 60ch;
+
+            .subtitle {
+              color: #fff;
+              font-family: $font-sans;
+              font-size: clamp(14px, 1.2vw, 18px);
+              font-weight: $fw-regular;
+              line-height: 1.55;
+            }
+          }
+
+          .arrow {
+            cursor: pointer;
+            display: inline-flex;
+            width: 56px;
+            height: 56px;
+            justify-content: center;
+            align-items: center;
+            border-radius: $radius-full;
+            background: rgba(0, 0, 0, 0.6);
+            flex-shrink: 0;
+            transition: $transition-button;
+
+            &:hover { background: rgba(0, 0, 0, 0.85); transform: rotate(45deg); }
+            svg { width: 28px; height: 28px; }
+          }
+        }
+      }
+    }
+
+    .half-2 {
+      display: grid;
+      grid-template-rows: 1fr 1fr;
+      gap: 20px;
+
+      .item-container {
+        display: contents;
+      }
+
+      .item {
+        cursor: pointer;
+        position: relative;
+        display: flex;
+        align-items: flex-end;
+        min-height: clamp(180px, 20vw, 270px);
+        border-radius: $radius-card;
+        overflow: hidden;
+        background:
+          linear-gradient(199deg, rgba(2, 12, 3, 0) 26.95%, #020c03 87.19%),
+          url("../../../public/images/half.jpg") center 30% / cover no-repeat;
+        transition: transform $duration-normal $ease-expo-out;
+
+        &:hover { transform: translateY(-3px); }
+
+        .overlay {
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+          padding: 18px;
+          color: #fff;
+          width: 100%;
+
+          .title {
+            color: #fff;
+            font-family: $font-sans;
+            font-size: clamp(20px, 1.8vw, 26px);
+            font-weight: $fw-semibold;
+            line-height: 1.2;
+          }
+
+          .subtitle-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            gap: 12px;
+
+            .content-container {
+              max-width: 40ch;
+
+              .subtitle {
+                color: rgba(255, 255, 255, 0.85);
+                font-family: $font-sans;
+                font-size: 13px;
+                font-weight: $fw-regular;
+                line-height: 1.5;
+              }
+            }
+
+            .arrow {
+              cursor: pointer;
+              display: inline-flex;
+              width: 32px;
+              height: 32px;
+              justify-content: center;
+              align-items: center;
+              border-radius: $radius-full;
+              background: rgba(0, 0, 0, 0.6);
+              flex-shrink: 0;
+              svg { width: 16px; height: 16px; }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+
+// ── COACH — Featured coaches MARQUEE (full-bleed infinite) ──────
+.coach-section {
+  background: var(--bg-base);
+  padding-block: $spacing-section;
+  @include respond-to(md) { padding-block: $spacing-section-sm; }
+
+  // Container chỉ wrap phần header & CTA (width 1200)
+  &__container {
+    width: 100%;
+    max-width: $container;
+    margin-inline: auto;
+    padding-inline: $spacing-page-x;
+    @include respond-from(md) { padding-inline: $spacing-page-x-lg; }
+
+    &--header { margin-bottom: clamp(28px, 3vw, 40px); }
+    &--cta {
+      margin-top: clamp(28px, 3vw, 40px);
+      display: flex;
+      justify-content: center;
+    }
+  }
+
+  &__header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+
+    .title {
+      color: $color-ink;
+      font-family: $font-sans;
+      font-size: var(--fs-h2);
+      font-weight: $fw-semibold;
+      line-height: $lh-h2;
+      letter-spacing: $ls-heading;
+      flex: 1 1 320px;
+    }
+
+    .search-bar {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      width: 100%;
+      max-width: 480px;
+
+      .search {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 18px;
+        border-radius: $radius-pill;
+        border: 1px solid var(--border);
+        background: var(--bg-subtle);
+
+        .magnifier { display: inline-flex; align-items: center; flex-shrink: 0; }
+        .small     { display: none; }
+
+        input {
+          flex: 1;
+          min-width: 0;
+          color: $color-text-primary;
+          font-family: $font-sans;
+          font-size: 14px;
+          font-weight: $fw-medium;
+          background: transparent;
+          border: 0;
+          outline: none;
+
+          &::placeholder { color: $color-text-placeholder; }
+        }
+      }
+
+      .button {
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 20px;
+        border-radius: $radius-pill;
+        border: 1px solid $color-ink;
+        background: $color-ink;
+        color: #fff;
+        white-space: nowrap;
+        text-decoration: none;
+        font-family: $font-sans;
+        font-size: 14px;
+        font-weight: $fw-medium;
+        transition: $transition-button;
+
+        .text { color: inherit; }
+        .arrow svg path { fill: #fff; transition: fill $duration-fast; }
+
+        &:hover {
+          background: #fff;
+          color: $color-ink;
+          .arrow svg path { fill: $color-ink; }
+        }
+
+        @include respond-to(md) { display: none; }
+      }
+    }
+  }
+
+  // Marquee — full viewport width (vượt khỏi container)
+  &__marquee {
+    width: 100%;
+    overflow: hidden;
+    padding-block: 8px;     // chừa chỗ cho hover translateY(-4px) khỏi bị clip
+
+    .rfm-marquee-container {
+      overflow: visible !important;
+    }
+
+    .rfm-initial-child-container,
+    .rfm-marquee,
+    .rfm-child {
+      align-items: stretch;
+    }
+
+    // Mỗi card .rfm-child cần khoảng cách
+    .rfm-child {
+      padding-inline: 10px;
+    }
+
+    .card {
+      position: relative;
+      display: flex !important;
+      flex-direction: column;
+      justify-content: flex-end;
+      width: clamp(240px, 22vw, 300px);
+      aspect-ratio: 285 / 407;
+      padding: 14px;
+      border-radius: $radius-card;
+      border: 1px solid rgba(0, 0, 0, 0.06);
+      background-size: cover !important;
+      background-position: center;
+      cursor: pointer;
+      overflow: hidden;
+      transition: transform $duration-normal $ease-expo-out, box-shadow $duration-normal $ease-expo-out;
+      text-decoration: none;
+
+      &:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-lg);
+      }
+
+      .overlay {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        padding: 12px;
+        border-radius: $radius-md;
+        border: 1px solid rgba(255, 255, 255, 0.10);
+        background: rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(10px);
+
+        .title-container {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          gap: 8px;
+
+          .title {
+            color: #fff;
+            font-family: $font-sans;
+            font-size: 16px;
+            font-weight: $fw-semibold;
+            line-height: 1.3;
+            letter-spacing: -0.2px;
+          }
+
+          .arrow {
+            display: inline-flex;
+            width: 28px;
+            height: 28px;
+            justify-content: center;
+            align-items: center;
+            border-radius: $radius-full;
+            background: rgba(0, 0, 0, 0.6);
+            flex-shrink: 0;
+            transition: $transition-button;
+            svg { width: 16px; height: 16px; }
+          }
+        }
+
+        .role {
+          color: $color-accent-green-bright;
+          font-family: $font-sans;
+          font-size: 12px;
+          font-weight: $fw-medium;
+          line-height: 1.4;
+        }
+
+        .row {
+          display: flex;
+          align-items: center;
+          gap: 16px;
+
+          .item {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+
+            .icon {
+              width: 13px;
+              aspect-ratio: 1;
+              flex-shrink: 0;
+              fill: #F4B43F;
+            }
+
+            .number {
+              color: #fff;
+              font-family: $font-sans;
+              font-size: 11px;
+              font-weight: $fw-semibold;
+              line-height: 1.3;
+            }
+
+            .space-1px { margin-left: 1px; }
+          }
+        }
+      }
+    }
+  }
+
+  &__button {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 22px;
+    border-radius: $radius-pill;
+    border: 1px solid $color-ink;
+    background: transparent;
+    cursor: pointer;
+    text-decoration: none;
+    transition: $transition-button;
+
+    &:hover {
+      background: $color-ink;
+      .text  { color: #fff; }
+      .icon svg path { stroke: #fff; }
+    }
+
+    .text {
+      color: $color-ink;
+      font-family: $font-sans;
+      font-size: 14px;
+      font-weight: $fw-medium;
+      transition: color $duration-fast;
+    }
+
+    .icon {
+      display: inline-flex;
+      width: 18px;
+      height: 14px;
+      svg path { transition: stroke $duration-fast; }
+    }
+  }
+}
+
+.show-all--btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 24px;
+  border-radius: $radius-pill;
+  border: 1px solid $color-ink;
+  background: $color-ink;
+  color: #fff;
+  font-family: $font-sans;
+  font-size: 14px;
+  font-weight: $fw-medium;
+  text-decoration: none;
+  white-space: nowrap;
+  box-shadow: 0 8px 24px rgba(0, 80, 255, 0.12);
+  transition: $transition-button;
+
+  &:hover {
+    background: #fff;
+    color: $color-ink;
+    svg path { stroke: $color-ink; }
+  }
+
+  .sports__button-icon-container {
+    display: inline-flex;
+    align-items: center;
+  }
+}
+
+
+// ── ADVANTAGES — Comparison table (CSS grid thay <table><div>) ─
+.advantages-section {
+  background: var(--bg-base);
+
+  &__container {
+    width: 100%;
+    max-width: $container;
+    margin-inline: auto;
+    padding-inline: $spacing-page-x;
+    padding-block: $spacing-section;
+    @include respond-from(md) { padding-inline: $spacing-page-x-lg; }
+    @include respond-to(md)   { padding-block: $spacing-section-sm; }
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+
+    .title {
+      color: $color-ink;
+      text-align: center;
+      font-family: $font-sans;
+      font-size: clamp(28px, 3.8vw, 44px);
+      font-weight: $fw-semibold;
+      line-height: 1.15;
+      letter-spacing: -0.03em;
+    }
+
+    .subtitle {
+      max-width: 60ch;
+      color: $color-text-secondary;
+      text-align: center;
+      font-family: $font-sans;
+      font-size: $fs-lead;
+      font-weight: $fw-regular;
+      line-height: $lh-lead;
+    }
+
+    .table {
+      width: 100%;
+      margin-top: 32px;
+      border-radius: $radius-card;
+      overflow: hidden;
+      border: 1px solid var(--border);
+
+      // Override CSS reset cho thẻ <table> hợp lệ (markup TSX dùng <table><tbody><tr><td>)
+      table, tbody {
+        display: contents;
+      }
+      table {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        width: 100%;
+      }
+      tr {
+        display: contents;
+      }
+
+      .head-container {
+        display: contents;
+
+        .head-1, .head-2 {
+          padding: 18px 24px;
+          font-family: $font-sans;
+          font-size: 16px;
+          font-weight: $fw-semibold;
+          line-height: 1.4;
+        }
+
+        .head-1 {
+          background: #F7EBCF;
+          color: #785400;
+          border-bottom: 1px solid var(--border);
+        }
+
+        .head-2 {
+          background: #E2FFEC;
+          color: $color-ink;
+          border-bottom: 1px solid var(--border);
+          border-left: 1px solid var(--border);
+
+          .line {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+
+            .icon {
+              width: 24px;
+              height: 24px;
+              flex-shrink: 0;
+            }
+
+            .title {
+              color: $color-ink;
+              font-size: 18px;
+              font-weight: $fw-bold;
+              line-height: 1.3;
+            }
+          }
+        }
+      }
+
+      .body-container {
+        display: contents;
+
+        .body {
+          padding: 14px 24px;
+          border-top: 1px solid var(--divider);
+          display: flex;
+          align-items: flex-start;
+
+          &:nth-of-type(even) { border-left: 1px solid var(--divider); }
+
+          .line {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+
+            .x-icon, .v-icon {
+              flex-shrink: 0;
+              .ico { width: 20px; height: 20px; }
+              svg { width: 18px; height: 18px; }
+            }
+            .x-icon svg { fill: $color-danger; }
+            .v-icon svg { fill: $color-accent-green; }
+
+            .text {
+              color: $color-text-primary;
+              font-family: $font-sans;
+              font-size: 15px;
+              font-weight: $fw-regular;
+              line-height: 1.5;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  @include respond-to(md) {
+    &__content .table table {
+      grid-template-columns: 1fr;
+    }
+    &__content .table .head-container .head-2,
+    &__content .table .body-container .body:nth-of-type(even) {
+      border-left: 0;
+    }
+  }
+}
+
+
+// ── USAGE — 3 unique items, grid auto-fit ─────────────────────
+.usage-section {
+  background: $color-surface;
+
+  &__container {
+    width: 100%;
+    max-width: $container;
+    margin-inline: auto;
+    padding-inline: $spacing-page-x;
+    padding-block: $spacing-section;
+    @include respond-from(md) { padding-inline: $spacing-page-x-lg; }
+    @include respond-to(md)   { padding-block: $spacing-section-sm; }
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(40px, 5vw, 80px);
+    width: 100%;
+
+    .title {
+      color: $color-ink;
+      text-align: center;
+      font-family: $font-sans;
+      font-size: clamp(28px, 3.8vw, 44px);
+      font-weight: $fw-semibold;
+      line-height: 1.15;
+      letter-spacing: -0.03em;
+      max-width: 720px;
+
+      .highlight {
+        color: $color-accent-green;
+        font-size: inherit;
+        font-weight: inherit;
+        line-height: inherit;
+        letter-spacing: inherit;
+      }
+    }
+
+    // Grid auto-fit — không còn chia row cứng
+    .body-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+      width: 100%;
+
+      .body {
+        display: contents;
+      }
+
+      .item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 12px;
+        padding: 28px 24px;
+        background: var(--bg-elevated);
+        border-radius: $radius-card;
+        box-shadow: var(--shadow-sm);
+        transition: box-shadow $duration-normal $ease-expo-out;
+
+        &:hover { box-shadow: var(--shadow-md); }
+
+        .icon {
+          width: 38px;
+          height: 32px;
+          flex-shrink: 0;
+        }
+
+        .title {
+          color: $color-ink;
+          font-family: $font-sans;
+          font-size: clamp(18px, 1.6vw, 22px);
+          font-weight: $fw-semibold;
+          line-height: 1.3;
+          text-align: center;
+          max-width: none;
+        }
+
+        .subtitle {
+          color: $color-text-secondary;
+          font-family: $font-sans;
+          font-size: 14px;
+          font-weight: $fw-regular;
+          line-height: 1.55;
+          text-align: center;
+        }
+      }
+    }
+  }
+}
+
+
+// ── SPONSOR — Logo strip ─────────────────────────────────────
+.sponsor-section {
+  background: $color-surface;
+  display: flex;
+  padding-block: 32px;
+  padding-inline: $spacing-page-x;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+
+  .sponsor-name {
+    display: inline-flex;
+    align-items: center;
+    height: 42px;
+    margin-inline: 24px;
+    opacity: 0.85;
+    transition: opacity $duration-fast;
+
+    &:hover { opacity: 1; }
+  }
+}
+
+
+// ── CUSTOMER (Testimonials masonry) ──────────────────────────
+.customer-section {
+  &__container {
+    width: 100%;
+    max-width: $container;
+    margin-inline: auto;
+    padding-inline: $spacing-page-x;
+    padding-block: $spacing-section;
+    @include respond-from(md) { padding-inline: $spacing-page-x-lg; }
+    @include respond-to(md)   { padding-block: $spacing-section-sm; }
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    background: transparent;     // moved bg to wrapper
+
+    .title {
+      color: #fff;
+      font-family: $font-sans;
+      font-size: clamp(28px, 3.8vw, 44px);
+      font-weight: $fw-semibold;
+      line-height: 1.15;
+      letter-spacing: -0.03em;
+    }
+
+    .content {
+      margin-top: 40px;
+      width: 100%;
+    }
+  }
+
+  .my-masonry-grid {
+    display: flex;
+    margin: 0;
+    gap: clamp(16px, 2vw, 32px);
+  }
+
+  .my-masonry-grid_column { background-clip: padding-box; }
+
+  .my-item {
+    margin-bottom: 20px;
+    padding: 24px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: $radius-card;
+    transition: background $duration-fast;
+
+    &:hover { background: rgba(255, 255, 255, 0.06); }
+
+    .unit-container {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+
+      .title {
+        color: #fff;
+        font-family: $font-sans;
+        font-size: 16px;
+        font-weight: $fw-bold;
+        line-height: 1.5;
+      }
+
+      .subtitle {
+        color: rgba(255, 255, 255, 0.85);
+        font-family: $font-sans;
+        font-size: 15px;
+        font-weight: $fw-regular;
+        line-height: 1.6;
+      }
+
+      .line {
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+
+        .avatar-container {
+          width: 44px;
+          height: 44px;
+          border-radius: $radius-full;
+          object-fit: cover;
+          background: rgba(255, 255, 255, 0.1);
+        }
+
+        .name-container {
+          display: flex;
+          flex-direction: column;
+          color: #fff;
+          font-family: $font-sans;
+          font-size: 14px;
+          font-weight: $fw-medium;
+          line-height: 1.4;
+        }
+      }
+    }
+  }
+}
+
+
+// ── NEW YORK Swiper (review press strip) ─────────────────────
+.swiper--newyork {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-block: $spacing-section;
+  @include respond-to(md) { padding-block: $spacing-section-sm; }
+  padding-inline: $spacing-page-x;
+
+  &__container {
+    width: 100%;
+    max-width: 880px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    min-height: 240px;
+
+    .title {
+      width: 220px;
+      flex-shrink: 0;
+    }
+
+    .subtitle {
+      color: #fff;
+      text-align: center;
+      font-family: $font-sans;
+      font-size: clamp(18px, 2vw, 26px);
+      font-weight: $fw-medium;
+      line-height: 1.4;
+    }
+  }
+
+  &__pagination {
+    display: flex;
+    gap: 8px;
+    padding-block: 20px;
+    margin-inline: auto;
+    width: fit-content !important;
+
+    .swiper-pagination-bullet {
+      width: 10px;
+      height: 10px;
+      border-radius: $radius-full;
+      background: rgba(255, 255, 255, 0.4);
+      opacity: 1;
+      transition: $transition-color;
+
+      &-active { background: $color-danger; }
+    }
+  }
+
+  &__buttons {
+    display: flex;
+    padding-block: 16px;
+    justify-content: center;
+    width: 100%;
+  }
+}
+
+
+// ── QUESTION — FAQ accordion ─────────────────────────────────
+.question {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-block: $spacing-section;
+  @include respond-to(md) { padding-block: $spacing-section-sm; }
+  padding-inline: $spacing-page-x;
+
+  &__container {
+    width: 100%;
+    max-width: 1000px;
+
+    .title {
+      color: #fff;
+      font-family: $font-sans;
+      font-size: clamp(28px, 3.8vw, 44px);
+      font-weight: $fw-semibold;
+      line-height: 1.15;
+      letter-spacing: -0.03em;
+      margin-bottom: 12px;
+    }
+
+    .subtitle {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      width: 100%;
+    }
+  }
+
+  &__item {
+    cursor: pointer;
+    padding-block: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    color: #fff;
+    font-family: $font-sans;
+    font-size: 16px;
+    font-weight: $fw-semibold;
+    line-height: 1.5;
+
+    .question {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      padding: 0;
+      flex-direction: row;
+      gap: 12px;
+
+      svg {
+        transition: transform $duration-normal $ease-expo-out;
+        flex-shrink: 0;
+      }
+
+      &.open svg { transform: rotate(180deg); }
+    }
+
+    .answer {
+      max-height: 0;
+      overflow: hidden;
+      font-weight: $fw-regular;
+      color: rgba(255, 255, 255, 0.75);
+      transition: max-height $duration-slow $ease-expo-out, margin-top $duration-normal $ease-expo-out;
+
+      &.open {
+        max-height: 2000px;
+        margin-top: 12px;
+      }
+    }
+  }
+}
+
+
+// ── Generic stretched swiper-slide reset ─────────────────────
+.swiper-slide {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+  width: 100%;
+}
+
+
+// ── FIND MORE — 2 banner + bottom CTA ────────────────────────
+.find-more {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  &__container {
+    width: 100%;
+    max-width: $container;
+    margin-inline: auto;
+    padding-inline: $spacing-page-x;
+    padding-block: clamp(32px, 4vw, 48px);
+    @include respond-from(md) { padding-inline: $spacing-page-x-lg; }
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+
+    @include respond-to(md) { grid-template-columns: 1fr; }
+
+    // banner đơn (banner-row CTA) chiếm full
+    &:has(.find-more__banner) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__item {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 14px;
+    min-height: clamp(280px, 32vw, 440px);
+    padding: 28px;
+    border-radius: $radius-card-lg;
+    background-size: cover !important;
+    background-position: center !important;
+    background-color: #2D2E26;
+    transition: transform $duration-normal $ease-expo-out;
+
+    &:hover { transform: translateY(-3px); }
+
+    .title {
+      color: #fff;
+      font-family: $font-sans;
+      font-size: clamp(20px, 2vw, 26px);
+      font-weight: $fw-semibold;
+      line-height: 1.25;
+    }
+
+    .subtitle {
+      color: rgba(255, 255, 255, 0.85);
+      font-family: $font-sans;
+      font-size: 14px;
+      font-weight: $fw-regular;
+      line-height: 1.55;
+      max-width: 50ch;
+    }
+
+    .button {
+      align-self: flex-start;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      border-radius: $radius-sm;
+      border: 1px solid #fff;
+      background: transparent;
+      color: #fff;
+      font-family: $font-sans;
+      font-size: 14px;
+      font-weight: $fw-semibold;
+      text-decoration: none;
+      transition: $transition-button;
+
+      &:hover {
+        background: #fff;
+        color: $color-ink;
+      }
+    }
+  }
+
+  &__banner {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    padding-block: clamp(32px, 4vw, 48px);
+
+    .title {
+      color: #fff;
+      text-align: center;
+      font-family: $font-sans;
+      font-size: clamp(28px, 3.8vw, 44px);
+      font-weight: $fw-semibold;
+      line-height: 1.15;
+      letter-spacing: -0.03em;
+
+      .green { color: $color-accent-green-bright; }
+    }
+
+    .button {
+      cursor: pointer;
+      display: inline-flex;
+      padding: 14px 32px;
+      border-radius: $radius-pill;
+      background: $color-accent-green;
+      color: #fff;
+      text-decoration: none;
+      font-family: $font-sans;
+      font-size: 15px;
+      font-weight: $fw-semibold;
+      transition: $transition-button;
+
+      &:hover { background: #28925c; transform: translateY(-1px); }
+    }
+  }
+}
+
+
+// ── Background wrapper (used by Customers/NewYork/Question/FindMore) ──
+.background--black {
+  background: $color-dark-base;
+  color: var(--text-inverse);
+}
+
+.rfm-marquee { display: flex; gap: 0; }
+
+
+// ── Footer (legacy) — Footer mới ở blocks/_footer.scss ────────
+.footer--section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 60px;
+  padding-bottom: 80px;
+  border-top: 1px solid var(--border);
+  background: #fff;
+  box-shadow: var(--shadow-sm);
+
+  &__header {
+    width: 100%;
+    max-width: $container;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    padding-inline: $spacing-page-x;
+    @include respond-from(md) { padding-inline: $spacing-page-x-lg; }
+
+    .item {
+      display: flex;
+      flex-direction: column;
+      padding: 24px 0 0 24px;
+
+      &.item-1 .title {
+        font-family: $font-sans;
+        font-size: 18px;
+        font-weight: $fw-semibold;
+        line-height: 1.5;
+        background: $gradient-footer;
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      &.item-2 {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 20px;
+      }
+    }
+  }
+}
