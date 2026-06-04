@@ -14,3 +14,4 @@ export { default as OtpInput } from './OtpInput';
 export { default as Stepper } from './Stepper';
 export { default as MobileStickyBar } from './MobileStickyBar';
 export { default as MobileDrawer } from './MobileDrawer';
+export { default as MobileFilterWrapper } from './MobileFilterWrapper';

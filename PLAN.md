@@ -35,7 +35,7 @@
 | **H1** Landing → Search → Coach detail → Book → Payment → Confirmation | Learner happy path | ✅ DONE | 2 |
 | **H2** Landing → Course → Detail → Enroll → Payment → My courses | Course flow | ✅ DONE | 3 |
 | **H3** Sign up → Coach onboarding 5 bước → Submit → Approval | Coach onboarding | ✅ DONE | 4 |
-| **H4** Coach dashboard → Tạo course → Public | Coach side dynamic | 🔴 0% | 5 |
+| **H4** Coach dashboard → Tạo course → Public | Coach side dynamic | ✅ DONE | 5 |
 | **H5** Coach inbox booking → Confirm | Coach ops | 🔴 0% | 6 |
 | **H6** Admin queue → Approve coach | Admin quality control | 🔴 0% | 6 |
 | **Polish + Deploy** | a11y, perf, demo script, Netlify | 🔴 0% | 7-8 |
@@ -206,6 +206,39 @@ Xem §2.2.
 
 ---
 
+### ✅ Sprint chen — Lịch dạy mở (Open Sessions) — **DONE**
+
+**Vì:** Concept booking trước đây thiếu chiều "coach pre-publish từng buổi cụ thể với giá riêng". User confirm: muốn thay thế custom slot picker bằng catalog buổi do coach đăng trước.
+
+**UX writing key:** **Lịch dạy mở** (vs "Khoá học" gói nhiều buổi).
+
+**Data model mới (`@app-types/openSession`):**
+- `OpenSession` — ngày-giờ + giá + sĩ số + level + location + note, status open/full/cancelled/completed
+- Mock + service + recurring expansion (T2+T4 trong 4 tuần → 12 buổi tự động)
+
+**Coach side:**
+- `/coach/sessions` — list 3 tab (Sắp tới / Đã xong / Tất cả), card có capacity bar + price + huỷ
+- `/coach/sessions/new` — wizard 3 bước (Đơn lẻ vs Lặp lại → Thông tin+Lịch → Giá+Preview)
+- `/coach/calendar` — tích hợp slot màu cam "Lịch mở" / "Đã đầy"
+- `/coach/dashboard` — quick-nav strip 4 module (Lịch mở · Khoá học · Lịch tổng · Booking)
+
+**Learner side:**
+- `/coaches/[id]` — section "Lịch dạy mở" full-width, card có time + chips (1-1/Nhóm, level, location) + Đặt buổi này
+- `/booking/session/[id]` — confirm session đã chọn (slot read-only) + note/health + promo + checkout
+- `/booking/new?coachId=...` legacy → redirect coach detail #open-sessions
+- Mobile sticky CTA: trỏ session gần nhất có giá thực
+
+**Integration:**
+- CheckoutClient bump bookedCount qua `POST /open-sessions/:id/book` sau khi tạo booking
+- Header coach quick-links: Dashboard / Lịch dạy mở / Khoá học / Lịch tổng quan
+- BookingDraft thêm field `openSessionId` tracking
+
+**Routes mới:** `coachSessions`, `coachSessionNew`, `coachSessionEdit(id)`, `bookingSession(id)`
+
+**SCSS:** _coach-open-sessions.scss (block riêng), bổ sung cms-tabs/cms-session-card/cms-preview-list/cms-quicknav/cms-banner__actions vào _coach-cms.scss, booking-form__coach-note/__warn vào _booking.scss
+
+---
+
 ### 🔴 Tuần 6 — Coach Operations + Admin (H5 + H6)
 
 **Output:** Coach confirm booking real-time, Admin duyệt coach.
@@ -330,7 +363,21 @@ Xem §2.2.
 
 > Khi bắt đầu session mới, đọc section này trước.
 
-**Đang ở:** Cuối tuần 4 — H3 Coach onboarding flow complete, build pass.
+**Đang ở:** Cuối tuần 5 — H4 Coach CMS (dashboard + courses + course wizard + calendar) complete, build pass.
+
+**Đã build tuần 5:**
+- Types: `CoachDashboardStats`, `RevenuePoint`, `RecentBookingItem`, `InboxThreadPreview`, `CoachDashboard`
+- Mock: `dashboard.mock.ts` cho persona Khoa — GMV 24.75tr/tháng (+18%), 23 buổi (+12%), 7 học viên mới (+40%), rating 4.9, revenue 30d trend tăng 3.5%/day, 5 recent bookings, 3 inbox threads (2 unread)
+- Service: `dashboardService.coachOverview()`
+- Routes mới: `ROUTES.coachDashboard / coachCourses / coachCourseNew / coachCalendar / coachBookings`
+- Routes update: `coachCms` redirect `/coach/dashboard` (legacy `/coach-cms` redirect sang)
+- Components:
+  - `CoachDashboardClient` — banner welcome, 4 stat cards với delta %, **Recharts AreaChart 30d** với gradient + tooltip VND, recent bookings table 5 dòng với badge status, inbox preview 3 thread (unread dot xanh)
+  - `CoachCoursesClient` — grid auto-fill 280px, `CoachCourseCard` với status badge (published/full/started), enrollment count
+  - `CourseCreateWizard` 5 bước — Step1 ScheduleType (FIXED/FLEXIBLE visual cards), Step2 Info (title + sport + level chips + description 50-2000), Step3 Schedule (sessions + duration chips + startDate + weekday toggle hoặc flexible validity), Step4 Price (commission preview "Bạn nhận 1.275.000đ" + maxParticipants chips), Step5 Cover (file upload + course-card preview)
+  - `CoachCalendarClient` — toolbar nav tuần trước/sau, view toggle Tuần/Tháng (Month disabled v1), grid 8-col × 7-row time slots, slot color code (available/booked/blocked/course/past), click slot → toggle blocked với toast
+- SCSS `_coach-cms.scss` (~570 dòng): `.coach-cms`, `.cms-banner`, `.cms-stats`, `.cms-stat`, `.cms-card`, `.cms-chart`, `.cms-grid-2`, `.cms-table`, `.cms-badge`, `.cms-inbox`, `.cms-course-list/card`, `.cms-calendar`, `.cms-calendar-toolbar`
+- Recharts installed
 
 **Đã build tuần 4:**
 - Types: `CoachOnboardingDraft` với 5 partial step, `OnboardingStatus` state machine (signed_up → profile_draft → pending_basic_review → active_unverified → pending_verification → active_verified), `PiiDetection`
@@ -348,10 +395,10 @@ Xem §2.2.
 **Next session làm gì:**
 1. Mở `PLAN.md` này
 2. Chạy `npx tsc --noEmit && npx next lint` để confirm clean baseline
-3. Bắt đầu **Tuần 5 — Coach Dashboard + Course Manager (H4)** theo §3 tuần 5
-4. Task #1 sẽ build: `/coach/dashboard` với 4 stat cards + Recharts revenue graph
+3. Bắt đầu **Tuần 6 — Coach Operations + Admin (H5 + H6)** theo §3 tuần 6
+4. Task #1 sẽ build: `/coach/bookings` inbox với tabs Chờ xác nhận / Sắp tới / Đã hoàn thành
 
-**Trigger câu lệnh đề xuất:** "tiếp tục tuần 5"
+**Trigger câu lệnh đề xuất:** "tiếp tục tuần 6"
 
 ---
 
@@ -368,5 +415,5 @@ Xem §2.2.
 
 ---
 
-**Last updated:** 2026-06-02 (tuần 4 done)
-**Next milestone:** Tuần 5 — H4 Coach Dashboard + Course Manager (/coach/dashboard, /coach/courses, /coach/courses/new, /coach/calendar)
+**Last updated:** 2026-06-02 (tuần 5 done)
+**Next milestone:** Tuần 6 — H5 Coach Operations (/coach/bookings inbox) + H6 Admin (/admin dashboard + /admin/reviews queue)

@@ -69,6 +69,7 @@
     margin-inline: auto;
     padding: clamp(20px, 3vw, 40px) $spacing-page-x;
     @include respond-from(md) { padding-inline: $spacing-page-x-lg; }
+    @include respond-to(sm)   { padding: 16px 16px 96px; } // chừa chỗ cho sticky footer
   }
 
   &__panel {
@@ -77,6 +78,12 @@
     border: 1px solid var(--border);
     border-radius: $radius-card-lg;
     padding: clamp(20px, 3vw, 32px);
+
+    @include respond-to(sm) {
+      margin-block: 16px;
+      padding: 16px;
+      border-radius: $radius-card;
+    }
   }
 
   &__footer {
@@ -87,11 +94,29 @@
     padding-top: 16px;
     border-top: 1px solid var(--divider);
     flex-wrap: wrap;
+
+    @include respond-to(sm) {
+      // Mobile: sticky bottom — luôn thấy nút Next
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: $z-sticky;
+      background: var(--bg-elevated);
+      padding: 10px 16px;
+      padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+      border-top: 1px solid var(--border);
+      box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.06);
+      flex-wrap: nowrap;
+
+      .btn { min-height: 44px; }
+    }
   }
 
   &__footer-right {
     display: flex;
-    gap: 10px;
+    gap: 8px;
+    flex-shrink: 0;
   }
 }
 

@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { useTransition, useState, useEffect } from 'react';
-import { EmptyState } from '@components/ui';
+import { EmptyState, MobileFilterWrapper } from '@components/ui';
 import { ROUTES } from '@config/routes';
 import { formatVND, formatDate } from '@lib/date';
 import { cn } from '@lib/cn';
@@ -100,6 +100,7 @@ export default function CourseListClient({ sports, initialResult, initialQuery }
       <div className="courses-list">
         <div className="courses-list__container">
           <div className="courses-list__grid">
+            <MobileFilterWrapper title="Bộ lọc khoá học">
             <aside className="courses-filter" aria-label="Bộ lọc">
               <div className="courses-filter__head">
                 <span>Bộ lọc</span>
@@ -148,6 +149,7 @@ export default function CourseListClient({ sports, initialResult, initialQuery }
                 </label>
               </div>
             </aside>
+            </MobileFilterWrapper>
 
             <div className="courses-list__content">
               <div className="courses-list__header">

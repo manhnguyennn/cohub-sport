@@ -1,0 +1,149 @@
+// ── Coach detail: Lịch dạy mở section ──────────────────────────
+//
+// Hiển thị danh sách OpenSession trên trang /coaches/[id].
+// Mobile-first: cards stack 1 cột → grid 2 cột ở ≥ md → 3 cột ≥ lg.
+
+.coach-section__head {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 18px;
+}
+
+.coach-section__sub {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.coach-open-sessions {
+  &__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+
+    @include respond-from(md) { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+    @include respond-from(lg) { grid-template-columns: repeat(3, 1fr); }
+  }
+}
+
+.open-session-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: $radius-card;
+  transition: all $duration-fast;
+
+  &:hover:not(.open-session-card--full) {
+    border-color: #F79126;
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+  }
+
+  &--full { opacity: 0.7; }
+
+  &__time-block {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding-bottom: 10px;
+    border-bottom: 1px dashed var(--border);
+  }
+
+  &__time {
+    font-size: 15px;
+    font-weight: $fw-semibold;
+    color: #C95E07;        // amber theme phù hợp với palette coach-detail
+  }
+
+  &__duration {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+  }
+
+  &__title {
+    font-size: 15px;
+    font-weight: $fw-semibold;
+    color: var(--text-primary);
+    margin: 0;
+    line-height: 1.4;
+  }
+
+  &__chips {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  &__chip {
+    display: inline-block;
+    padding: 3px 9px;
+    border-radius: $radius-pill;
+    background: rgba(247, 145, 38, 0.12);
+    color: #C95E07;
+    font-size: 11.5px;
+    font-weight: $fw-semibold;
+
+    &--muted {
+      background: var(--bg-subtle);
+      color: var(--text-secondary);
+      font-weight: $fw-medium;
+    }
+  }
+
+  &__note {
+    margin: 0;
+    font-size: 12.5px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    padding: 8px 10px;
+    background: var(--bg-subtle);
+    border-radius: $radius-sm;
+  }
+
+  &__foot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    padding-top: 8px;
+    border-top: 1px dashed var(--border);
+  }
+
+  &__price-block {
+    display: flex;
+    align-items: baseline;
+    gap: 2px;
+  }
+
+  &__price {
+    font-size: 17px;
+    font-weight: $fw-bold;
+    color: var(--brand);
+  }
+
+  &__full-badge {
+    padding: 6px 14px;
+    background: var(--bg-subtle);
+    color: var(--text-muted);
+    border-radius: $radius-pill;
+    font-size: 12.5px;
+    font-weight: $fw-semibold;
+  }
+
+  &__remaining {
+    font-size: 11.5px;
+    color: var(--text-muted);
+    text-align: right;
+  }
+}

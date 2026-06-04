@@ -5,7 +5,7 @@ import CoachFilterSidebar from '@features/coaches/components/CoachFilterSidebar'
 import CoachListHeader from '@features/coaches/components/CoachListHeader';
 import CoachListItem from '@features/coaches/components/CoachListItem';
 import CoachCtaStrip from '@features/coaches/components/CoachCtaStrip';
-import { EmptyState } from '@components/ui';
+import { EmptyState, MobileFilterWrapper } from '@components/ui';
 import type { CoachListQuery, Gender, TeachingFormat } from '@app-types/coach';
 
 export const metadata = { title: 'Tìm HLV' };
@@ -49,7 +49,9 @@ export default async function CoachesPage({ searchParams }: PageProps) {
       <div className="coach-list">
         <div className="coach-list__container">
           <div className="coach-list__grid">
-            <CoachFilterSidebar sports={sports} />
+            <MobileFilterWrapper title="Bộ lọc HLV">
+              <CoachFilterSidebar sports={sports} />
+            </MobileFilterWrapper>
 
             <div className="coach-list__content">
               <CoachListHeader total={result.total} />

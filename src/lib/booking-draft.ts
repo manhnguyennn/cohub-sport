@@ -8,6 +8,8 @@ const KEY = 'cohub:booking_draft';
 
 export type BookingDraft = {
   coachId: string;
+  /** Tracking — booking nào đến từ Lịch dạy mở thì có sessionId */
+  openSessionId?: string;
   sportSlug: string;
   startsAt: string;
   durationMinutes: number;

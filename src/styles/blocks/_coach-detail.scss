@@ -159,6 +159,50 @@ $divider-91: #E5E7EB;
 
     &:hover { background: $color-white-alpha-20; }
   }
+
+  // ── Mobile responsive ────────────────────────────────────
+  @include respond-to(md) {
+    &__cover { height: 160px; }
+
+    &__container { padding-inline: 16px; }
+
+    &__bar {
+      // Mobile: avatar nằm trên + name + meta dưới (vertical), không overlap cover
+      margin-top: -40px;
+      gap: 12px;
+      padding-bottom: 16px;
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+    &__avatar {
+      width: 80px;
+      height: 80px;
+      border-width: 3px;
+    }
+
+    &__main {
+      min-width: 0;
+      width: 100%;
+      padding-bottom: 0;
+    }
+
+    &__name { font-size: 18px; }
+    &__role { font-size: 12.5px; }
+
+    &__meta {
+      gap: 10px;
+      font-size: 12.5px;
+    }
+
+    &__actions {
+      align-self: flex-end;
+      padding-bottom: 0;
+      margin-top: -8px;
+    }
+
+    &__icon-btn { width: 32px; height: 32px; }
+  }
 }
 
 // ── Tabs ────────────────────────────────────────────────────
@@ -227,7 +271,15 @@ $divider-91: #E5E7EB;
     gap: 32px;
     margin-bottom: 40px;
 
-    @include respond-to(lg) { grid-template-columns: 1fr; }
+    @include respond-to(lg) { grid-template-columns: 1fr; gap: 24px; }
+    @include respond-to(md) { margin-bottom: 20px; gap: 16px; }
+  }
+
+  // Mobile: giảm padding-block + padding ngang container
+  @include respond-to(md) {
+    padding-block: 16px;
+
+    &__container { padding-inline: 16px; }
   }
 
   &__main {

@@ -12,6 +12,7 @@ import { formatNextSlot } from '@lib/date';
 import { formatMoney } from '@lib/format';
 import { clearBookingDraft, readBookingDraft, type BookingDraft } from '@lib/booking-draft';
 import { bookingService } from '@services/booking.service';
+import { openSessionService } from '@services/openSession.service';
 import { paymentService } from '@services/payment.service';
 import { useAuth } from '@hooks/useAuth';
 import { useDemoMode } from '@contexts/DemoModeContext';
@@ -81,6 +82,15 @@ export default function CheckoutClient() {
         promoCode: draft.promoCode,
         userId: user?.id,
       });
+
+      // 1b. Nếu booking đến từ "Lịch dạy mở" → tăng bookedCount của session
+      if (draft.openSessionId) {
+        await openSessionService.book(draft.openSessionId).catch(() => {
+          // Booking đã tạo thành công, không rollback ở mock — log warning tới console.
+          // eslint-disable-next-line no-console
+          console.warn('[checkout] Không thể đồng bộ bookedCount cho session', draft.openSessionId);
+        });
+      }
 
       // 2. Charge payment (mock)
       await paymentService.charge({

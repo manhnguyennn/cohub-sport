@@ -77,7 +77,8 @@
     gap: 32px;
     align-items: start;
 
-    @include respond-to(lg) { grid-template-columns: 1fr; }
+    @include respond-to(lg) { grid-template-columns: 1fr; gap: 16px; }
+    @include respond-to(md) { gap: 12px; }
   }
 }
 
@@ -323,6 +324,8 @@
 
   @include respond-to(md) {
     grid-template-columns: 1fr;
+    gap: 12px;
+    padding: 12px;
   }
 
   &__media {

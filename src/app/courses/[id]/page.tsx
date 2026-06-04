@@ -3,7 +3,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { courseService } from '@services/course.service';
 import { ROUTES } from '@config/routes';
-import { formatDate, formatTime } from '@lib/date';
+import { formatDate, formatTime, formatVND } from '@lib/date';
+import { Button, MobileStickyBar } from '@components/ui';
 import CourseEnrollCta from '@features/courses/CourseEnrollCta';
 import type { CourseSession } from '@app-types/course';
 
@@ -29,8 +30,12 @@ export default async function CourseDetailPage({ params }: PageProps) {
   }
   const sessions = await courseService.sessions(course.id).catch<CourseSession[]>(() => []);
 
+  const isFull = course.availableSeats === 0 || course.status === 'full';
+  const isStarted = course.status === 'started';
+  const canEnroll = !isFull && !isStarted && course.status === 'published';
+
   return (
-    <div className="course-detail-page">
+    <div className="course-detail-page bottom-safe-pad">
       {/* Hero */}
       <section className="course-detail-hero">
         <div className="course-detail-hero__cover">
@@ -124,12 +129,33 @@ export default async function CourseDetailPage({ params }: PageProps) {
             )}
           </main>
 
-          {/* Right sticky CTA (client component vì có onClick toast) */}
-          <aside className="course-detail-aside">
+          {/* Right sticky CTA — desktop only */}
+          <aside className="course-detail-aside hide-mobile">
             <CourseEnrollCta course={course} />
           </aside>
         </div>
       </div>
+
+      {/* Mobile sticky enroll bar */}
+      <MobileStickyBar
+        info={
+          <>
+            <span className="mobile-sticky-bar__label">Trọn gói {course.totalSessions} buổi</span>
+            <span className="mobile-sticky-bar__price">{formatVND(course.price.amount)}</span>
+          </>
+        }
+        action={
+          canEnroll ? (
+            <Button href={ROUTES.courseEnroll(course.id)} variant="primary" size="md">
+              Đăng ký
+            </Button>
+          ) : (
+            <Button variant="secondary" size="md" disabled>
+              {isFull ? 'Đã đầy' : isStarted ? 'Đã bắt đầu' : 'N/A'}
+            </Button>
+          )
+        }
+      />
     </div>
   );
 }

@@ -30,8 +30,21 @@ export const ROUTES = {
   coachOnboardingPreview: '/coach/onboarding/preview',
   coachVerification: '/coach/verification',
 
-  // Coach CMS
-  coachCms: '/coach-cms',
+  // Coach CMS (sprint Tuần 5 đã build)
+  coachCms: '/coach/dashboard',
+  coachDashboard: '/coach/dashboard',
+  coachCourses: '/coach/courses',
+  coachCourseNew: '/coach/courses/new',
+  coachCalendar: '/coach/calendar',
+  coachBookings: '/coach/bookings',
+
+  // Lịch dạy mở (Open Sessions) — coach pre-publish single bookable sessions
+  coachSessions: '/coach/sessions',
+  coachSessionNew: '/coach/sessions/new',
+  coachSessionEdit: (id: string) => `/coach/sessions/${id}/edit`,
+
+  // Learner-facing booking — chọn 1 lịch coach đã mở
+  bookingSession: (sessionId: string) => `/booking/session/${sessionId}`,
   coachCmsProfile: '/coach-cms/profile',
   coachCmsSchedule: '/coach-cms/schedule',
   coachCmsBookings: '/coach-cms/bookings',

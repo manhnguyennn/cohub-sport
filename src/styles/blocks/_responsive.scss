@@ -162,6 +162,25 @@
   }
 }
 
+// Wrapper hide/show — keep desktop sidebar visible, drawer wrapper visible only mobile
+.mobile-filter-wrapper {
+  &__desktop {
+    @include respond-to(md) { display: none; }
+  }
+
+  &__sheet-body {
+    // Reset margin/padding của sidebar bên trong drawer body
+    .coach-filter,
+    .courses-filter {
+      background: transparent !important;
+      border: 0 !important;
+      padding: 0 !important;
+      box-shadow: none !important;
+      position: static !important;
+    }
+  }
+}
+
 .mobile-drawer {
   // Hidden by default — visible when open via class
   @include respond-from(md) { display: none !important; }

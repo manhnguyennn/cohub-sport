@@ -1,13 +1,6 @@
-import PlaceholderPage from '@components/layout/PlaceholderPage';
+import { redirect } from 'next/navigation';
 
-export const metadata = { title: 'CMS cho HLV' };
-
-export default function CoachCmsPage() {
-  return (
-    <PlaceholderPage
-      icon="📊"
-      title="CMS cho HLV"
-      description="Dashboard quản lý profile, lịch dạy, booking, thu nhập. Sẽ có sidebar layout riêng."
-    />
-  );
+// Legacy path — đã chuyển sang /coach/dashboard
+export default function LegacyCoachCmsRedirect() {
+  redirect('/coach/dashboard');
 }

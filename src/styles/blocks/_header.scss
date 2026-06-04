@@ -94,6 +94,8 @@
       border-color: var(--brand);
       background: $color-brand-tint;
     }
+
+    @include respond-to(sm) { display: none; }   // Ctrl+Shift+D still works
   }
 
   // User chip + dropdown menu
@@ -147,7 +149,8 @@
     position: absolute;
     top: calc(100% + 8px);
     right: 0;
-    width: 260px;
+    width: min(260px, calc(100vw - 32px));
+    max-width: 260px;
     background: var(--bg-elevated);
     border: 1px solid var(--border);
     border-radius: $radius-md;
@@ -208,11 +211,17 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
+    align-items: center;
     gap: 4px;
-    width: 32px;
-    height: 32px;
+    width: 40px;
+    height: 40px;
     background: transparent;
     border: 0;
+    cursor: pointer;
+    border-radius: $radius-md;
+    transition: background $duration-fast;
+
+    &:hover { background: var(--bg-hover); }
 
     @include respond-from(lg) { display: none; }
 
@@ -225,37 +234,224 @@
     }
   }
 
+  // Hide auth action buttons on mobile (moved into mobile menu)
+  &__auth-actions {
+    display: flex;
+    gap: 8px;
+  }
+
+  // Mobile: ẩn name/role label trên user chip
+  @include respond-to(md) {
+    &__user-name,
+    &__user-role { display: none; }
+
+    &__user {
+      padding: 4px;
+      gap: 0;
+    }
+  }
+
   &__mobile-menu {
     position: fixed;
-    inset: var(--header-h) 0 0 0;
-    background: var(--bg-base);
+    top: var(--header-h);
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: calc(100vh - var(--header-h));
+    width: 100%;
+    background: var(--bg-elevated);
     transform: translateY(-100%);
-    transition: transform $duration-slow $ease-expo-out;
+    visibility: hidden;
+    opacity: 0;
     pointer-events: none;
-    padding: 24px;
+    transition:
+      transform $duration-slow $ease-expo-out,
+      visibility 0s linear $duration-slow,
+      opacity $duration-fast linear;
+    padding: 20px 16px 32px;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 16px;
     z-index: $z-header - 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: calc(32px + env(safe-area-inset-bottom, 0px));
 
     &--open {
       transform: translateY(0);
+      visibility: visible;
+      opacity: 1;
       pointer-events: auto;
+      box-shadow: 0 6px 32px rgba(0, 0, 0, 0.1);
+      transition:
+        transform $duration-slow $ease-expo-out,
+        visibility 0s linear 0s,
+        opacity $duration-fast linear;
     }
 
     @include respond-from(lg) { display: none; }
   }
 
+  &__mobile-backdrop {
+    position: fixed;
+    top: var(--header-h);
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(13, 10, 44, 0.35);
+    z-index: $z-header - 2;
+    animation: header-menu-in $duration-fast linear;
+
+    @include respond-from(lg) { display: none; }
+  }
+
+  // User profile section trên mobile menu
+  &__mobile-user {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    background: $color-brand-tint;
+    border-radius: $radius-card;
+
+    img { border-radius: $radius-full; object-fit: cover; }
+  }
+
+  &__mobile-user-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+    flex: 1;
+
+    strong {
+      font-size: 14px;
+      color: var(--text-primary);
+      font-weight: $fw-semibold;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    small {
+      font-size: 12px;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .header__user-role {
+      align-self: flex-start;
+      margin-top: 4px;
+      padding: 2px 8px;
+      background: rgba(255, 255, 255, 0.6);
+      border-radius: $radius-xs;
+      font-size: 10px;
+      letter-spacing: 0.06em;
+      color: var(--brand);
+      text-transform: uppercase;
+    }
+  }
+
+  &__mobile-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  &__mobile-section {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding-top: 8px;
+    border-top: 1px solid var(--divider);
+  }
+
+  &__mobile-section-label {
+    font-size: 10px;
+    font-weight: $fw-semibold;
+    color: var(--text-muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 4px 16px;
+  }
+
   &__mobile-nav-item {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     padding: 14px 16px;
     border-radius: $radius-md;
-    font-size: $fs-body;
+    font-family: inherit;
+    font-size: 15px;
     font-weight: $fw-medium;
     color: var(--text-primary);
+    text-decoration: none;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    min-height: 48px;       // WCAG tap target
+    transition: $transition-color;
 
-    &:hover { background: var(--bg-hover); }
+    &:hover, &:focus-visible { background: var(--bg-hover); }
+    &:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+
     &--active { background: $color-brand-tint; color: var(--brand); }
+    &--wip { opacity: 0.7; }
+
+    &--button { font: inherit; }
+    &:disabled { cursor: default; }
+  }
+
+  &__mobile-wip-tag {
+    font-size: 9px;
+    font-weight: $fw-bold;
+    letter-spacing: 0.06em;
+    padding: 2px 6px;
+    background: var(--warning-light);
+    color: var(--warning);
+    border-radius: $radius-xs;
+  }
+
+  &__mobile-cta {
+    display: flex;
+    gap: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--divider);
+
+    .btn { min-height: 44px; }
+  }
+
+  &__mobile-logout {
+    flex: 1;
+    padding: 12px;
+    background: var(--danger-light);
+    border: 1px solid rgba(220, 38, 38, 0.2);
+    border-radius: $radius-md;
+    color: var(--danger);
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: $fw-semibold;
+    cursor: pointer;
+    min-height: 44px;
+
+    &:hover { background: rgba(220, 38, 38, 0.18); }
+  }
+
+  &__mobile-demo-trigger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px;
+    background: transparent;
+    border: 1px dashed var(--border);
+    border-radius: $radius-md;
+    font: inherit;
+    font-size: 12px;
+    color: var(--text-muted);
+    cursor: pointer;
+
+    &:hover { color: var(--brand); border-color: var(--brand); }
   }
 }
 

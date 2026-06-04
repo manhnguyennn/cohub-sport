@@ -9,3 +9,5 @@ export * from './promo';
 export * from './payment';
 export * from './course';
 export * from './onboarding';
+export * from './dashboard';
+export * from './openSession';

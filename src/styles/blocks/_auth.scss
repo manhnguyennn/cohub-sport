@@ -10,6 +10,7 @@
     var(--bg-base);
 
   @include respond-from(md) { padding-inline: $spacing-page-x-lg; }
+  @include respond-to(sm) { padding: 24px 16px; }
 }
 
 .auth-card {

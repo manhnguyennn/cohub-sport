@@ -11,6 +11,8 @@ import './reviews.mock';
 import './promo.mock';      // ← phải before bookings (bookings dùng promoMocks)
 import './payment.mock';
 import './bookings.mock';
+import './openSession.mock';   // ← Lịch dạy mở (sau bookings để có denormCoach helper sẵn)
 import './courses.mock';
 import './onboarding.mock';
+import './dashboard.mock';
 import './auth.mock';

@@ -1,26 +1,15 @@
 import Image from 'next/image';
 import { Button } from '@components/ui';
-import { ROUTES } from '@config/routes';
 import { formatMoney } from '@lib/format';
 import type { Coach } from '@app-types/coach';
 
 type Props = { coach: Coach };
 
 /**
- * Tạm thời — pick slot mặc định = ngày mai 18:00 (default 60 phút).
- * Khi slot-picker UI built (week 5 calendar), thay bằng selected slot.
+ * Sidebar booking panel. CTA trỏ tới #open-sessions
+ * để học viên chọn 1 trong các lịch mở mà coach đã đăng,
+ * thay vì pick slot tự do (mô hình cũ).
  */
-function buildDefaultBookingHref(coachId: string): string {
-  const d = new Date();
-  d.setDate(d.getDate() + 1);
-  d.setHours(18, 0, 0, 0);
-  const params = new URLSearchParams({
-    coachId,
-    startsAt: d.toISOString(),
-    durationMinutes: '60',
-  });
-  return `${ROUTES.bookingNew}?${params.toString()}`;
-}
 
 export default function CoachBookingPanel({ coach }: Props) {
   return (
@@ -74,13 +63,13 @@ export default function CoachBookingPanel({ coach }: Props) {
       </div>
 
       <Button
-        href={buildDefaultBookingHref(coach.id)}
+        href="#open-sessions"
         variant="primary"
         size="lg"
         block
         className="coach-booking-panel__cta"
       >
-        Đặt lịch
+        Xem lịch mở
       </Button>
 
       {coach.nextAvailableSlot && (

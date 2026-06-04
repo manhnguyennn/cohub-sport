@@ -4,12 +4,12 @@ import { useEffect, useState } from 'react';
 import { cn } from '@lib/cn';
 
 const TABS = [
-  { id: 'about',       label: 'Giới thiệu' },
-  { id: 'experience',  label: 'Kinh nghiệm' },
-  { id: 'videos',      label: 'Videos' },
-  { id: 'courses',     label: 'Khoá học' },
-  { id: 'classes',     label: 'Lớp học' },
-  { id: 'reviews',     label: 'Đánh giá' },
+  { id: 'about',          label: 'Giới thiệu' },
+  { id: 'experience',     label: 'Kinh nghiệm' },
+  { id: 'videos',         label: 'Videos' },
+  { id: 'open-sessions',  label: 'Lịch mở' },
+  { id: 'courses',        label: 'Khoá học' },
+  { id: 'reviews',        label: 'Đánh giá' },
 ] as const;
 
 /**

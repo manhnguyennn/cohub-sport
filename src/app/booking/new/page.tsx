@@ -1,36 +1,29 @@
-import { notFound, redirect } from 'next/navigation';
+/**
+ * /booking/new — Legacy route. Đã được thay bằng /booking/session/[id]:
+ * học viên đặt 1 buổi từ "Lịch dạy mở" mà coach đã sắp xếp sẵn.
+ *
+ * Nếu có coachId trên query, redirect về coach detail (phần "Lịch mở").
+ * Nếu không, redirect về danh sách coach.
+ */
+import { redirect } from 'next/navigation';
 import { coachService } from '@services/coach.service';
 import { ROUTES } from '@config/routes';
-import BookingForm from '@features/booking/BookingForm';
-
-export const metadata = { title: 'Đặt buổi tập' };
 
 type PageProps = {
-  searchParams: {
-    coachId?: string;
-    startsAt?: string;
-    durationMinutes?: string;
-  };
+  searchParams: { coachId?: string };
 };
 
-export default async function BookingNewPage({ searchParams }: PageProps) {
-  if (!searchParams.coachId || !searchParams.startsAt) {
-    // Thiếu data → quay về list HLV
-    redirect(ROUTES.coaches);
+export default async function LegacyBookingNewRedirect({ searchParams }: PageProps) {
+  let coachSlug: string | undefined;
+  if (searchParams.coachId) {
+    try {
+      const coach = await coachService.getById(searchParams.coachId);
+      coachSlug = coach.slug;
+    } catch {
+      // ignore — fallback below
+    }
   }
 
-  let coach;
-  try {
-    coach = await coachService.getById(searchParams.coachId);
-  } catch {
-    notFound();
-  }
-
-  return (
-    <BookingForm
-      coach={coach}
-      startsAt={searchParams.startsAt}
-      durationMinutes={Number(searchParams.durationMinutes ?? 60)}
-    />
-  );
+  if (coachSlug) redirect(`${ROUTES.coachDetail(coachSlug)}#open-sessions`);
+  redirect(ROUTES.coaches);
 }

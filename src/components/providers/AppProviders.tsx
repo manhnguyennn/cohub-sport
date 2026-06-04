@@ -9,6 +9,12 @@
  *  - DemoModeProvider (no deps, listen Ctrl+Shift+D)
  *  - ToastProvider (deps: nothing, dùng cho mọi component bên trong)
  */
+
+// Side-effect: register mock handlers vào registry trên CLIENT bundle.
+// Server-side đã register qua layout.tsx, nhưng client component
+// (vd: CoachDashboardClient, MyBookings) gọi apiClient ở browser, cần registry sẵn ở client.
+import '@mocks/index';
+
 import { PersonaProvider } from '@contexts/PersonaContext';
 import { DemoModeProvider } from '@contexts/DemoModeContext';
 import { ToastProvider } from '@contexts/ToastContext';

@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import { coachService } from '@services/coach.service';
 import { reviewService } from '@services/review.service';
+import { openSessionService } from '@services/openSession.service';
 import { Button, MobileStickyBar } from '@components/ui';
 import { ROUTES } from '@config/routes';
 import { formatVND } from '@lib/date';
@@ -13,23 +14,12 @@ import CoachExperienceSection from '@features/coaches/components/CoachExperience
 import CoachShortVideos from '@features/coaches/components/CoachShortVideos';
 import CoachReviewsSection from '@features/coaches/components/CoachReviewsSection';
 import CoachCoursesSection from '@features/coaches/components/CoachCoursesSection';
+import CoachOpenSessionsSection from '@features/coaches/components/CoachOpenSessionsSection';
 import CoachBookingPanel from '@features/coaches/components/CoachBookingPanel';
 import CoachSimilarSection from '@features/coaches/components/CoachSimilarSection';
 import CoachWhyCohub from '@features/coaches/components/CoachWhyCohub';
 import CoachFaq from '@features/coaches/components/CoachFaq';
 import CoachFinalCta from '@features/coaches/components/CoachFinalCta';
-
-function buildDefaultBookingHref(coachId: string): string {
-  const d = new Date();
-  d.setDate(d.getDate() + 1);
-  d.setHours(18, 0, 0, 0);
-  const params = new URLSearchParams({
-    coachId,
-    startsAt: d.toISOString(),
-    durationMinutes: '60',
-  });
-  return `${ROUTES.bookingNew}?${params.toString()}`;
-}
 
 type PageProps = { params: { id: string } };
 
@@ -55,9 +45,10 @@ export default async function CoachDetailPage({ params }: PageProps) {
   }
 
   // Parallel: data phụ trợ — đều có fallback an toàn
-  const [reviews, courses, similar, distribution] = await Promise.all([
+  const [reviews, courses, openSessions, similar, distribution] = await Promise.all([
     reviewService.listByCoach(coach.id).catch(() => []),
     coachService.courses(coach.id).catch(() => []),
+    openSessionService.list({ coachId: coach.id, scope: 'upcoming' }).catch(() => []),
     coachService.similar(coach.id).catch(() => []),
     coachService.ratingDistribution(coach.id).catch<RatingDistribution>(() => ({
       average: coach.rating,
@@ -65,6 +56,12 @@ export default async function CoachDetailPage({ params }: PageProps) {
       breakdown: { 5: 75, 4: 21, 3: 3, 2: 1, 1: 0.5 },
     })),
   ]);
+
+  // Tìm session sắp tới nhất để mobile sticky bar trỏ tới
+  const nextSession = openSessions[0];
+  const stickyHref = nextSession
+    ? ROUTES.bookingSession(nextSession.id)
+    : `#open-sessions`; // scroll xuống section nếu chưa có lịch nào
 
   return (
     <>
@@ -87,7 +84,10 @@ export default async function CoachDetailPage({ params }: PageProps) {
             </div>
           </div>
 
-          {/* Khoá học — full-width dưới grid (không bị sidebar chiếm chỗ) */}
+          {/* Lịch dạy mở — full-width: học viên xem & book trực tiếp từng buổi */}
+          <CoachOpenSessionsSection sessions={openSessions} />
+
+          {/* Khoá học — gói nhiều buổi, full-width dưới grid */}
           <CoachCoursesSection courses={courses} />
         </div>
       </div>
@@ -96,15 +96,18 @@ export default async function CoachDetailPage({ params }: PageProps) {
       <MobileStickyBar
         info={
           <>
-            <span className="mobile-sticky-bar__label">Học phí từ</span>
+            <span className="mobile-sticky-bar__label">
+              {nextSession ? 'Lịch gần nhất từ' : 'Học phí từ'}
+            </span>
             <span className="mobile-sticky-bar__price">
-              {formatVND(coach.pricePerHour.amount)}<small>/giờ</small>
+              {formatVND((nextSession?.price.amount ?? coach.pricePerHour.amount))}
+              <small>{nextSession ? '/buổi' : '/giờ'}</small>
             </span>
           </>
         }
         action={
-          <Button href={buildDefaultBookingHref(coach.id)} variant="primary" size="md">
-            Đặt lịch
+          <Button href={stickyHref} variant="primary" size="md">
+            {nextSession ? 'Đặt buổi này' : 'Xem lịch mở'}
           </Button>
         }
       />
