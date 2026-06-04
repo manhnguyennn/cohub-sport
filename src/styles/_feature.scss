@@ -57,7 +57,7 @@
     justify-content: flex-end;
     background:
       linear-gradient(209deg, rgba(2, 12, 3, 0) 4.74%, #020c03 87.38%),
-      url("../../../public/images/feature.png") $color-dark-base center top 29% / cover no-repeat;
+      url("/images/feature.png") $color-dark-base center top 29% / cover no-repeat;
 
     @include respond-from(md) {
       padding-inline: $spacing-page-x-lg;
@@ -646,7 +646,7 @@
       overflow: hidden;
       background:
         linear-gradient(199deg, rgba(2, 12, 3, 0) 26.95%, #020c03 87.19%),
-        url("../../../public/images/half.jpg") center 30% / cover no-repeat;
+        url("/images/half.jpg") center 30% / cover no-repeat;
 
       .overlay {
         display: flex;
@@ -721,7 +721,7 @@
         overflow: hidden;
         background:
           linear-gradient(199deg, rgba(2, 12, 3, 0) 26.95%, #020c03 87.19%),
-          url("../../../public/images/half.jpg") center 30% / cover no-repeat;
+          url("/images/half.jpg") center 30% / cover no-repeat;
         transition: transform $duration-normal $ease-expo-out;
 
         &:hover { transform: translateY(-3px); }
