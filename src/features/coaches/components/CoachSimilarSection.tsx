@@ -29,7 +29,7 @@ export default function CoachSimilarSection({ coaches }: Props) {
                 alt={c.fullName}
                 fill
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 33vw, 280px"
-                style={{ objectFit: 'cover' }}
+                style={{ objectFit: 'cover', objectPosition: 'center top' }}
               />
               {c.isVerified && (
                 <span className="coach-similar-card__top">

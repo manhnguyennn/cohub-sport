@@ -7,7 +7,7 @@ import {
   SearchNormal1, Bank, Card, MessageText, Note1, Camera, Lock, RefreshCircle, TickCircle,
   CloseCircle, Warning2, InfoCircle, Eye, Send2, Book, Briefcase, Star1, ClipboardText,
   Setting2, Sms, Lamp, Activity, Magicpen, MedalStar, ArrowRight2, ArrowLeft2, Personalcard, People,
-  Notification, Messages, EmojiHappy,
+  Notification, Messages, EmojiHappy, Play, ArrowDown2, Heart,
 } from 'iconsax-reactjs';
 
 /**
@@ -81,6 +81,9 @@ const MAP = {
   bell: Notification,
   chat: Messages,
   emoji: EmojiHappy,
+  play: Play,
+  chevronDown: ArrowDown2,
+  heart: Heart,
 } satisfies Record<string, ComponentType<SaxProps>>;
 
 export type AppIconName = keyof typeof MAP;

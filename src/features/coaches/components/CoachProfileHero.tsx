@@ -28,7 +28,7 @@ export default function CoachProfileHero({ coach }: CoachProfileHeroProps) {
           fill
           sizes="100vw"
           priority
-          style={{ objectFit: 'cover' }}
+          style={{ objectFit: 'cover', objectPosition: 'center top' }}
         />
       </div>
 

@@ -16,7 +16,7 @@ export default function CoachAbout({ coach }: CoachAboutProps) {
             alt={coach.fullName}
             fill
             sizes="(max-width: 1024px) 100vw, 720px"
-            style={{ objectFit: 'cover' }}
+            style={{ objectFit: 'cover', objectPosition: 'center top' }}
           />
           <span className="coach-about__video-overlay" aria-hidden />
           <button type="button" className="coach-about__play" aria-label="Phát video giới thiệu">

@@ -571,10 +571,66 @@ registerMock('GET /courses/featured', () =>
   coursesMock.filter((c) => c.status === 'published').slice(0, 6),
 );
 
+// ── Giáo trình + kỹ năng (sinh khi xem detail) ───────────────
+const SYLLABUS_TITLES = [
+  'Khởi động & đánh giá trình độ',
+  'Kỹ thuật nền tảng',
+  'Nâng cao kiểm soát & độ chính xác',
+  'Phối hợp & di chuyển (footwork)',
+  'Tư duy chiến thuật',
+  'Thực hành tình huống thi đấu',
+  'Tâm lý & xử lý áp lực',
+  'Tổng ôn kỹ thuật nâng cao',
+  'Thi đấu cọ xát',
+  'Tổng kết & lộ trình tiếp theo',
+];
+
+const SKILLS_BY_SPORT: Record<string, string[]> = {
+  pickleball: ['Dink', 'Drop', 'Reset', 'Drive forehand', 'Drive backhand'],
+  tennis: ['Forehand', 'Backhand', 'Serve', 'Volley', 'Footwork'],
+  yoga: ['Hơi thở', 'Thăng bằng', 'Dẻo dai', 'Tư thế nền tảng', 'Thiền'],
+  'gym-fitness': ['Sức mạnh', 'Sức bền', 'Form chuẩn', 'Core', 'Dinh dưỡng'],
+  golf: ['Swing', 'Putting', 'Chipping', 'Tư thế', 'Đọc sân'],
+  boxing: ['Jab', 'Cross', 'Hook', 'Footwork', 'Phòng thủ'],
+  pilates: ['Core', 'Kiểm soát', 'Hơi thở', 'Linh hoạt', 'Tư thế'],
+  football: ['Khống bóng', 'Chuyền', 'Sút', 'Rê dắt', 'Thể lực'],
+  basketball: ['Dribbling', 'Shooting', 'Passing', 'Phòng thủ', 'Thể lực'],
+};
+
+function genSyllabus(course: Course): import('@app-types/course').CourseSyllabusItem[] {
+  const n = course.totalSessions;
+  return Array.from({ length: n }).map((_, i) => {
+    const last = i === n - 1;
+    const title = last
+      ? 'Tổng kết & lộ trình tiếp theo'
+      : SYLLABUS_TITLES[Math.min(i, SYLLABUS_TITLES.length - 2)];
+    return {
+      order: i + 1,
+      title,
+      durationMinutes: course.sessionDurationMin,
+      details: i === 0
+        ? [
+            'Kiểm tra kỹ năng hiện tại của học viên.',
+            'Làm quen phương pháp & lộ trình khoá học.',
+            'Sửa các lỗi kỹ thuật cơ bản thường gặp.',
+          ]
+        : undefined,
+    };
+  });
+}
+
+function genSkills(course: Course): string[] {
+  return SKILLS_BY_SPORT[course.sport] ?? ['Kỹ thuật', 'Thể lực', 'Chiến thuật', 'Tư duy', 'Phản xạ'];
+}
+
 registerMock('GET /courses/:id', ({ pathParams }) => {
   const found = coursesMock.find((c) => c.id === pathParams.id);
   if (!found) throw new Error(`Course not found: ${pathParams.id}`);
-  return found;
+  return {
+    ...found,
+    syllabus: found.syllabus ?? genSyllabus(found),
+    skills: found.skills ?? genSkills(found),
+  };
 });
 
 registerMock('GET /courses/:id/sessions', ({ pathParams }) =>

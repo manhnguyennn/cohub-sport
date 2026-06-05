@@ -16,7 +16,7 @@ export default function CoachCard({ coach }: CoachCardProps) {
           alt={coach.fullName}
           fill
           sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 360px"
-          style={{ objectFit: 'cover' }}
+          style={{ objectFit: 'cover', objectPosition: 'center top' }}
         />
         <div className="coach-card__badge-row">
           {coach.isVerified && (

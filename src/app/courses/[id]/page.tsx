@@ -5,7 +5,7 @@ import { courseService } from '@services/course.service';
 import { coachService } from '@services/coach.service';
 import { reviewService } from '@services/review.service';
 import { ROUTES } from '@config/routes';
-import { formatDate, formatTime, formatVND } from '@lib/date';
+import { formatVND } from '@lib/date';
 import { Button, MobileStickyBar } from '@components/ui';
 import AppIcon from '@components/ui/AppIcon';
 import { TrustStrip } from '@components/shared';
@@ -13,6 +13,11 @@ import CourseEnrollCta from '@features/courses/CourseEnrollCta';
 import CourseReviews from '@features/courses/CourseReviews';
 import CourseFAQ from '@features/courses/CourseFAQ';
 import CourseCrossSell from '@features/courses/CourseCrossSell';
+import CourseSectionTabs from '@features/courses/CourseSectionTabs';
+import CourseIntroVideo from '@features/courses/CourseIntroVideo';
+import CourseContentAccordion from '@features/courses/CourseContentAccordion';
+import CourseShortVideos from '@features/courses/CourseShortVideos';
+import CoachFollowButton from '@features/courses/CoachFollowButton';
 import type { CourseSession } from '@app-types/course';
 import type { Coach } from '@app-types/coach';
 import type { Review } from '@app-types/review';
@@ -55,128 +60,119 @@ export default async function CourseDetailPage({ params }: PageProps) {
 
   return (
     <div className="course-detail-page bottom-safe-pad">
-      {/* Hero */}
-      <section className="course-detail-hero">
-        <div className="course-detail-hero__cover">
-          <Image src={course.cover} alt="" fill sizes="100vw" priority style={{ objectFit: 'cover' }} />
-        </div>
-        <div className="course-detail-hero__container">
-          {/* Breadcrumb (K11) */}
-          <nav className="course-detail-hero__breadcrumb" aria-label="Breadcrumb">
-            <Link href={ROUTES.home}>Trang chủ</Link>
-            <span aria-hidden>›</span>
-            <Link href={ROUTES.courses}>Khoá học</Link>
-            <span aria-hidden>›</span>
-            <Link href={`${ROUTES.courses}?sport=${sportLabel}`}>{sportLabel}</Link>
-          </nav>
-
-          <span className="course-detail-hero__type">
-            <AppIcon name={course.scheduleType === 'FIXED' ? 'calendar' : 'flash'} size={14} />
-            {course.scheduleType === 'FIXED' ? 'Lịch cố định' : 'Linh hoạt'}
-          </span>
-          <h1>{course.title}</h1>
-
-          {/* Coach card lớn (K2) */}
-          <div className="course-coach-card">
-            {course.coachAvatar && (
-              <Image
-                className="course-coach-card__avatar"
-                src={course.coachAvatar}
-                alt={course.coachName}
-                width={64}
-                height={64}
-                style={{ objectFit: 'cover', borderRadius: '999px' }}
-              />
-            )}
-            <div className="course-coach-card__body">
-              <div className="course-coach-card__name">
-                {course.coachName}
-                {coach?.isVerified && (
-                  <span className="course-coach-card__verified">
-                    <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-                      <path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
-                    </svg>
-                    Đã xác minh
-                  </span>
-                )}
-              </div>
-              <div className="course-coach-card__meta">
-                {coach?.title ?? 'Coach'}
-                {coach?.experienceYears != null && <> · {coach.experienceYears} năm KN</>}
-              </div>
-              {coach && (
-                <div className="course-coach-card__rating">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="#F59E0B" aria-hidden>
-                    <path d="M12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61z" />
-                  </svg>
-                  <strong>{coach.rating.toFixed(1)}</strong>
-                  <span>({coach.reviewCount} đánh giá)</span>
-                </div>
-              )}
-              <Link href={ROUTES.coachDetail(coachSlug)} className="course-coach-card__link">
-                Xem hồ sơ Coach {course.coachName} →
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
       <div className="course-detail-page__container">
+        {/* Breadcrumb (K11) */}
+        <nav className="course-detail-breadcrumb" aria-label="Breadcrumb">
+          <Link href={ROUTES.home}>Trang chủ</Link>
+          <span aria-hidden>›</span>
+          <Link href={ROUTES.courses}>Khoá học</Link>
+          <span aria-hidden>›</span>
+          <Link href={`${ROUTES.courses}?sport=${sportLabel}`}>{sportLabel}</Link>
+        </nav>
+
         <div className="course-detail-page__grid">
           <main className="course-detail-main">
-            <section>
-              <h2>Giới thiệu khoá học</h2>
+            {/* Hero card — ảnh contained, không full-bleed */}
+            <div className="course-hero-card">
+              <div className="course-hero-card__media">
+                <Image src={course.cover} alt="" fill sizes="(max-width: 1024px) 100vw, 720px" priority style={{ objectFit: 'cover' }} />
+                <div className="course-hero-card__overlay">
+                  <span className="course-hero-card__eyebrow">
+                    <AppIcon name={course.scheduleType === 'FIXED' ? 'calendar' : 'flash'} size={13} />
+                    {course.scheduleType === 'FIXED' ? 'Lịch cố định' : 'Lịch linh hoạt'}
+                  </span>
+                  <h1>{course.title}</h1>
+                  <div className="course-hero-card__meta">
+                    <span><AppIcon name="book" size={14} /> {course.totalSessions} buổi · {course.sessionDurationMin} phút/buổi</span>
+                    <span><AppIcon name="people" size={14} /> Coaching 1-1 hoặc nhóm riêng</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Coach header (figma) */}
+            <div className="course-coach">
+              <div className="course-coach__top">
+                {course.coachAvatar && (
+                  <Image
+                    className="course-coach__avatar"
+                    src={course.coachAvatar}
+                    alt={course.coachName}
+                    width={52}
+                    height={52}
+                    style={{ objectFit: 'cover', borderRadius: '999px' }}
+                  />
+                )}
+                <div className="course-coach__id">
+                  <span className="course-coach__name">
+                    {course.coachName}
+                    {coach?.isVerified && (
+                      <span className="course-coach__verified" title="Đã xác minh">
+                        <AppIcon name="shield" size={14} color="var(--success)" variant="Bold" />
+                      </span>
+                    )}
+                  </span>
+                  <span className="course-coach__sub">{coach?.title ?? 'Coach'}</span>
+                </div>
+
+                {coach && (
+                  <div className="course-coach__stats">
+                    <span className="course-coach__stat">
+                      <AppIcon name="star" size={14} color="#F59E0B" variant="Bold" /> {coach.rating.toFixed(1)}
+                    </span>
+                    <span className="course-coach__stat">
+                      <AppIcon name="people" size={14} /> {coach.reviewCount}
+                    </span>
+                    <span className="course-coach__stat">
+                      <AppIcon name="location" size={14} /> {coach.location?.city ?? '—'}
+                    </span>
+                  </div>
+                )}
+
+                <div className="course-coach__actions">
+                  <Link href={ROUTES.coachDetail(coachSlug)} className="course-coach__profile">
+                    <AppIcon name="user" size={15} /> Hồ sơ coach
+                  </Link>
+                  <CoachFollowButton coachName={course.coachName} />
+                </div>
+              </div>
+              {coach?.bio && <p className="course-coach__bio">{coach.bio}</p>}
+            </div>
+
+            {/* Tab nav (figma) */}
+            <CourseSectionTabs />
+
+            {/* Giới thiệu */}
+            <section id="gioi-thieu" className="course-section">
+              <h2>Giới thiệu</h2>
+              <CourseIntroVideo poster={course.cover} title={course.title} />
               <p className="course-detail-main__desc">{course.description}</p>
             </section>
 
-            <section>
-              <h2>Bạn sẽ học được</h2>
-              <ul className="course-detail-main__learn-list">
+            {/* Lợi ích */}
+            <section id="loi-ich" className="course-section">
+              <h2>Lợi ích</h2>
+              <ul className="course-benefits">
                 {course.whatYoullLearn.map((item) => (
                   <li key={item}>
-                    <span aria-hidden>✓</span>
+                    <span className="course-benefits__check" aria-hidden>
+                      <AppIcon name="check" size={13} color="#fff" variant="Bold" />
+                    </span>
                     {item}
                   </li>
                 ))}
               </ul>
             </section>
 
-            {course.requirements && (
-              <section>
-                <h2>Yêu cầu</h2>
-                <p className="course-detail-main__desc">{course.requirements}</p>
-              </section>
-            )}
-
-            {/* Sessions table — FIXED only */}
-            {course.scheduleType === 'FIXED' && sessions.length > 0 && (
-              <section>
-                <h2>Lịch {course.totalSessions} buổi</h2>
-                <div className="course-detail-main__schedule">
-                  <div className="course-detail-main__schedule-hint">
-                    Lặp lại {course.recurringDays?.map((d) => DAY_LABEL[d]).join(', ')} · {course.recurringTime}
-                  </div>
-                  <ol className="course-detail-main__sessions">
-                    {sessions.map((s) => (
-                      <li key={s.id}>
-                        <span className="course-detail-main__sess-num">Buổi {s.sequence}</span>
-                        <span className="course-detail-main__sess-date">
-                          {formatDate(s.startsAt)} · {formatTime(s.startsAt)}
-                        </span>
-                        <span className="course-detail-main__sess-dur">
-                          {s.durationMinutes} phút
-                        </span>
-                      </li>
-                    ))}
-                  </ol>
-                </div>
-              </section>
-            )}
-
-            {/* Flexible info */}
-            {course.scheduleType === 'FLEXIBLE' && (
-              <section>
-                <h2>Cách thức linh hoạt</h2>
+            {/* Nội dung khoá học */}
+            <section id="noi-dung" className="course-section">
+              <h2>Nội dung khoá học</h2>
+              {course.scheduleType === 'FIXED' && course.recurringDays && (
+                <p className="course-section__hint">
+                  Lặp lại {course.recurringDays.map((d) => DAY_LABEL[d]).join(', ')} · {course.recurringTime} · {course.totalSessions} buổi
+                </p>
+              )}
+              {course.scheduleType === 'FLEXIBLE' && (
                 <div className="course-detail-main__flex-info">
                   <div>
                     <strong>{course.totalSessions} credit</strong>
@@ -191,6 +187,37 @@ export default async function CourseDetailPage({ params }: PageProps) {
                     <span>mỗi buổi 1-1 với coach</span>
                   </div>
                 </div>
+              )}
+              {course.syllabus && course.syllabus.length > 0 && (
+                <CourseContentAccordion items={course.syllabus} />
+              )}
+            </section>
+
+            {/* Kỹ năng */}
+            {course.skills && course.skills.length > 0 && (
+              <section className="course-section">
+                <h2>Kỹ năng</h2>
+                <div className="course-skills">
+                  {course.skills.map((s) => (
+                    <span key={s} className="course-skills__chip">{s}</span>
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {/* Videos / Short videos */}
+            <section id="videos" className="course-section">
+              <h2>Videos</h2>
+              <CourseShortVideos
+                poster={course.cover}
+                captions={(course.skills ?? []).map((s) => `Hướng dẫn ${s}`)}
+              />
+            </section>
+
+            {course.requirements && (
+              <section className="course-section">
+                <h2>Yêu cầu</h2>
+                <p className="course-detail-main__desc">{course.requirements}</p>
               </section>
             )}
 

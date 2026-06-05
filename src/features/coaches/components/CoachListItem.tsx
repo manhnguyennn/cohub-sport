@@ -41,7 +41,7 @@ export default function CoachListItem({ coach }: CoachListItemProps) {
           alt={coach.fullName}
           fill
           sizes="(max-width: 768px) 100vw, 240px"
-          style={{ objectFit: 'cover' }}
+          style={{ objectFit: 'cover', objectPosition: 'center top' }}
         />
       </Link>
 

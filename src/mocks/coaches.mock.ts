@@ -38,8 +38,8 @@ export const coachesMock: Coach[] = [
     id: 'c1',
     slug: 'nguyen-van-an',
     fullName: 'Nguyễn Văn An',
-    avatar: '/images/nguyen-van-huy.svg',
-    coverImage: '/images/pickleball-4.webp',
+    avatar: '/images/coach/coach-1.png',
+    coverImage: '/images/coach/coach-1.png',
     bio: 'HLV Pickleball với 8 năm kinh nghiệm thi đấu, đã đào tạo hơn 200 học viên.',
     title: 'Pickleball Coach',
     sports: ['pickleball', 'tennis'],
@@ -75,8 +75,8 @@ export const coachesMock: Coach[] = [
     id: 'c2',
     slug: 'tran-minh-hoa',
     fullName: 'Trần Minh Hoà',
-    avatar: '/images/do-thi-phuong.svg',
-    coverImage: '/images/yoga-2.webp',
+    avatar: '/images/coach/coach-2.png',
+    coverImage: '/images/coach/coach-2.png',
     bio: 'Anna Nguyễn là huấn luyện viên Yoga và Fitness chuyên nghiệp, với nhiều năm kinh nghiệm trong việc giảng dạy các lớp cá nhân và nhóm. Anna chú trọng đến sự cân bằng giữa thể chất – tinh thần – hơi thở, giúp học viên đạt được sự dẻo dai, giảm căng thẳng và duy trì lối sống lành mạnh.',
     title: 'Yoga Coach',
     sports: ['yoga', 'pilates'],
@@ -107,8 +107,8 @@ export const coachesMock: Coach[] = [
     id: 'c3',
     slug: 'le-quoc-thai',
     fullName: 'Lê Quốc Thái',
-    avatar: '/images/phan-tuan-kiet.svg',
-    coverImage: '/images/running-3.webp',
+    avatar: '/images/coach/coach-3.png',
+    coverImage: '/images/coach/coach-3.png',
     bio: 'Strength & conditioning coach, từng làm việc với VĐV chuyên nghiệp.',
     title: 'Strength Coach',
     sports: ['gym-fitness'],
@@ -143,8 +143,8 @@ export const coachesMock: Coach[] = [
     id: 'c4',
     slug: 'pham-thuy-linh',
     fullName: 'Phạm Thuỳ Linh',
-    avatar: '/images/pham-thi-linh.svg',
-    coverImage: '/images/tennis-4.webp',
+    avatar: '/images/coach/coach-9.png',
+    coverImage: '/images/coach/coach-9.png',
     bio: 'Tennis coach, vô địch giải trẻ quốc gia 2018.',
     title: 'Tennis Coach',
     sports: ['tennis'],
@@ -173,8 +173,8 @@ export const coachesMock: Coach[] = [
     id: 'c5',
     slug: 'do-anh-tuan',
     fullName: 'Đỗ Anh Tuấn',
-    avatar: '/images/vo-quoc-dat.svg',
-    coverImage: '/images/golf-4.webp',
+    avatar: '/images/coach/coach-5.png',
+    coverImage: '/images/coach/coach-5.png',
     bio: 'Golf instructor PGA Class A. Sân tập riêng tại Long Biên.',
     title: 'Golf Instructor',
     sports: ['golf'],
@@ -209,8 +209,8 @@ export const coachesMock: Coach[] = [
     id: 'c6',
     slug: 'vu-ngoc-mai',
     fullName: 'Vũ Ngọc Mai',
-    avatar: '/images/hoang-thi-hanh.svg',
-    coverImage: '/images/Boxing.webp',
+    avatar: '/images/coach/coach-7.png',
+    coverImage: '/images/coach/coach-7.png',
     bio: 'Boxing coach, hỗ trợ giảm cân & rèn luyện thể chất cho người mới.',
     title: 'Boxing Coach',
     sports: ['boxing'],
@@ -239,8 +239,8 @@ export const coachesMock: Coach[] = [
     id: 'c7',
     slug: 'hoang-nam-son',
     fullName: 'Hoàng Nam Sơn',
-    avatar: '/images/le-minh-hoang.svg',
-    coverImage: '/images/Coding.webp',
+    avatar: '/images/coach/coach-12.png',
+    coverImage: '/images/coach/coach-12.png',
     bio: 'Senior engineer @ Big Tech. Coaching cho dev Junior-Mid lên Senior.',
     title: 'Tech Mentor',
     sports: ['coding', 'ai'],
@@ -270,8 +270,8 @@ export const coachesMock: Coach[] = [
     id: 'c8',
     slug: 'bui-thu-ha',
     fullName: 'Bùi Thu Hà',
-    avatar: '/images/nguyen-thi-an.svg',
-    coverImage: '/images/Ux.webp',
+    avatar: '/images/coach/coach-8.png',
+    coverImage: '/images/coach/coach-8.png',
     bio: 'UI/UX Designer, 7 năm sản phẩm B2C. Mentor portfolio review.',
     title: 'UX Mentor',
     sports: ['ux'],
@@ -309,26 +309,39 @@ function slugify(s: string): string {
     .replace(/^-|-$/g, '');
 }
 
-const GEN_AVATARS = [
-  '/images/nguyen-van-huy.svg', '/images/do-thi-phuong.svg', '/images/phan-tuan-kiet.svg',
-  '/images/pham-thi-linh.svg', '/images/le-minh-hoang.svg', '/images/nguyen-thi-an.svg',
-  '/images/hoang-thi-hanh.svg', '/images/bui-van-long.svg',
+// 22 ảnh portrait HLV (public/images/coach/coach-1..22.png) — gắn nhãn giới tính + môn
+type CoachPhoto = { n: number; g: 'M' | 'F'; sports: string[] };
+const COACH_PHOTOS: CoachPhoto[] = [
+  { n: 1,  g: 'F', sports: ['pickleball'] },
+  { n: 2,  g: 'M', sports: ['tennis'] },
+  { n: 3,  g: 'F', sports: ['golf'] },
+  { n: 4,  g: 'M', sports: ['pickleball'] },
+  { n: 5,  g: 'F', sports: ['basketball'] },
+  { n: 6,  g: 'M', sports: ['gym-fitness', 'boxing'] },
+  { n: 7,  g: 'F', sports: ['gym-fitness', 'yoga', 'pilates'] },
+  { n: 8,  g: 'M', sports: ['golf'] },
+  { n: 9,  g: 'F', sports: ['tennis'] },
+  { n: 10, g: 'M', sports: ['football'] },
+  { n: 11, g: 'M', sports: ['pickleball'] },
+  { n: 12, g: 'M', sports: ['gym-fitness', 'boxing'] },
+  { n: 13, g: 'F', sports: ['yoga', 'pilates'] },
+  { n: 14, g: 'M', sports: ['gym-fitness', 'football'] },
+  { n: 15, g: 'F', sports: ['gym-fitness'] },
+  { n: 16, g: 'M', sports: ['golf'] },
+  { n: 17, g: 'M', sports: ['tennis'] },
+  { n: 18, g: 'F', sports: ['basketball'] },
+  { n: 19, g: 'M', sports: ['gym-fitness', 'boxing'] },
+  { n: 20, g: 'F', sports: ['yoga', 'pilates'] },
+  { n: 21, g: 'M', sports: ['golf'] },
+  { n: 22, g: 'F', sports: ['tennis'] },
 ];
-
-const SPORT_COVERS: Record<string, string[]> = {
-  yoga: ['/images/yoga-2.webp', '/images/yoga-3.webp', '/images/yoga-4.webp', '/images/yoga-5.webp'],
-  pilates: ['/images/Pilates.webp', '/images/swiming-4.webp', '/images/yoga-4.webp'],
-  pickleball: ['/images/pickleball-2.webp', '/images/pickleball-3.webp', '/images/pickleball-4.webp'],
-  tennis: ['/images/tennis.webp', '/images/tennis-2.webp', '/images/tennis-3.webp', '/images/tennis-4.webp'],
-  golf: ['/images/golf-2.webp', '/images/golf-3.webp', '/images/golf-4.webp', '/images/golf-5.webp'],
-  'gym-fitness': ['/images/Fitness.webp', '/images/running-2.webp', '/images/running-3.webp'],
-  boxing: ['/images/Boxing.webp', '/images/Fitness.webp'],
-  basketball: ['/images/Basketball.webp', '/images/running-3.webp'],
-  football: ['/images/Football.webp', '/images/running-2.webp'],
-};
-function coverFor(sport: string, i: number): string {
-  const pool = SPORT_COVERS[sport] ?? ['/images/Fitness.webp'];
-  return pool[i % pool.length];
+const photoUrl = (n: number) => `/images/coach/coach-${n}.png`;
+/** Chọn ảnh khớp giới tính + (ưu tiên) môn; deterministic theo salt. */
+function pickPhoto(gender: 'M' | 'F', sport: string, salt: number): string {
+  const sameGender = COACH_PHOTOS.filter((p) => p.g === gender);
+  const bySport = sameGender.filter((p) => p.sports.includes(sport));
+  const pool = bySport.length ? bySport : sameGender;
+  return photoUrl(pool[salt % pool.length].n);
 }
 
 const SPORT_TITLE: Record<string, string> = {
@@ -384,6 +397,7 @@ function genCoaches(start: number, count: number): Coach[] {
 
     const sport = GEN_SPORTS[i % GEN_SPORTS.length];
     const sport2 = GEN_SPORTS[(i + 3) % GEN_SPORTS.length];
+    const photo = pickPhoto(female ? 'F' : 'M', sport, i);
     const place = GEN_PLACES[i % GEN_PLACES.length];
     const rating = Math.round((4.3 + ((i * 7) % 7) / 10) * 10) / 10; // 4.3–4.9
     const exp = 2 + (i % 13);
@@ -399,8 +413,8 @@ function genCoaches(start: number, count: number): Coach[] {
       id: `c${i}`,
       slug,
       fullName,
-      avatar: GEN_AVATARS[i % GEN_AVATARS.length],
-      coverImage: coverFor(sport, i),
+      avatar: photo,
+      coverImage: photo,
       bio: `${SPORT_TITLE[sport] ?? 'Coach'} với ${exp} năm kinh nghiệm. Đồng hành cùng học viên từ cơ bản đến nâng cao, xây dựng lộ trình phù hợp từng người và duy trì động lực tập luyện lâu dài.`,
       title: SPORT_TITLE[sport] ?? 'Coach',
       sports: sport === sport2 ? [sport] : [sport, sport2],

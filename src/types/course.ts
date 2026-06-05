@@ -55,6 +55,20 @@ export type Course = {
   location?: Location;
   /** Tag: "Top Rated", "Bestseller", "Mới" */
   tags?: string[];
+
+  /** Giáo trình từng buổi (denormalize khi get detail) */
+  syllabus?: CourseSyllabusItem[];
+  /** Kỹ năng đạt được (chips) */
+  skills?: string[];
+};
+
+export type CourseSyllabusItem = {
+  /** Thứ tự buổi 1..N */
+  order: number;
+  title: string;
+  durationMinutes: number;
+  /** Bullet chi tiết nội dung buổi */
+  details?: string[];
 };
 
 export type CourseListQuery = {

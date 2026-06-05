@@ -57,7 +57,7 @@
     justify-content: flex-end;
     background:
       linear-gradient(209deg, rgba(2, 12, 3, 0) 4.74%, #020c03 87.38%),
-      url("/images/feature.png") $color-dark-base center top 29% / cover no-repeat;
+      url("/images/hero-cover-home.png") $color-dark-base center top 29% / cover no-repeat;
 
     @include respond-from(md) {
       padding-inline: $spacing-page-x-lg;

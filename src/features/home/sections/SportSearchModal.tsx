@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
+import { createPortal } from 'react-dom';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { ROUTES } from '@config/routes';
@@ -63,7 +64,7 @@ export default function SportSearchModal({ sports, onClose }: Props) {
     router.push(qs ? `${ROUTES.coaches}?${qs}` : ROUTES.coaches);
   }
 
-  return (
+  const modal = (
     <div className="search-modal" role="dialog" aria-modal="true" aria-label="Tìm coach">
       <div className="search-modal__backdrop" onClick={onClose} />
       <div className="search-modal__sheet">
@@ -170,4 +171,9 @@ export default function SportSearchModal({ sports, onClose }: Props) {
       </div>
     </div>
   );
+
+  // Portal ra body để modal luôn căn theo viewport, không bị "kẹt"
+  // trong containing-block của header (backdrop-filter/transform) hay hero.
+  if (typeof document === 'undefined') return null;
+  return createPortal(modal, document.body);
 }
