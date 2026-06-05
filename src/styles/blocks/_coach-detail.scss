@@ -1167,7 +1167,7 @@ $divider-91: #E5E7EB;
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    margin-top: $space-3;
+    
     padding: 8px 12px;
     border-radius: $radius-sm;
     background: $color-surface;
@@ -1179,7 +1179,7 @@ $divider-91: #E5E7EB;
     strong { color: $color-text-primary; font-weight: $fw-semibold; }
   }
 
-  &__cta { margin-top: $space-4; }
+  &__cta {  }
 
   &__rating {
     display: inline-flex;
@@ -1685,7 +1685,6 @@ $divider-91: #E5E7EB;
 
   &__courses-link {
     display: block;
-    margin-top: $space-3;
     text-align: center;
     padding: 10px;
     border-radius: $radius-sm;

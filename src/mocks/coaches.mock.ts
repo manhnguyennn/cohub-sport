@@ -298,6 +298,146 @@ export const coachesMock: Coach[] = [
   },
 ];
 
+// ── Generate thêm coach để dày data (tổng ~50) ─────────────────
+function slugify(s: string): string {
+  return s
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/đ/g, 'd')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+}
+
+const GEN_AVATARS = [
+  '/images/nguyen-van-huy.svg', '/images/do-thi-phuong.svg', '/images/phan-tuan-kiet.svg',
+  '/images/pham-thi-linh.svg', '/images/le-minh-hoang.svg', '/images/nguyen-thi-an.svg',
+  '/images/hoang-thi-hanh.svg', '/images/bui-van-long.svg',
+];
+
+const SPORT_COVERS: Record<string, string[]> = {
+  yoga: ['/images/yoga-2.webp', '/images/yoga-3.webp', '/images/yoga-4.webp', '/images/yoga-5.webp'],
+  pilates: ['/images/Pilates.webp', '/images/swiming-4.webp', '/images/yoga-4.webp'],
+  pickleball: ['/images/pickleball-2.webp', '/images/pickleball-3.webp', '/images/pickleball-4.webp'],
+  tennis: ['/images/tennis.webp', '/images/tennis-2.webp', '/images/tennis-3.webp', '/images/tennis-4.webp'],
+  golf: ['/images/golf-2.webp', '/images/golf-3.webp', '/images/golf-4.webp', '/images/golf-5.webp'],
+  'gym-fitness': ['/images/Fitness.webp', '/images/running-2.webp', '/images/running-3.webp'],
+  boxing: ['/images/Boxing.webp', '/images/Fitness.webp'],
+  basketball: ['/images/Basketball.webp', '/images/running-3.webp'],
+  football: ['/images/Football.webp', '/images/running-2.webp'],
+};
+function coverFor(sport: string, i: number): string {
+  const pool = SPORT_COVERS[sport] ?? ['/images/Fitness.webp'];
+  return pool[i % pool.length];
+}
+
+const SPORT_TITLE: Record<string, string> = {
+  pickleball: 'Pickleball Coach', yoga: 'Yoga Coach', 'gym-fitness': 'Personal Trainer',
+  tennis: 'Tennis Coach', golf: 'Golf Coach', football: 'Football Coach',
+  basketball: 'Basketball Coach', boxing: 'Boxing Coach', pilates: 'Pilates Coach',
+};
+const SPORT_SKILLS: Record<string, string[]> = {
+  pickleball: ['Singles', 'Doubles', 'Drop Shot', 'Third Shot', 'Volley'],
+  yoga: ['Hatha', 'Vinyasa', 'Ashtanga', 'Yin Yoga', 'Pranayama'],
+  pilates: ['Mat Pilates', 'Reformer', 'Core', 'Mobility', 'Rehab'],
+  tennis: ['Forehand', 'Backhand', 'Serve', 'Footwork', 'Volley'],
+  golf: ['Driving', 'Short Game', 'Putting', 'Swing Analysis', 'Course Mgmt'],
+  'gym-fitness': ['Strength', 'Hypertrophy', 'Fat Loss', 'Mobility', 'Nutrition'],
+  boxing: ['Footwork', 'Combo', 'Defense', 'Conditioning', 'Sparring'],
+  basketball: ['Shooting', 'Dribbling', 'Defense', 'IQ', 'Conditioning'],
+  football: ['Passing', 'Finishing', 'Tactics', 'Fitness', 'Set-piece'],
+};
+const GEN_SPORTS = ['pickleball', 'yoga', 'gym-fitness', 'tennis', 'golf', 'boxing', 'pilates', 'basketball', 'football'];
+const GEN_PLACES: { city: string; district: string }[] = [
+  { city: 'TP. Hồ Chí Minh', district: 'Quận 1' }, { city: 'TP. Hồ Chí Minh', district: 'Quận 3' },
+  { city: 'TP. Hồ Chí Minh', district: 'Quận 5' }, { city: 'TP. Hồ Chí Minh', district: 'Quận 7' },
+  { city: 'TP. Hồ Chí Minh', district: 'Bình Thạnh' }, { city: 'TP. Hồ Chí Minh', district: 'Phú Nhuận' },
+  { city: 'TP. Hồ Chí Minh', district: 'TP. Thủ Đức' }, { city: 'TP. Hồ Chí Minh', district: 'Gò Vấp' },
+  { city: 'Hà Nội', district: 'Hoàn Kiếm' }, { city: 'Hà Nội', district: 'Ba Đình' },
+  { city: 'Hà Nội', district: 'Cầu Giấy' }, { city: 'Hà Nội', district: 'Đống Đa' },
+  { city: 'Hà Nội', district: 'Hai Bà Trưng' }, { city: 'Hà Nội', district: 'Tây Hồ' },
+  { city: 'Đà Nẵng', district: 'Hải Châu' }, { city: 'Đà Nẵng', district: 'Sơn Trà' },
+  { city: 'Đà Nẵng', district: 'Ngũ Hành Sơn' }, { city: 'Hải Phòng', district: 'Lê Chân' },
+  { city: 'Hải Phòng', district: 'Ngô Quyền' }, { city: 'Cần Thơ', district: 'Ninh Kiều' },
+  { city: 'Cần Thơ', district: 'Cái Răng' },
+];
+const LAST = ['Nguyễn', 'Trần', 'Lê', 'Phạm', 'Hoàng', 'Huỳnh', 'Phan', 'Vũ', 'Võ', 'Đặng', 'Bùi', 'Đỗ', 'Hồ', 'Ngô', 'Dương', 'Lý'];
+const MID_M = ['Văn', 'Hữu', 'Quang', 'Đức', 'Công', 'Thanh', 'Bá', 'Gia', 'Nhật', 'Khắc'];
+const MID_F = ['Thị', 'Ngọc', 'Thu', 'Diệu', 'Bích', 'Khánh', 'Phương', 'Thanh', 'Quỳnh', 'Mỹ'];
+const FIRST_M = ['Minh', 'Hoàng', 'Quốc', 'Tuấn', 'Long', 'Khoa', 'Nam', 'Sơn', 'Kiệt', 'Phong', 'Huy', 'Đạt', 'Trung', 'Bảo', 'Vinh'];
+const FIRST_F = ['Lan', 'Hương', 'Mai', 'Linh', 'Trang', 'Hà', 'Quỳnh', 'Yến', 'Vy', 'Thảo', 'Ngân', 'Châu', 'Nhi', 'Anh', 'Hằng'];
+const TAG_POOL = ['Top Rated', 'Phản hồi nhanh', 'Certified', 'Bestseller', 'Mới'];
+
+function genCoaches(start: number, count: number): Coach[] {
+  const out: Coach[] = [];
+  const seen = new Set(coachesMock.map((c) => c.slug));
+  for (let n = 0; n < count; n++) {
+    const i = start + n;
+    const female = i % 2 === 0;
+    const last = LAST[i % LAST.length];
+    const mid = female ? MID_F[(i * 3) % MID_F.length] : MID_M[(i * 3) % MID_M.length];
+    const first = female ? FIRST_F[(i * 5) % FIRST_F.length] : FIRST_M[(i * 5) % FIRST_M.length];
+    const fullName = `${last} ${mid} ${first}`;
+    let slug = slugify(fullName);
+    while (seen.has(slug)) slug = `${slugify(fullName)}-${i}`;
+    seen.add(slug);
+
+    const sport = GEN_SPORTS[i % GEN_SPORTS.length];
+    const sport2 = GEN_SPORTS[(i + 3) % GEN_SPORTS.length];
+    const place = GEN_PLACES[i % GEN_PLACES.length];
+    const rating = Math.round((4.3 + ((i * 7) % 7) / 10) * 10) / 10; // 4.3–4.9
+    const exp = 2 + (i % 13);
+    const price = 150000 + ((i * 5) % 10) * 50000; // 150k–600k
+    const reviews = 18 + ((i * 13) % 380);
+    const verified = i % 7 !== 0;
+    const tags: string[] = [];
+    if (rating >= 4.7) tags.push('Top Rated');
+    if (i % 3 === 0) tags.push('Phản hồi nhanh');
+    if (i % 4 === 0) tags.push(TAG_POOL[(i) % TAG_POOL.length]);
+
+    out.push({
+      id: `c${i}`,
+      slug,
+      fullName,
+      avatar: GEN_AVATARS[i % GEN_AVATARS.length],
+      coverImage: coverFor(sport, i),
+      bio: `${SPORT_TITLE[sport] ?? 'Coach'} với ${exp} năm kinh nghiệm. Đồng hành cùng học viên từ cơ bản đến nâng cao, xây dựng lộ trình phù hợp từng người và duy trì động lực tập luyện lâu dài.`,
+      title: SPORT_TITLE[sport] ?? 'Coach',
+      sports: sport === sport2 ? [sport] : [sport, sport2],
+      languages: i % 3 === 0 ? ['vi', 'en'] : ['vi'],
+      level: exp >= 10 ? 'professional' : exp >= 6 ? 'advanced' : exp >= 3 ? 'intermediate' : 'beginner',
+      experienceYears: exp,
+      rating,
+      reviewCount: reviews,
+      studentCount: 20 + ((i * 17) % 900),
+      courseCount: i % 4,
+      classCount: i % 3,
+      location: place,
+      pricePerHour: { amount: price, currency: 'VND' },
+      isVerified: verified,
+      isFeatured: i % 6 === 0,
+      gender: female ? 'female' : 'male',
+      teachingFormats: i % 2 === 0 ? ['1on1', 'group'] : ['1on1', 'small_group'],
+      responseRateMinutes: [15, 60, 120, 240, 1440][i % 5],
+      tags,
+      teachingFocus: [
+        `${SPORT_TITLE[sport] ?? 'Bộ môn'} cơ bản đến nâng cao cho mọi lứa tuổi.`,
+        'Cá nhân hoá bài tập theo mục tiêu và thể trạng.',
+        'Phân tích kỹ thuật, sửa lỗi chi tiết từng buổi.',
+        'Theo dõi tiến độ và điều chỉnh lộ trình định kỳ.',
+      ],
+      skills: SPORT_SKILLS[sport] ?? DEFAULT_SKILLS,
+      experiences: DEFAULT_EXPERIENCES,
+      certificates: DEFAULT_CERTIFICATES,
+      shortVideos: DEFAULT_SHORT_VIDEOS,
+      nextAvailableSlot: 'Tuần này',
+    });
+  }
+  return out;
+}
+
+coachesMock.push(...genCoaches(9, 42)); // c9 → c50 (tổng 50 coach)
+
 // ── Courses (per coach) ────────────────────────────────────────
 
 function defaultCourses(coachId: string): CoachCourse[] {

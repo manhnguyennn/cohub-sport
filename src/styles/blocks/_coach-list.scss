@@ -9,9 +9,12 @@
   background-size: cover;
   background-position: center;
   color: #fff;
-  padding-block: 56px 24px;
+  padding-block: 200px 24px;
   overflow: hidden;
+  @include respond-to(md) {
+      padding-block: 100px 24px;
 
+  }
   &__container {
     max-width: var(--container);
     margin-inline: auto;
@@ -706,7 +709,7 @@
 .coach-list__cards {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
+  gap: 32px 24px;
 
   @include respond-to(lg) { grid-template-columns: repeat(2, 1fr); }
   @include respond-to(sm) { grid-template-columns: 1fr; gap: 16px; }

@@ -1,5 +1,6 @@
 import type {
   Course,
+  CourseLevel,
   CourseListQuery,
   CourseSession,
   Enrollment,
@@ -349,6 +350,90 @@ const RAW: RawCourse[] = [
     tags: ['Mới', 'Linh hoạt'],
   },
 ];
+
+// ── Generate thêm course để dày data (tổng ~50) ────────────────
+const COURSE_COVERS: Record<string, string[]> = {
+  yoga: ['/images/yoga-2.webp', '/images/yoga-3.webp', '/images/yoga-4.webp', '/images/yoga-5.webp'],
+  pilates: ['/images/Pilates.webp', '/images/swiming-4.webp'],
+  pickleball: ['/images/pickleball-2.webp', '/images/pickleball-3.webp', '/images/pickleball-4.webp'],
+  tennis: ['/images/tennis.webp', '/images/tennis-2.webp', '/images/tennis-3.webp'],
+  golf: ['/images/golf-2.webp', '/images/golf-3.webp', '/images/golf-4.webp', '/images/golf-5.webp'],
+  'gym-fitness': ['/images/Fitness.webp', '/images/running-2.webp', '/images/running-3.webp'],
+  boxing: ['/images/Boxing.webp', '/images/Fitness.webp'],
+  basketball: ['/images/Basketball.webp'],
+  football: ['/images/Football.webp'],
+};
+const SPORT_NAME: Record<string, string> = {
+  yoga: 'Yoga', pilates: 'Pilates', pickleball: 'Pickleball', tennis: 'Tennis', golf: 'Golf',
+  'gym-fitness': 'Gym & Fitness', boxing: 'Boxing', basketball: 'Bóng rổ', football: 'Bóng đá',
+};
+const LEVEL_VI = { beginner: 'cơ bản', intermediate: 'trung cấp', advanced: 'nâng cao' } as const;
+const COURSE_CITIES = [
+  { city: 'TP. Hồ Chí Minh', district: 'Quận 1' }, { city: 'TP. Hồ Chí Minh', district: 'Bình Thạnh' },
+  { city: 'Hà Nội', district: 'Cầu Giấy' }, { city: 'Hà Nội', district: 'Đống Đa' },
+  { city: 'Đà Nẵng', district: 'Hải Châu' }, { city: 'Hải Phòng', district: 'Lê Chân' },
+  { city: 'Cần Thơ', district: 'Ninh Kiều' },
+];
+
+function genCourses(count: number): RawCourse[] {
+  const out: RawCourse[] = [];
+  const levels: CourseLevel[] = ['beginner', 'intermediate', 'advanced'];
+  const recPairs = [[2, 4], [3, 5], [2, 4, 6], [1, 3, 5], [0, 6]];
+  const times = ['06:00', '18:00', '07:00', '19:00', '09:00'];
+  for (let i = 0; i < count; i++) {
+    const coachId = `c${1 + (i % 50)}`;
+    const meta = coachMeta(coachId);
+    const sport = meta.sport;
+    const sportName = SPORT_NAME[sport] ?? 'Thể thao';
+    const level = levels[i % 3];
+    const flexible = i % 3 === 2;
+    const total = flexible ? [8, 10, 12, 16, 20][i % 5] : [6, 8, 10, 12][i % 4];
+    const dur = [60, 75, 90][i % 3];
+    const perSession = 150000 + ((i * 7) % 8) * 50000; // 150k–500k
+    const price = perSession * total;
+    const max = flexible ? 1 : [3, 4, 6, 8, 10][i % 5];
+    const startedPast = !flexible && i % 11 === 7;
+    const seats = flexible ? 1 : (i % 9 === 4 ? 0 : Math.max(0, max - (i % (max + 1))));
+    const status: Course['status'] = startedPast ? 'started' : seats === 0 ? 'full' : 'published';
+    const cover = (COURSE_COVERS[sport] ?? ['/images/Fitness.webp'])[i % (COURSE_COVERS[sport]?.length ?? 1)];
+    const cov = COURSE_CITIES[i % COURSE_CITIES.length];
+
+    out.push({
+      id: `cr_gen_${i + 1}`,
+      coachId,
+      title: flexible
+        ? `${sportName} 1-1 linh hoạt ${LEVEL_VI[level]} — ${total} buổi`
+        : `${sportName} ${LEVEL_VI[level]} — ${total} buổi`,
+      cover,
+      description: `Khoá ${sportName} ${LEVEL_VI[level]} cùng ${meta.coachName}. Lộ trình rõ ràng, bài bản, phù hợp với người muốn tiến bộ nhanh và duy trì thói quen tập luyện đều đặn.`,
+      whatYoullLearn: [
+        `Kỹ thuật ${sportName} nền tảng và đúng chuẩn`,
+        'Bài tập tăng dần độ khó theo trình độ',
+        'Lộ trình tự luyện tại nhà giữa các buổi',
+        'Cách phòng tránh chấn thương và hồi phục',
+      ],
+      requirements: 'Trang phục thoải mái. Đến sớm 10 phút. Mang theo nước uống.',
+      sport,
+      level,
+      scheduleType: flexible ? 'FLEXIBLE' : 'FIXED',
+      totalSessions: total,
+      sessionDurationMin: dur,
+      startDate: flexible ? undefined : isoFromNow(startedPast ? -4 : 3 + (i % 18), Number(times[i % times.length].slice(0, 2))),
+      recurringDays: flexible ? undefined : recPairs[i % recPairs.length],
+      recurringTime: flexible ? undefined : times[i % times.length],
+      flexibleValidityDays: flexible ? [60, 90, 120][i % 3] : undefined,
+      maxParticipants: max,
+      availableSeats: seats,
+      status,
+      price: { amount: price, currency: 'VND' },
+      location: cov,
+      tags: i % 4 === 0 ? ['Bestseller'] : i % 4 === 1 ? ['Mới'] : undefined,
+    });
+  }
+  return out;
+}
+
+RAW.push(...genCourses(38)); // tổng ~50 course
 
 export const coursesMock: Course[] = RAW.map((c) => {
   const meta = coachMeta(c.coachId);

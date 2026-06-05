@@ -21,7 +21,7 @@
     display: grid;
     grid-template-columns: 1fr;
     gap: 12px;
-
+    margin-bottom: $space-6;
     @include respond-from(md) { grid-template-columns: repeat(2, 1fr); gap: 14px; }
     @include respond-from(lg) { grid-template-columns: repeat(3, 1fr); }
   }
