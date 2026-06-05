@@ -7,7 +7,7 @@ const TABS = [
   { id: 'about',          label: 'Giới thiệu' },
   { id: 'experience',     label: 'Kinh nghiệm' },
   { id: 'videos',         label: 'Videos' },
-  { id: 'open-sessions',  label: 'Lịch mở' },
+  { id: 'open-sessions',  label: 'Lịch dạy mở' },
   { id: 'courses',        label: 'Khoá học' },
   { id: 'reviews',        label: 'Đánh giá' },
 ] as const;

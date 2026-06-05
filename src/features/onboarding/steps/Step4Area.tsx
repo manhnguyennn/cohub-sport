@@ -1,6 +1,7 @@
 'use client';
 
 import { cn } from '@lib/cn';
+import AppIcon, { type AppIconName } from '@components/ui/AppIcon';
 import type { OnboardingStep4 } from '@app-types/onboarding';
 import type { TeachingFormat } from '@app-types/coach';
 
@@ -15,10 +16,10 @@ const DISTRICTS: Record<string, string[]> = {
   'Đà Nẵng': ['Hải Châu', 'Thanh Khê', 'Sơn Trà', 'Ngũ Hành Sơn', 'Liên Chiểu'],
 };
 
-const FORMATS: { value: TeachingFormat; label: string; desc: string; icon: string }[] = [
-  { value: '1on1',        label: '1-1 cá nhân',     desc: 'Tập riêng với học viên, tối ưu kết quả',                icon: '👤' },
-  { value: 'small_group', label: 'Nhóm nhỏ 2-4',    desc: 'Nhóm bạn cùng tập, chia chi phí, có không khí cộng đồng', icon: '👥' },
-  { value: 'group',       label: 'Lớp đông 5+',     desc: 'Lớp cố định nhiều học viên, phù hợp Yoga/Fitness',        icon: '👨‍👩‍👧‍👦' },
+const FORMATS: { value: TeachingFormat; label: string; desc: string; icon: AppIconName }[] = [
+  { value: '1on1',        label: '1-1 cá nhân',     desc: 'Tập riêng với học viên, tối ưu kết quả',                icon: 'user' },
+  { value: 'small_group', label: 'Nhóm nhỏ 2-4',    desc: 'Nhóm bạn cùng tập, chia chi phí, có không khí cộng đồng', icon: 'people' },
+  { value: 'group',       label: 'Lớp đông 5+',     desc: 'Lớp cố định nhiều học viên, phù hợp Yoga/Fitness',        icon: 'peopleAlt' },
 ];
 
 export default function Step4Area({ value, onChange }: Props) {
@@ -91,7 +92,7 @@ export default function Step4Area({ value, onChange }: Props) {
                 onChange={() => toggleFormat(f.value)}
               />
               <div>
-                <strong>{f.icon} {f.label}</strong>
+                <strong><AppIcon name={f.icon} size={16} /> {f.label}</strong>
                 <span>{f.desc}</span>
               </div>
             </label>

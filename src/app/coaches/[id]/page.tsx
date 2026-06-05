@@ -1,13 +1,12 @@
 import { notFound } from 'next/navigation';
 import { coachService } from '@services/coach.service';
+import { courseService } from '@services/course.service';
 import { reviewService } from '@services/review.service';
 import { openSessionService } from '@services/openSession.service';
-import { Button, MobileStickyBar } from '@components/ui';
-import { ROUTES } from '@config/routes';
-import { formatVND } from '@lib/date';
 import type { Coach, RatingDistribution } from '@app-types/coach';
 
 import CoachProfileHero from '@features/coaches/components/CoachProfileHero';
+import CoachBookingLauncher from '@features/coaches/components/CoachBookingLauncher';
 import CoachProfileTabs from '@features/coaches/components/CoachProfileTabs';
 import CoachAbout from '@features/coaches/components/CoachAbout';
 import CoachExperienceSection from '@features/coaches/components/CoachExperienceSection';
@@ -47,7 +46,7 @@ export default async function CoachDetailPage({ params }: PageProps) {
   // Parallel: data phụ trợ — đều có fallback an toàn
   const [reviews, courses, openSessions, similar, distribution] = await Promise.all([
     reviewService.listByCoach(coach.id).catch(() => []),
-    coachService.courses(coach.id).catch(() => []),
+    courseService.publishedByCoach(coach.id).catch(() => []),
     openSessionService.list({ coachId: coach.id, scope: 'upcoming' }).catch(() => []),
     coachService.similar(coach.id).catch(() => []),
     coachService.ratingDistribution(coach.id).catch<RatingDistribution>(() => ({
@@ -59,9 +58,6 @@ export default async function CoachDetailPage({ params }: PageProps) {
 
   // Tìm session sắp tới nhất để mobile sticky bar trỏ tới
   const nextSession = openSessions[0];
-  const stickyHref = nextSession
-    ? ROUTES.bookingSession(nextSession.id)
-    : `#open-sessions`; // scroll xuống section nếu chưa có lịch nào
 
   return (
     <>
@@ -80,7 +76,12 @@ export default async function CoachDetailPage({ params }: PageProps) {
 
             {/* Desktop sidebar — ẩn trên mobile */}
             <div className="coach-detail__sidebar hide-mobile">
-              <CoachBookingPanel coach={coach} />
+              <CoachBookingPanel
+                coach={coach}
+                openSessions={openSessions}
+                nextSession={nextSession}
+                courseCount={courses.length}
+              />
             </div>
           </div>
 
@@ -92,25 +93,8 @@ export default async function CoachDetailPage({ params }: PageProps) {
         </div>
       </div>
 
-      {/* Mobile sticky CTA bar — chỉ hiện < 768px */}
-      <MobileStickyBar
-        info={
-          <>
-            <span className="mobile-sticky-bar__label">
-              {nextSession ? 'Lịch gần nhất từ' : 'Học phí từ'}
-            </span>
-            <span className="mobile-sticky-bar__price">
-              {formatVND((nextSession?.price.amount ?? coach.pricePerHour.amount))}
-              <small>{nextSession ? '/buổi' : '/giờ'}</small>
-            </span>
-          </>
-        }
-        action={
-          <Button href={stickyHref} variant="primary" size="md">
-            {nextSession ? 'Đặt buổi này' : 'Xem lịch mở'}
-          </Button>
-        }
-      />
+      {/* Mobile sticky CTA bar — mở modal đặt lịch */}
+      <CoachBookingLauncher coach={coach} openSessions={openSessions} variant="sticky" />
 
       <CoachSimilarSection coaches={similar} />
       <CoachWhyCohub />

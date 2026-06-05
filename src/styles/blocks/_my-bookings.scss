@@ -32,6 +32,7 @@
   margin-bottom: 16px;
   overflow-x: auto;
   scrollbar-width: none;
+  @include edge-scroll;
 
   &__btn {
     padding: 12px 18px;

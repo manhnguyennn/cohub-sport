@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { useTransition, useState, useEffect } from 'react';
 import { EmptyState, MobileFilterWrapper } from '@components/ui';
+import AppIcon from '@components/ui/AppIcon';
 import { ROUTES } from '@config/routes';
 import { formatVND, formatDate } from '@lib/date';
 import { cn } from '@lib/cn';
@@ -227,7 +228,8 @@ function CourseCard({ course }: { course: Course }) {
           </span>
         )}
         <span className={`course-card__type course-card__type--${course.scheduleType.toLowerCase()}`}>
-          {course.scheduleType === 'FIXED' ? '📅 Lịch cố định' : '⚡ Linh hoạt'}
+          <AppIcon name={course.scheduleType === 'FIXED' ? 'calendar' : 'flash'} size={13} />
+          {course.scheduleType === 'FIXED' ? 'Lịch cố định' : 'Linh hoạt'}
         </span>
       </div>
 

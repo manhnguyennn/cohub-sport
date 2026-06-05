@@ -2,6 +2,7 @@
 
 import { useRef } from 'react';
 import Image from 'next/image';
+import AppIcon from '@components/ui/AppIcon';
 import type { OnboardingStep1 } from '@app-types/onboarding';
 import type { Gender } from '@app-types/coach';
 
@@ -46,7 +47,7 @@ export default function Step1Basic({ value, onChange }: Props) {
               <Image src={value.avatar} alt="avatar" width={96} height={96} unoptimized />
             </div>
           ) : (
-            <div className="step-form__avatar-placeholder">👤</div>
+            <div className="step-form__avatar-placeholder"><AppIcon name="user" size={36} /></div>
           )}
           <div>
             <button type="button" className="step-form__upload-btn" onClick={() => fileRef.current?.click()}>

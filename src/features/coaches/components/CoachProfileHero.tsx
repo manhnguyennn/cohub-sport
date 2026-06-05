@@ -1,9 +1,24 @@
 import Image from 'next/image';
+import Link from 'next/link';
+import { ROUTES } from '@config/routes';
+import { formatMoney } from '@lib/format';
 import type { Coach } from '@app-types/coach';
 
 type CoachProfileHeroProps = { coach: Coach };
 
+/** "2 giờ" / "24 giờ" — đổi response time phút sang text thân thiện */
+function responseLabel(minutes?: number): string | null {
+  if (minutes == null) return null;
+  if (minutes <= 120) return 'Phản hồi trong vòng 2 giờ';
+  if (minutes <= 60 * 24) return 'Phản hồi trong vòng 24 giờ';
+  return 'Phản hồi trong 1-2 ngày';
+}
+
 export default function CoachProfileHero({ coach }: CoachProfileHeroProps) {
+  const sportLabel = coach.sports[0];
+  const response = responseLabel(coach.responseRateMinutes);
+  const isOnline = coach.responseRateMinutes != null && coach.responseRateMinutes <= 120;
+
   return (
     <section className="coach-hero-detail">
       <div className="coach-hero-detail__cover">
@@ -18,9 +33,23 @@ export default function CoachProfileHero({ coach }: CoachProfileHeroProps) {
       </div>
 
       <div className="coach-hero-detail__container">
+        {/* Breadcrumb */}
+        <nav className="coach-hero-detail__breadcrumb" aria-label="Breadcrumb">
+          <Link href={ROUTES.coaches}>Tìm coach</Link>
+          {sportLabel && (
+            <>
+              <span aria-hidden>›</span>
+              <Link href={`${ROUTES.coaches}?sport=${sportLabel}`}>{sportLabel}</Link>
+            </>
+          )}
+          <span aria-hidden>›</span>
+          <span className="coach-hero-detail__crumb-current">{coach.fullName}</span>
+        </nav>
+
         <div className="coach-hero-detail__bar">
           <div className="coach-hero-detail__avatar">
             <Image src={coach.avatar} alt={coach.fullName} fill sizes="110px" />
+            {isOnline && <span className="coach-hero-detail__online" aria-label="Đang hoạt động" />}
           </div>
 
           <div className="coach-hero-detail__main">
@@ -31,12 +60,15 @@ export default function CoachProfileHero({ coach }: CoachProfileHeroProps) {
                   <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
                     <path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
                   </svg>
-                  Professional Coach
+                  Đã xác minh
                 </span>
               )}
             </div>
 
-            <div className="coach-hero-detail__role">{coach.title}</div>
+            <div className="coach-hero-detail__role">
+              {coach.title ?? 'Coach'}
+              {coach.location.city ? ` · ${coach.location.city}` : ''}
+            </div>
 
             <div className="coach-hero-detail__meta">
               <span>
@@ -44,7 +76,7 @@ export default function CoachProfileHero({ coach }: CoachProfileHeroProps) {
                   <path d="M12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61z" />
                 </svg>
                 <strong>{coach.rating.toFixed(1)}</strong>
-                <span>({coach.reviewCount} reviews)</span>
+                <span>({coach.reviewCount} đánh giá)</span>
               </span>
               {coach.studentCount != null && (
                 <span>
@@ -65,6 +97,18 @@ export default function CoachProfileHero({ coach }: CoachProfileHeroProps) {
                 {coach.location.city}
               </span>
             </div>
+
+            {response && (
+              <div className="coach-hero-detail__response">
+                <span className="coach-hero-detail__response-dot" aria-hidden />
+                {response}
+              </div>
+            )}
+
+            {/* Mobile-only price chip (C13) */}
+            <span className="coach-hero-detail__price-chip">
+              Từ {formatMoney(coach.pricePerHour)}/giờ
+            </span>
           </div>
 
           <div className="coach-hero-detail__actions">

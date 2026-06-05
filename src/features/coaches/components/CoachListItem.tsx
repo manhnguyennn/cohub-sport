@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@components/ui';
+import AppIcon from '@components/ui/AppIcon';
 import { ROUTES } from '@config/routes';
 import { formatMoney } from '@lib/format';
 import type { Coach } from '@app-types/coach';
@@ -79,7 +80,7 @@ export default function CoachListItem({ coach }: CoachListItemProps) {
             </span>
           )}
           <span className="coach-item__meta-item">
-            📍 {coach.location.city}
+            <AppIcon name="location" size={14} /> {coach.location.city}
           </span>
           {coach.title && (
             <span className="coach-item__meta-item" style={{ color: 'var(--text-muted)' }}>

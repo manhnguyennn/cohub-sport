@@ -19,6 +19,7 @@ export default function CoachListHeader({ total }: { total: number }) {
 
   const [keyword, setKeyword] = useState(params.get('q') ?? '');
   const sortValue = params.get('sort') ?? '';
+  const currentQ = params.get('q') ?? '';
 
   useEffect(() => {
     setKeyword(params.get('q') ?? '');
@@ -32,6 +33,14 @@ export default function CoachListHeader({ total }: { total: number }) {
     });
     startTransition(() => router.push(`${pathname}?${next.toString()}`, { scroll: false }));
   }
+
+  // Live search — debounce 450ms khi user gõ
+  useEffect(() => {
+    if (keyword === currentQ) return;
+    const t = setTimeout(() => commit({ q: keyword }), 450);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [keyword]);
 
   return (
     <div className="coach-list-header">

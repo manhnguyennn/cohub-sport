@@ -2,11 +2,20 @@ import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import { courseService } from '@services/course.service';
+import { coachService } from '@services/coach.service';
+import { reviewService } from '@services/review.service';
 import { ROUTES } from '@config/routes';
 import { formatDate, formatTime, formatVND } from '@lib/date';
 import { Button, MobileStickyBar } from '@components/ui';
+import AppIcon from '@components/ui/AppIcon';
+import { TrustStrip } from '@components/shared';
 import CourseEnrollCta from '@features/courses/CourseEnrollCta';
+import CourseReviews from '@features/courses/CourseReviews';
+import CourseFAQ from '@features/courses/CourseFAQ';
+import CourseCrossSell from '@features/courses/CourseCrossSell';
 import type { CourseSession } from '@app-types/course';
+import type { Coach } from '@app-types/coach';
+import type { Review } from '@app-types/review';
 
 const DAY_LABEL = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
 
@@ -28,11 +37,21 @@ export default async function CourseDetailPage({ params }: PageProps) {
   } catch {
     notFound();
   }
-  const sessions = await courseService.sessions(course.id).catch<CourseSession[]>(() => []);
+
+  const [sessions, coach, reviews] = await Promise.all([
+    courseService.sessions(course.id).catch<CourseSession[]>(() => []),
+    coachService.getById(course.coachId).catch<Coach | null>(() => null),
+    reviewService.listByCoach(course.coachId).catch<Review[]>(() => []),
+  ]);
 
   const isFull = course.availableSeats === 0 || course.status === 'full';
   const isStarted = course.status === 'started';
   const canEnroll = !isFull && !isStarted && course.status === 'published';
+
+  // Slug coach để link đúng (K4) — fallback id nếu chưa fetch được
+  const coachSlug = coach?.slug ?? course.coachId;
+  const endDate = sessions.length ? sessions[sessions.length - 1].startsAt : undefined;
+  const sportLabel = course.sport;
 
   return (
     <div className="course-detail-page bottom-safe-pad">
@@ -42,16 +61,63 @@ export default async function CourseDetailPage({ params }: PageProps) {
           <Image src={course.cover} alt="" fill sizes="100vw" priority style={{ objectFit: 'cover' }} />
         </div>
         <div className="course-detail-hero__container">
+          {/* Breadcrumb (K11) */}
+          <nav className="course-detail-hero__breadcrumb" aria-label="Breadcrumb">
+            <Link href={ROUTES.home}>Trang chủ</Link>
+            <span aria-hidden>›</span>
+            <Link href={ROUTES.courses}>Khoá học</Link>
+            <span aria-hidden>›</span>
+            <Link href={`${ROUTES.courses}?sport=${sportLabel}`}>{sportLabel}</Link>
+          </nav>
+
           <span className="course-detail-hero__type">
-            {course.scheduleType === 'FIXED' ? '📅 Lịch cố định' : '⚡ Linh hoạt'}
+            <AppIcon name={course.scheduleType === 'FIXED' ? 'calendar' : 'flash'} size={14} />
+            {course.scheduleType === 'FIXED' ? 'Lịch cố định' : 'Linh hoạt'}
           </span>
           <h1>{course.title}</h1>
-          <Link href={ROUTES.coachDetail(course.coachId)} className="course-detail-hero__coach">
+
+          {/* Coach card lớn (K2) */}
+          <div className="course-coach-card">
             {course.coachAvatar && (
-              <Image src={course.coachAvatar} alt={course.coachName} width={32} height={32} />
+              <Image
+                className="course-coach-card__avatar"
+                src={course.coachAvatar}
+                alt={course.coachName}
+                width={64}
+                height={64}
+                style={{ objectFit: 'cover', borderRadius: '999px' }}
+              />
             )}
-            <span>HLV {course.coachName}</span>
-          </Link>
+            <div className="course-coach-card__body">
+              <div className="course-coach-card__name">
+                {course.coachName}
+                {coach?.isVerified && (
+                  <span className="course-coach-card__verified">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+                      <path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+                    </svg>
+                    Đã xác minh
+                  </span>
+                )}
+              </div>
+              <div className="course-coach-card__meta">
+                {coach?.title ?? 'Coach'}
+                {coach?.experienceYears != null && <> · {coach.experienceYears} năm KN</>}
+              </div>
+              {coach && (
+                <div className="course-coach-card__rating">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="#F59E0B" aria-hidden>
+                    <path d="M12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61z" />
+                  </svg>
+                  <strong>{coach.rating.toFixed(1)}</strong>
+                  <span>({coach.reviewCount} đánh giá)</span>
+                </div>
+              )}
+              <Link href={ROUTES.coachDetail(coachSlug)} className="course-coach-card__link">
+                Xem hồ sơ Coach {course.coachName} →
+              </Link>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -127,11 +193,40 @@ export default async function CourseDetailPage({ params }: PageProps) {
                 </div>
               </section>
             )}
+
+            {/* Cross-sell sang Flow 2 (K5) */}
+            <CourseCrossSell
+              coachName={course.coachName}
+              coachSlug={coachSlug}
+              fromPrice={coach?.pricePerHour.amount}
+            />
+
+            {/* Reviews (K7) */}
+            {coach && (
+              <CourseReviews
+                reviews={reviews}
+                coachName={course.coachName}
+                coachSlug={coachSlug}
+                rating={coach.rating}
+                reviewCount={coach.reviewCount}
+              />
+            )}
+
+            {/* Course FAQ (K8) */}
+            <CourseFAQ />
+
+            {/* Trust strip (K9) */}
+            <TrustStrip />
           </main>
 
           {/* Right sticky CTA — desktop only */}
           <aside className="course-detail-aside hide-mobile">
-            <CourseEnrollCta course={course} />
+            <CourseEnrollCta
+              course={course}
+              coachSlug={coachSlug}
+              endDate={endDate}
+              coachFromPrice={coach?.pricePerHour.amount}
+            />
           </aside>
         </div>
       </div>

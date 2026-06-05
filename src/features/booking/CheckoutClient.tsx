@@ -7,6 +7,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@components/ui';
+import AppIcon, { type AppIconName } from '@components/ui/AppIcon';
 import { ROUTES } from '@config/routes';
 import { formatNextSlot } from '@lib/date';
 import { formatMoney } from '@lib/format';
@@ -21,10 +22,10 @@ import FakePaymentModal from './FakePaymentModal';
 import { cn } from '@lib/cn';
 import type { PaymentMethod } from '@app-types/payment';
 
-const METHODS: { id: PaymentMethod; label: string; description: string; emoji: string }[] = [
-  { id: 'vnpay',   label: 'VNPay',   description: 'Thẻ ATM nội địa + Visa/Master',        emoji: '🏦' },
-  { id: 'momo',    label: 'MoMo',    description: 'Ví điện tử MoMo — quét QR',              emoji: '🌸' },
-  { id: 'zalopay', label: 'ZaloPay', description: 'Ví điện tử ZaloPay — thanh toán nhanh',  emoji: '⚡' },
+const METHODS: { id: PaymentMethod; label: string; description: string; icon: AppIconName }[] = [
+  { id: 'vnpay',   label: 'VNPay',   description: 'Thẻ ATM nội địa + Visa/Master',        icon: 'bank' },
+  { id: 'momo',    label: 'MoMo',    description: 'Ví điện tử MoMo — quét QR',              icon: 'wallet' },
+  { id: 'zalopay', label: 'ZaloPay', description: 'Ví điện tử ZaloPay — thanh toán nhanh',  icon: 'flash' },
 ];
 
 export default function CheckoutClient() {
@@ -144,7 +145,7 @@ export default function CheckoutClient() {
                         onChange={() => setMethod(m.id)}
                       />
                       <div>
-                        <strong>{m.emoji} {m.label}</strong>
+                        <strong><AppIcon name={m.icon} size={16} /> {m.label}</strong>
                         <span>{m.description}</span>
                       </div>
                     </label>
@@ -157,7 +158,7 @@ export default function CheckoutClient() {
                   padding: 12, background: 'var(--danger-light)', color: 'var(--danger)',
                   borderRadius: 8, fontSize: 13,
                 }}>
-                  ⚠ Demo Mode: <strong>Force payment fail</strong> đang bật — thanh toán sẽ thất bại.
+                  <AppIcon name="warning" size={14} /> Demo Mode: <strong>Force payment fail</strong> đang bật — thanh toán sẽ thất bại.
                 </div>
               )}
             </div>

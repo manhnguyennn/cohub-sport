@@ -37,7 +37,7 @@ const RAW: RawCourse[] = [
     id: 'cr_yoga_basic',
     coachId: 'c2',          // Trần Minh Hoà (Yoga)
     title: 'Yoga sáng cho người mới — 8 buổi',
-    cover: '/images/Yoga.webp',
+    cover: '/images/yoga-2.webp',
     description: 'Khoá Yoga sáng dành cho người mới bắt đầu. Tập trung vào hơi thở, tư thế cơ bản, và xây dựng thói quen luyện tập đều đặn.',
     whatYoullLearn: [
       '12 tư thế Yoga nền tảng (Hatha)',
@@ -65,7 +65,7 @@ const RAW: RawCourse[] = [
     id: 'cr_yoga_vinyasa',
     coachId: 'c2',
     title: 'Vinyasa Flow Trung cấp — 8 buổi',
-    cover: '/images/Pilates.webp',
+    cover: '/images/yoga-3.webp',
     description: 'Nâng cao sức bền và linh hoạt với chuỗi Vinyasa Flow. Phù hợp người đã tập Yoga ≥3 tháng.',
     whatYoullLearn: [
       'Chuỗi Sun Salutation A/B nhuần nhuyễn',
@@ -119,7 +119,7 @@ const RAW: RawCourse[] = [
     id: 'cr_pickleball_basic',
     coachId: 'c1',          // Nguyễn Văn An
     title: 'Pickleball nhập môn — 6 buổi',
-    cover: '/images/Pickleball.webp',
+    cover: '/images/pickleball-2.webp',
     description: 'Khoá Pickleball cho người mới. Học cầm vợt, di chuyển, các đòn cơ bản và luật chơi.',
     whatYoullLearn: [
       'Cầm vợt continental & eastern grip',
@@ -145,7 +145,7 @@ const RAW: RawCourse[] = [
     id: 'cr_pickleball_inter',
     coachId: 'c1',
     title: 'Pickleball trung cấp & đấu giải — 8 buổi',
-    cover: '/images/Pickleball.webp',
+    cover: '/images/pickleball-3.webp',
     description: 'Nâng tầm kỹ thuật, chiến thuật và sẵn sàng thi đấu giải hạng 3.5+.',
     whatYoullLearn: [
       'Chiến thuật stacking và poaching',
@@ -171,7 +171,7 @@ const RAW: RawCourse[] = [
     id: 'cr_golf_short_game',
     coachId: 'c5',          // Đỗ Anh Tuấn
     title: 'Golf — Short Game Mastery — 6 buổi',
-    cover: '/images/Golf.webp',
+    cover: '/images/golf-2.webp',
     description: 'Khoá chuyên sâu về Short Game (chip, pitch, bunker, putt) — phần chiếm 60% scoring.',
     whatYoullLearn: [
       'Chip với 3 club: PW/SW/LW',
@@ -224,7 +224,7 @@ const RAW: RawCourse[] = [
     id: 'cr_tennis_beginner',
     coachId: 'c4',          // Phạm Thuỳ Linh
     title: 'Tennis cho người mới — 10 buổi',
-    cover: '/images/Container.webp',
+    cover: '/images/tennis.webp',
     description: 'Khoá toàn diện làm quen Tennis. Học vợt, đánh ổn định, ra sân đôi với bạn.',
     whatYoullLearn: [
       'Cầm vợt eastern & continental',
@@ -252,7 +252,7 @@ const RAW: RawCourse[] = [
     id: 'cr_flex_yoga_10',
     coachId: 'c2',
     title: 'Yoga 1-1 linh hoạt — 10 buổi (3 tháng)',
-    cover: '/images/Yoga.webp',
+    cover: '/images/yoga-4.webp',
     description: 'Đặt lịch theo nhu cầu trong vòng 90 ngày. Coach Hoà 1-1, lộ trình cá nhân hoá.',
     whatYoullLearn: [
       'Đặt lịch chủ động theo giờ rảnh',
@@ -277,7 +277,7 @@ const RAW: RawCourse[] = [
     id: 'cr_flex_gym_20',
     coachId: 'c3',
     title: 'Gym 1-1 linh hoạt — 20 buổi (6 tháng)',
-    cover: '/images/Fitness.webp',
+    cover: '/images/running-2.webp',
     description: 'Gói lớn cho người tập serious. 20 buổi 1-1 trong 6 tháng + tư vấn dinh dưỡng.',
     whatYoullLearn: [
       'Lộ trình 6 tháng theo mục tiêu (cut/bulk/strength)',
@@ -302,7 +302,7 @@ const RAW: RawCourse[] = [
     id: 'cr_flex_tennis_8',
     coachId: 'c4',
     title: 'Tennis 1-1 linh hoạt — 8 buổi (2 tháng)',
-    cover: '/images/Container-_1_.webp',
+    cover: '/images/tennis-2.webp',
     description: 'Lộ trình cải thiện kỹ thuật cá nhân. Coach Linh sẽ review video swing mỗi tuần.',
     whatYoullLearn: [
       'Phân tích swing qua video',
@@ -327,7 +327,7 @@ const RAW: RawCourse[] = [
     id: 'cr_flex_pickleball_5',
     coachId: 'c1',
     title: 'Pickleball 1-1 linh hoạt — 5 buổi (1 tháng)',
-    cover: '/images/Pickleball.webp',
+    cover: '/images/pickleball-4.webp',
     description: 'Gói nhỏ thử nghiệm — 5 buổi 1-1 với HLV An để sửa kỹ thuật riêng.',
     whatYoullLearn: [
       'Sửa kỹ thuật cá nhân',

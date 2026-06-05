@@ -9,13 +9,13 @@ const SELF_LIST = [
 ];
 
 const COHUB_LIST = [
-  'Personalized for you',
-  'Coaches all over the world',
-  '500+ elite coaches with reviews and sample lessons',
-  'Suitable for all levels',
-  'Use app to communicate with coach anytime',
-  'Coach is available on demand',
-  'Most effective and affordable way to learn',
+  'Cá nhân hoá cho bạn',
+  'Coach trên khắp Việt Nam',
+  '500+ coach đã xác minh, có video & đánh giá thật',
+  'Phù hợp mọi trình độ',
+  'Nhắn tin trao đổi với coach bất cứ lúc nào',
+  'Coach sẵn sàng theo nhu cầu của bạn',
+  'Cách học hiệu quả và tiết kiệm nhất',
 ];
 
 export default function CoachWhyCohub() {

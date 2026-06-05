@@ -15,6 +15,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Button, SkeletonDetail } from '@components/ui';
+import AppIcon, { type AppIconName } from '@components/ui/AppIcon';
 import { ROUTES } from '@config/routes';
 import { formatVND, formatNextSlot } from '@lib/date';
 import { dashboardService } from '@services/dashboard.service';
@@ -64,7 +65,7 @@ export default function CoachDashboardClient() {
         {/* Welcome banner */}
         <header className="cms-banner">
           <div>
-            <strong>🎉 Profile của bạn đang online</strong>
+            <strong>Profile của bạn đang online</strong>
             <p>
               Mở <em>lịch dạy mở</em> để học viên đặt từng buổi linh hoạt, hoặc tạo <em>khoá học</em>{' '}
               dài hạn cho gói trọn vẹn.
@@ -83,22 +84,22 @@ export default function CoachDashboardClient() {
         {/* Quick nav strip — coach CMS modules */}
         <nav className="cms-quicknav" aria-label="Coach modules">
           <Link href={ROUTES.coachSessions} className="cms-quicknav__item">
-            <span className="cms-quicknav__icon" aria-hidden>🗓</span>
+            <span className="cms-quicknav__icon" aria-hidden><AppIcon name="calendar" size={22} /></span>
             <strong>Lịch dạy mở</strong>
             <small>Từng buổi cụ thể có giá riêng</small>
           </Link>
           <Link href={ROUTES.coachCourses} className="cms-quicknav__item">
-            <span className="cms-quicknav__icon" aria-hidden>📚</span>
+            <span className="cms-quicknav__icon" aria-hidden><AppIcon name="book" size={22} /></span>
             <strong>Khoá học</strong>
             <small>Gói nhiều buổi trọn gói</small>
           </Link>
           <Link href={ROUTES.coachCalendar} className="cms-quicknav__item">
-            <span className="cms-quicknav__icon" aria-hidden>📅</span>
+            <span className="cms-quicknav__icon" aria-hidden><AppIcon name="calendarTick" size={22} /></span>
             <strong>Lịch tổng quan</strong>
             <small>Xem tuần/tháng, block giờ</small>
           </Link>
           <Link href={ROUTES.coachBookings} className="cms-quicknav__item">
-            <span className="cms-quicknav__icon" aria-hidden>💼</span>
+            <span className="cms-quicknav__icon" aria-hidden><AppIcon name="briefcase" size={22} /></span>
             <strong>Booking đang chờ</strong>
             <small>Phản hồi đặt lịch của học viên</small>
           </Link>
@@ -110,24 +111,24 @@ export default function CoachDashboardClient() {
             label="GMV tháng này"
             value={formatVND(data.stats.gmvMonth.amount)}
             delta={data.stats.gmvDelta}
-            icon="💰"
+            icon="wallet"
           />
           <StatCard
             label="Buổi đã dạy"
             value={`${data.stats.sessionsMonth} buổi`}
             delta={data.stats.sessionsDelta}
-            icon="🎯"
+            icon="target"
           />
           <StatCard
             label="Học viên mới"
             value={`${data.stats.newLearners} người`}
             delta={data.stats.newLearnersDelta}
-            icon="👥"
+            icon="people"
           />
           <StatCard
             label="Đánh giá trung bình"
             value={`${data.stats.avgRating.toFixed(1)} ★`}
-            icon="⭐"
+            icon="star"
             valueClass="cms-stat__value--warning"
           />
         </section>
@@ -269,12 +270,12 @@ function StatCard({ label, value, delta, icon, valueClass }: {
   label: string;
   value: string;
   delta?: number;
-  icon: string;
+  icon: AppIconName;
   valueClass?: string;
 }) {
   return (
     <div className="cms-stat">
-      <span className="cms-stat__icon" aria-hidden>{icon}</span>
+      <span className="cms-stat__icon" aria-hidden><AppIcon name={icon} size={22} /></span>
       <span className="cms-stat__label">{label}</span>
       <strong className={cn('cms-stat__value', valueClass)}>{value}</strong>
       {delta !== undefined && (

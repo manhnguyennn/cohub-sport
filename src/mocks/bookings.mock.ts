@@ -160,6 +160,10 @@ registerMock('POST /bookings', ({ body }): Booking => {
   const input = body as CreateBookingInput & { userId?: string };
   const meta = denormCoach(input.coachId);
 
+  // Giá: ưu tiên giá truyền vào (open session / tạm tính custom), fallback giá coach
+  const baseAmount = input.price ?? meta.price.amount;
+  const base = { amount: baseAmount, currency: 'VND' as const };
+
   // Apply promo nếu có
   let discount = 0;
   let promoCode: string | undefined;
@@ -167,12 +171,12 @@ registerMock('POST /bookings', ({ body }): Booking => {
     const p = promoMocks.find((x) => x.code.toUpperCase() === input.promoCode!.toUpperCase());
     if (p) {
       promoCode = p.code;
-      discount = p.type === 'flat' ? p.value : Math.floor((meta.price.amount * p.value) / 100);
+      discount = p.type === 'flat' ? p.value : Math.floor((baseAmount * p.value) / 100);
     }
   }
 
   const booking: Booking = {
-    id: `b_${Date.now()}`,
+    id: `b_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
     userId: input.userId ?? 'u_linh',           // default current learner = Linh
     coachId: input.coachId,
     coachName: meta.coachName,
@@ -180,13 +184,15 @@ registerMock('POST /bookings', ({ body }): Booking => {
     sportSlug: input.sportSlug,
     startsAt: input.startsAt,
     durationMinutes: input.durationMinutes ?? 60,
-    price: { amount: meta.price.amount - discount, currency: 'VND' },
-    subtotal: meta.price,
+    price: { amount: baseAmount - discount, currency: 'VND' },
+    subtotal: base,
     discount: discount > 0 ? { amount: discount, currency: 'VND' } : undefined,
     promoCode,
     status: 'pending',
     location: input.location,
-    note: input.note,
+    note: input.isCustomRequest
+      ? (input.note ? `${input.note} · (Đặt lịch riêng — chờ coach xác nhận giá)` : 'Đặt lịch riêng — chờ coach xác nhận giá')
+      : input.note,
     healthNote: input.healthNote,
     participants: input.participants ?? 1,
     createdAt: new Date().toISOString(),

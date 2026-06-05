@@ -5,20 +5,20 @@ import { cn } from '@lib/cn';
 
 const FAQS = [
   {
-    q: 'What is an online golf lesson?',
-    a: 'Online lessons let bạn gửi video swing để coach review và cho feedback chi tiết, kết hợp video call 1-1 để hướng dẫn từng tư thế.',
+    q: 'Tôi cần chuẩn bị gì cho buổi tập đầu tiên?',
+    a: 'Bạn chỉ cần trang phục thoải mái và đến sớm 10 phút. Nếu buổi tập yêu cầu dụng cụ riêng, coach sẽ nhắn trước cho bạn.',
   },
   {
-    q: 'How do I sign up for Skillest?',
-    a: 'Nhấn nút đăng ký, hoàn tất profile, chọn HLV phù hợp với mục tiêu của bạn và bắt đầu lộ trình.',
+    q: 'Coach có hỗ trợ học viên mới hoàn toàn không?',
+    a: 'Có. Coach sẽ đánh giá trình độ ở buổi đầu và thiết kế lộ trình phù hợp với người mới bắt đầu.',
   },
   {
-    q: 'How do I choose a coach?',
-    a: 'Lọc theo bộ môn, ngôn ngữ, mức giá và đọc đánh giá của học viên khác. CoHub gợi ý HLV phù hợp với bạn.',
+    q: 'Tôi nên đặt buổi 1-1 hay đăng ký khoá học?',
+    a: 'Đặt buổi 1-1 (Lịch dạy mở) phù hợp khi bạn muốn linh hoạt. Khoá học phù hợp khi bạn muốn lộ trình nhiều buổi với mức giá trọn gói tiết kiệm hơn.',
   },
   {
-    q: 'What are the different types of lesson plans I can purchase?',
-    a: 'Có các gói single session, 4-session pack, 8-session pack hoặc lộ trình theo tháng. Mỗi gói có ưu đãi khác nhau.',
+    q: 'Huỷ buổi tập thế nào?',
+    a: 'Bạn huỷ trực tiếp trong mục Lịch của tôi. Huỷ trước 24 giờ được hoàn 100%, trong vòng 24 giờ hoàn 50%. Nếu coach huỷ, bạn được hoàn 100%.',
   },
 ];
 

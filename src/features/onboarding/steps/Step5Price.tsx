@@ -1,6 +1,7 @@
 'use client';
 
 import { cn } from '@lib/cn';
+import AppIcon from '@components/ui/AppIcon';
 import { formatVND } from '@lib/date';
 import type { OnboardingStep5 } from '@app-types/onboarding';
 
@@ -59,7 +60,7 @@ export default function Step5Price({ value, onChange }: Props) {
         </div>
         {price60 > 0 && (
           <p className="step-form__hint">
-            💰 Bạn thực nhận: <strong>{formatVND(netPer60)}</strong>/buổi (sau phí nền tảng 15%)
+            <AppIcon name="wallet" size={14} /> Bạn thực nhận: <strong>{formatVND(netPer60)}</strong>/buổi (sau phí nền tảng 15%)
           </p>
         )}
       </section>

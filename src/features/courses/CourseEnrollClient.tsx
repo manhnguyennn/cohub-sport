@@ -17,6 +17,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Button } from '@components/ui';
+import AppIcon, { type AppIconName } from '@components/ui/AppIcon';
 import { ROUTES } from '@config/routes';
 import { formatVND, formatDate } from '@lib/date';
 import { cn } from '@lib/cn';
@@ -31,10 +32,10 @@ import type { PaymentMethod } from '@app-types/payment';
 
 const HOLD_SECONDS = 15 * 60; // 15 phút
 
-const METHODS: { id: PaymentMethod; label: string; emoji: string }[] = [
-  { id: 'vnpay',   label: 'VNPay',   emoji: '🏦' },
-  { id: 'momo',    label: 'MoMo',    emoji: '🌸' },
-  { id: 'zalopay', label: 'ZaloPay', emoji: '⚡' },
+const METHODS: { id: PaymentMethod; label: string; icon: AppIconName }[] = [
+  { id: 'vnpay',   label: 'VNPay',   icon: 'bank' },
+  { id: 'momo',    label: 'MoMo',    icon: 'wallet' },
+  { id: 'zalopay', label: 'ZaloPay', icon: 'flash' },
 ];
 
 export default function CourseEnrollClient({ course }: { course: Course }) {
@@ -146,7 +147,7 @@ export default function CourseEnrollClient({ course }: { course: Course }) {
 
           {/* Hold seat banner */}
           <div className={cn('enroll-hold', expired && 'enroll-hold--expired')}>
-            <span>🪑 {expired ? 'Chỗ giữ đã hết hạn' : `Chỗ của bạn đang được giữ trong`}</span>
+            <span><AppIcon name="clock" size={14} /> {expired ? 'Chỗ giữ đã hết hạn' : `Chỗ của bạn đang được giữ trong`}</span>
             <strong>{expired ? 'Vui lòng đăng ký lại' : remainingLabel}</strong>
           </div>
 
@@ -194,7 +195,7 @@ export default function CourseEnrollClient({ course }: { course: Course }) {
                         onChange={() => setMethod(m.id)}
                       />
                       <div>
-                        <strong>{m.emoji} {m.label}</strong>
+                        <strong><AppIcon name={m.icon} size={16} /> {m.label}</strong>
                       </div>
                     </label>
                   ))}
@@ -264,7 +265,7 @@ export default function CourseEnrollClient({ course }: { course: Course }) {
 
               {toggles.forcePaymentFail && (
                 <p style={{ fontSize: 11, color: 'var(--danger)', textAlign: 'center', marginTop: 6 }}>
-                  ⚠ Demo: Force payment fail đang bật
+                  <AppIcon name="warning" size={14} /> Demo: Force payment fail đang bật
                 </p>
               )}
 

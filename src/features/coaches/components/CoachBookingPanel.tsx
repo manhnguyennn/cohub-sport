@@ -1,17 +1,32 @@
 import Image from 'next/image';
-import { Button } from '@components/ui';
+import AppIcon from '@components/ui/AppIcon';
+import CoachBookingLauncher from './CoachBookingLauncher';
 import { formatMoney } from '@lib/format';
+import { formatDate, formatTime } from '@lib/date';
 import type { Coach } from '@app-types/coach';
+import type { OpenSession } from '@app-types/openSession';
 
-type Props = { coach: Coach };
+type Props = {
+  coach: Coach;
+  /** Toàn bộ lịch dạy mở (cho calendar trong modal đặt lịch) */
+  openSessions: OpenSession[];
+  /** Buổi gần nhất — chỉ dùng làm badge nhận biết nhanh */
+  nextSession?: OpenSession;
+  /** Số khoá học coach đang mở (Flow 3) */
+  courseCount?: number;
+};
 
 /**
- * Sidebar booking panel. CTA trỏ tới #open-sessions
- * để học viên chọn 1 trong các lịch mở mà coach đã đăng,
- * thay vì pick slot tự do (mô hình cũ).
+ * Sidebar booking panel — tối giản để user quét nhanh info + đặt lịch.
+ * Bỏ "Sẵn sàng nhận học viên" & chính sách huỷ (chuyển sang checkout).
+ * Lịch gần nhất chỉ còn 1 badge; CTA chính "Đặt lịch" mở calendar 30 ngày.
  */
-
-export default function CoachBookingPanel({ coach }: Props) {
+export default function CoachBookingPanel({
+  coach,
+  openSessions,
+  nextSession,
+  courseCount = coach.courseCount ?? 0,
+}: Props) {
   return (
     <aside className="coach-booking-panel" aria-label="Đặt lịch huấn luyện viên">
       <div className="coach-booking-panel__header">
@@ -19,39 +34,14 @@ export default function CoachBookingPanel({ coach }: Props) {
           <Image src={coach.avatar} alt={coach.fullName} width={44} height={44} style={{ objectFit: 'cover' }} />
         </div>
         <div>
-          <div className="coach-booking-panel__name">{coach.fullName}</div>
-          <div className="coach-booking-panel__role">{coach.title}</div>
+          <div className="coach-booking-panel__name">
+            {coach.fullName}
+            {coach.isVerified && (
+              <AppIcon name="check" size={14} className="coach-booking-panel__verified" />
+            )}
+          </div>
+          <div className="coach-booking-panel__role">{coach.title ?? 'Coach'}</div>
         </div>
-      </div>
-
-      <div className="coach-booking-panel__stats">
-        <div>
-          <div className="coach-booking-panel__stat-num">{coach.courseCount ?? 0}</div>
-          <div className="coach-booking-panel__stat-label">Khoá học</div>
-        </div>
-        <div>
-          <div className="coach-booking-panel__stat-num">{coach.classCount ?? 0}</div>
-          <div className="coach-booking-panel__stat-label">Lớp học</div>
-        </div>
-        <div>
-          <div className="coach-booking-panel__stat-num">{coach.studentCount ?? 0}</div>
-          <div className="coach-booking-panel__stat-label">Học viên</div>
-        </div>
-      </div>
-
-      <div className="coach-booking-panel__info-row">
-        <span>Khu vực</span>
-        <strong>{coach.location.city}</strong>
-      </div>
-
-      <div className="coach-booking-panel__info-row">
-        <span>Đánh giá</span>
-        <span className="coach-booking-panel__rating">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-            <path d="M12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61z" />
-          </svg>
-          <strong>{coach.rating.toFixed(1)}</strong>
-        </span>
       </div>
 
       <div className="coach-booking-panel__price-block">
@@ -62,21 +52,43 @@ export default function CoachBookingPanel({ coach }: Props) {
         </div>
       </div>
 
-      <Button
-        href="#open-sessions"
-        variant="primary"
-        size="lg"
-        block
-        className="coach-booking-panel__cta"
-      >
-        Xem lịch mở
-      </Button>
-
-      {coach.nextAvailableSlot && (
-        <div className="coach-booking-panel__next">
-          <span>Lịch trống tiếp theo</span>
-          <strong>{coach.nextAvailableSlot}</strong>
+      {/* Metrics — quét nhanh */}
+      <div className="coach-booking-panel__stats">
+        <div>
+          <div className="coach-booking-panel__stat-num">{coach.experienceYears}</div>
+          <div className="coach-booking-panel__stat-label">năm KN</div>
         </div>
+        <div>
+          <div className="coach-booking-panel__stat-num">{coach.rating.toFixed(1)}</div>
+          <div className="coach-booking-panel__stat-label">{coach.reviewCount} đánh giá</div>
+        </div>
+        <div>
+          <div className="coach-booking-panel__stat-num">{openSessions.length}</div>
+          <div className="coach-booking-panel__stat-label">lịch dạy mở</div>
+        </div>
+      </div>
+
+      <div className="coach-booking-panel__info-row">
+        <span><AppIcon name="location" size={14} /> Khu vực</span>
+        <strong>{coach.location.city}</strong>
+      </div>
+
+      {/* Badge lịch gần nhất — nhận biết nhanh */}
+      {nextSession && (
+        <div className="coach-booking-panel__next-badge">
+          <AppIcon name="clock" size={14} />
+          Lịch gần nhất: <strong>{formatDate(nextSession.startsAt)} · {formatTime(nextSession.startsAt)}</strong>
+        </div>
+      )}
+
+      {/* CTA chính — mở calendar đặt lịch */}
+      <CoachBookingLauncher coach={coach} openSessions={openSessions} />
+
+      {/* Cross-sell Flow 3 */}
+      {courseCount > 0 && (
+        <a href="#courses" className="coach-booking-panel__courses-link">
+          Xem {courseCount} khoá học của coach →
+        </a>
       )}
     </aside>
   );

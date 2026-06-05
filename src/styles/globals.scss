@@ -92,6 +92,7 @@ button { font: inherit; cursor: pointer; }
 @import './blocks/header';
 @import './blocks/footer';
 @import './blocks/button';
+@import './blocks/shared';
 @import './blocks/card';
 @import './blocks/input';
 @import './blocks/badge';
@@ -102,6 +103,7 @@ button { font: inherit; cursor: pointer; }
 @import './blocks/showcase';
 @import './blocks/coach-list';
 @import './blocks/coach-detail';
+@import './blocks/book-modal';
 @import './blocks/coach-open-sessions';
 @import './blocks/toast';
 @import './blocks/demo-panel';

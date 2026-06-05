@@ -5,7 +5,7 @@ export const metadata = { title: 'Booking' };
 export default function BookingPage() {
   return (
     <PlaceholderPage
-      icon="📅"
+      icon="calendar"
       title="Booking flow"
       description="Chọn slot → ghi chú → thanh toán (VNPay/MoMo). bookingService.create + availability đã ready."
     />

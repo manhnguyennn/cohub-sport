@@ -7,7 +7,7 @@ export default async function HeroSection() {
   return (
     <section className="home-hero">
       <div className="home-hero__container">
-        <span className="home-hero__eyebrow">🚀 CoHub MVP — Demo với mock data</span>
+        <span className="home-hero__eyebrow">CoHub MVP — Demo với mock data</span>
 
         <h1 className="home-hero__title">
           Tìm <span className="text-gradient">HLV phù hợp</span><br />

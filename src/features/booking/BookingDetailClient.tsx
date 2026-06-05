@@ -11,6 +11,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Button } from '@components/ui';
+import AppIcon from '@components/ui/AppIcon';
 import { ROUTES } from '@config/routes';
 import { formatDateTime, formatVND } from '@lib/date';
 import { bookingService } from '@services/booking.service';
@@ -51,7 +52,7 @@ export default function BookingDetailClient({ booking: initialBooking, isFresh }
         const updated = await bookingService.setStatus(booking.id, 'confirmed');
         setBooking(updated);
         toast.success(`${booking.coachName} đã xác nhận buổi tập của bạn!`, {
-          title: '🎉 Đã xác nhận',
+          title: 'Đã xác nhận',
           duration: 6000,
         });
       } catch {
@@ -74,12 +75,12 @@ export default function BookingDetailClient({ booking: initialBooking, isFresh }
         {/* Hero */}
         <header className={`booking-detail-hero booking-detail-hero--${booking.status}`}>
           <div className="booking-detail-hero__badge">
-            {isFresh && booking.status === 'pending' && '🎉 Đặt buổi thành công'}
-            {booking.status === 'confirmed' && '✓ Coach đã xác nhận'}
-            {booking.status === 'completed' && '✓ Buổi tập hoàn thành'}
-            {booking.status === 'cancelled' && '✕ Đã huỷ'}
-            {booking.status === 'no_show'   && '⚠ Vắng mặt'}
-            {!isFresh && booking.status === 'pending' && '⏳ Đang chờ coach xác nhận'}
+            {isFresh && booking.status === 'pending' && <><AppIcon name="check" size={16} /> Đặt buổi thành công</>}
+            {booking.status === 'confirmed' && <><AppIcon name="check" size={16} /> Coach đã xác nhận</>}
+            {booking.status === 'completed' && <><AppIcon name="check" size={16} /> Buổi tập hoàn thành</>}
+            {booking.status === 'cancelled' && <><AppIcon name="close" size={16} /> Đã huỷ</>}
+            {booking.status === 'no_show'   && <><AppIcon name="warning" size={16} /> Vắng mặt</>}
+            {!isFresh && booking.status === 'pending' && <><AppIcon name="clock" size={16} /> Đang chờ coach xác nhận</>}
           </div>
           <h1>Buổi tập với {booking.coachName}</h1>
           <p>Mã đặt buổi: <strong>{booking.id}</strong></p>
@@ -165,10 +166,10 @@ export default function BookingDetailClient({ booking: initialBooking, isFresh }
 
           <aside className="booking-detail-aside">
             <Button variant="primary" block onClick={() => toast.info('Demo: tính năng chat đang phát triển — sẽ có ở tuần 7.')}>
-              💬 Nhắn tin coach
+              <AppIcon name="message" size={16} /> Nhắn tin coach
             </Button>
             <Button variant="secondary" block onClick={() => router.push(ROUTES.myBookings)}>
-              📅 Buổi tập của tôi
+              <AppIcon name="calendar" size={16} /> Buổi tập của tôi
             </Button>
             {(booking.status === 'pending' || booking.status === 'confirmed') && (
               <Button variant="ghost" block onClick={() => setCancelOpen(true)}>

@@ -4,13 +4,22 @@ import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { useTransition, useState, useEffect, useMemo } from 'react';
 import { cn } from '@lib/cn';
 import { formatMoney } from '@lib/format';
+import AreaMultiSelect from '@components/ui/AreaMultiSelect';
 import type { Sport } from '@app-types/sport';
 
 type CoachFilterSidebarProps = {
   sports: Sport[];
 };
 
-const CITIES = ['Hà Nội', 'Hồ Chí Minh', 'Đà Nẵng', 'Nha Trang', 'Hải Phòng', 'Hạ Long'];
+const WEEK_DAYS = [
+  { key: 't2', label: 'T2' }, { key: 't3', label: 'T3' }, { key: 't4', label: 'T4' },
+  { key: 't5', label: 'T5' }, { key: 't6', label: 'T6' }, { key: 't7', label: 'T7' }, { key: 'cn', label: 'CN' },
+];
+const TIME_BUCKETS = [
+  { key: 'morning', label: 'Sáng' },
+  { key: 'afternoon', label: 'Chiều' },
+  { key: 'evening', label: 'Tối' },
+];
 const RATINGS = [
   { value: '',  label: 'Tất cả' },
   { value: '4.5', label: 'Từ 4.5★ trở lên' },
@@ -54,13 +63,20 @@ export default function CoachFilterSidebar({ sports }: CoachFilterSidebarProps) 
   const current = useMemo(
     () => ({
       sport:    params.get('sport') ?? '',
-      city:     params.get('city') ?? '',
       rating:   params.get('minRating') ?? '',
       format:   params.get('format') ?? '',
       language: params.get('language') ?? '',
+      time:     params.get('time') ?? '',
     }),
     [params],
   );
+  const areaSlugs = useMemo(() => (params.get('area') ?? '').split(',').filter(Boolean), [params]);
+  const days = useMemo(() => (params.get('days') ?? '').split(',').filter(Boolean), [params]);
+
+  function toggleDay(key: string) {
+    const next = days.includes(key) ? days.filter((d) => d !== key) : [...days, key];
+    update({ days: next.join(',') });
+  }
 
   function update(patch: Record<string, string | undefined>) {
     const next = new URLSearchParams(params.toString());
@@ -111,18 +127,38 @@ export default function CoachFilterSidebar({ sports }: CoachFilterSidebarProps) 
         </select>
       </div>
 
-      {/* Địa điểm */}
+      {/* Khu vực — combobox search + multi-select */}
       <div className="coach-filter__group">
-        <div className="coach-filter__label">Địa điểm</div>
-        <div className="coach-filter__city-chips">
-          {CITIES.map((c) => (
+        <div className="coach-filter__label">Khu vực</div>
+        <AreaMultiSelect value={areaSlugs} onChange={(slugs) => update({ area: slugs.join(',') })} />
+      </div>
+
+      {/* Lịch của tôi (Flow 1) */}
+      <div className="coach-filter__group">
+        <div className="coach-filter__label">Lịch của tôi</div>
+        <div className="coach-filter__days">
+          {WEEK_DAYS.map((d) => (
             <button
-              key={c}
+              key={d.key}
               type="button"
-              className={cn('coach-filter__chip', current.city === c && 'coach-filter__chip--active')}
-              onClick={() => update({ city: current.city === c ? '' : c })}
+              className={cn('day-chip', days.includes(d.key) && 'day-chip--on')}
+              aria-pressed={days.includes(d.key)}
+              onClick={() => toggleDay(d.key)}
             >
-              {c}
+              {d.label}
+            </button>
+          ))}
+        </div>
+        <div className="coach-filter__buckets">
+          {TIME_BUCKETS.map((b) => (
+            <button
+              key={b.key}
+              type="button"
+              className={cn('bucket-chip', current.time === b.key && 'bucket-chip--on')}
+              aria-pressed={current.time === b.key}
+              onClick={() => update({ time: current.time === b.key ? '' : b.key })}
+            >
+              <strong>{b.label}</strong>
             </button>
           ))}
         </div>

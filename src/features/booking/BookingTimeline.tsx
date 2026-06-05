@@ -1,4 +1,5 @@
 import { cn } from '@lib/cn';
+import AppIcon from '@components/ui/AppIcon';
 import type { BookingStatus } from '@app-types/booking';
 
 /**
@@ -27,7 +28,8 @@ export default function BookingTimeline({ status }: { status: BookingStatus }) {
       <div className="booking-timeline booking-timeline--cancelled">
         <div className="booking-timeline__step booking-timeline__step--done">Đã thanh toán</div>
         <div className="booking-timeline__step booking-timeline__step--cancelled">
-          {status === 'cancelled' ? '✕ Đã huỷ' : '⚠ Vắng mặt'}
+          <AppIcon name={status === 'cancelled' ? 'close' : 'warning'} size={14} />
+          {status === 'cancelled' ? ' Đã huỷ' : ' Vắng mặt'}
         </div>
       </div>
     );

@@ -81,6 +81,12 @@ export type CoachListQuery = {
   sport?: string;
   language?: string;
   city?: string;
+  /** CSV slug khu vực (vd "q1,q3,hoan-kiem") — map sang city/district */
+  area?: string;
+  /** CSV ngày rảnh "t2,t4" — Flow 1 (matching ở page qua open sessions) */
+  days?: string;
+  /** Khung giờ "morning|afternoon|evening" — Flow 1 */
+  time?: string;
   gender?: Gender;
   format?: TeachingFormat;
   minRating?: number;

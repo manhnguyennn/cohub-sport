@@ -35,7 +35,7 @@ export default function Footer() {
 
         <div className="footer__bottom">
           <div>© {new Date().getFullYear()} CoHub. All rights reserved.</div>
-          <div>Made in Vietnam 🇻🇳</div>
+          <div>Made in Vietnam</div>
         </div>
       </div>
     </footer>

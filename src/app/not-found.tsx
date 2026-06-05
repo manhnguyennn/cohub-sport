@@ -1,10 +1,11 @@
 import { Button } from '@components/ui';
+import AppIcon from '@components/ui/AppIcon';
 import { ROUTES } from '@config/routes';
 
 export default function NotFound() {
   return (
     <div className="placeholder-page">
-      <div className="placeholder-page__icon">🔍</div>
+      <div className="placeholder-page__icon"><AppIcon name="search" size={44} /></div>
       <h1 className="placeholder-page__title">404 — Không tìm thấy</h1>
       <p className="placeholder-page__subtitle">Trang bạn tìm không tồn tại hoặc đã bị di chuyển.</p>
       <div className="placeholder-page__actions">

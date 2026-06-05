@@ -16,6 +16,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Button } from '@components/ui';
+import AppIcon from '@components/ui/AppIcon';
 import { ROUTES } from '@config/routes';
 import { formatNextSlot, formatVND } from '@lib/date';
 import { formatMoney } from '@lib/format';
@@ -149,13 +150,13 @@ export default function BookingSessionForm({ coach, session }: Props) {
                 <div>
                   <strong>{coach.fullName}</strong>
                   <span>{coach.title} · {coach.location.city}</span>
-                  <span className="booking-form__slot-time">⏱ {slotLabel}</span>
+                  <span className="booking-form__slot-time"><AppIcon name="clock" size={14} /> {slotLabel}</span>
                   <span className="booking-form__slot-time">
-                    📍 {LOCATION_LABEL[session.location.kind]}
+                    <AppIcon name="location" size={14} /> {LOCATION_LABEL[session.location.kind]}
                     {session.location.address && ` — ${session.location.address}`}
                   </span>
                   <span className="booking-form__slot-time">
-                    👥 {session.capacity === 1
+                    <AppIcon name="people" size={14} /> {session.capacity === 1
                       ? 'Buổi 1-1 (cá nhân)'
                       : `Lớp nhóm — còn ${remaining}/${session.capacity} chỗ`}
                   </span>
@@ -164,15 +165,16 @@ export default function BookingSessionForm({ coach, session }: Props) {
 
               {session.note && (
                 <div className="booking-form__coach-note">
-                  📝 <strong>Coach lưu ý:</strong> {session.note}
+                  <AppIcon name="note" size={14} /> <strong>Coach lưu ý:</strong> {session.note}
                 </div>
               )}
 
               {(isFull || isCancelled) && (
                 <div className="booking-form__warn">
+                  <AppIcon name="warning" size={14} />{' '}
                   {isFull
-                    ? '⚠ Buổi này đã đầy. Hãy chọn buổi khác.'
-                    : '⚠ Buổi này đã bị huỷ hoặc đã kết thúc.'}
+                    ? 'Buổi này đã đầy. Hãy chọn buổi khác.'
+                    : 'Buổi này đã bị huỷ hoặc đã kết thúc.'}
                 </div>
               )}
             </section>

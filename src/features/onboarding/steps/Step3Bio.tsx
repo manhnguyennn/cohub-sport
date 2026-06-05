@@ -3,6 +3,7 @@
 import { useMemo, useRef } from 'react';
 import Image from 'next/image';
 import { detectPii } from '@lib/onboarding-draft';
+import AppIcon from '@components/ui/AppIcon';
 import { cn } from '@lib/cn';
 import type { OnboardingStep3 } from '@app-types/onboarding';
 
@@ -57,7 +58,7 @@ export default function Step3Bio({ value, onChange }: Props) {
           onChange={(e) => onChange({ ...value, tagline: e.target.value })}
         />
         {taglinePii.hasIssue && (
-          <span className="step-form__error">⚠ {taglinePii.message}</span>
+          <span className="step-form__error"><AppIcon name="warning" size={13} /> {taglinePii.message}</span>
         )}
       </section>
 
@@ -78,7 +79,7 @@ export default function Step3Bio({ value, onChange }: Props) {
           onChange={(e) => onChange({ ...value, bio: e.target.value })}
         />
         {bioPii.hasIssue && (
-          <span className="step-form__error">⚠ {bioPii.message}</span>
+          <span className="step-form__error"><AppIcon name="warning" size={13} /> {bioPii.message}</span>
         )}
       </section>
 

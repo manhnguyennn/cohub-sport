@@ -15,6 +15,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Button } from '@components/ui';
+import AppIcon from '@components/ui/AppIcon';
 import { ROUTES } from '@config/routes';
 import { formatNextSlot } from '@lib/date';
 import { formatMoney } from '@lib/format';
@@ -161,7 +162,7 @@ export default function BookingForm({ coach, startsAt, durationMinutes }: Bookin
                 <div>
                   <strong>{coach.fullName}</strong>
                   <span>{coach.title} · {coach.location.city}</span>
-                  <span className="booking-form__slot-time">⏱ {slotLabel}</span>
+                  <span className="booking-form__slot-time"><AppIcon name="clock" size={14} /> {slotLabel}</span>
                 </div>
               </div>
             </section>

@@ -1,8 +1,9 @@
 import { Button } from '@components/ui';
+import AppIcon, { type AppIconName } from '@components/ui/AppIcon';
 import { ROUTES } from '@config/routes';
 
 type PlaceholderPageProps = {
-  icon?: string;
+  icon?: AppIconName;
   title: string;
   description: string;
   primaryHref?: string;
@@ -10,7 +11,7 @@ type PlaceholderPageProps = {
 };
 
 export default function PlaceholderPage({
-  icon = '🚧',
+  icon = 'setting',
   title,
   description,
   primaryHref = ROUTES.home,
@@ -18,7 +19,7 @@ export default function PlaceholderPage({
 }: PlaceholderPageProps) {
   return (
     <div className="placeholder-page">
-      <div className="placeholder-page__icon">{icon}</div>
+      <div className="placeholder-page__icon"><AppIcon name={icon} size={44} /></div>
       <h1 className="placeholder-page__title">{title}</h1>
       <p className="placeholder-page__subtitle">{description}</p>
       <div className="placeholder-page__actions">

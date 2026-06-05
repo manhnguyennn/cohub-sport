@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { Badge, Button, Card, Container } from '@components/ui';
+import AppIcon from '@components/ui/AppIcon';
 import { ROUTES } from '@config/routes';
 
 export const metadata = {
@@ -26,7 +27,7 @@ export default function ShowcasePage() {
   return (
     <>
       <div className="showcase-banner">
-        <strong>⚠ Legacy v1 demo</strong> — Đây là sản phẩm cũ, giữ lại để tham khảo. Sản phẩm chính ở{' '}
+        <strong><AppIcon name="warning" size={14} /> Legacy v1 demo</strong> — Đây là sản phẩm cũ, giữ lại để tham khảo. Sản phẩm chính ở{' '}
         <Link href={ROUTES.home}>trang chủ</Link>.
       </div>
 

@@ -270,6 +270,9 @@
     bottom: 12px;
     left: 12px;
     z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
     padding: 4px 10px;
     border-radius: $radius-pill;
     font-size: 11px;
@@ -407,7 +410,9 @@
   }
 
   &__type {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
     padding: 6px 12px;
     background: rgba(255, 255, 255, 0.92);
     color: $color-ink;
@@ -853,5 +858,257 @@
       span { color: var(--text-muted); }
       strong { color: var(--text-primary); font-weight: $fw-semibold; }
     }
+  }
+}
+
+// ════════════════════════════════════════════════════════════════
+// Booking V2 — Course Detail additions (spec §4.3)
+// ════════════════════════════════════════════════════════════════
+
+.course-detail-hero {
+  &__breadcrumb {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: $space-2;
+    margin-bottom: $space-3;
+    font-size: $fs-sm;
+    color: rgba(255, 255, 255, 0.78);
+
+    a { color: rgba(255, 255, 255, 0.88); text-decoration: none; &:hover { color: #fff; } }
+    span[aria-hidden] { opacity: 0.6; }
+  }
+}
+
+// Coach card lớn trong hero (K2) — light elevated card, đọc rõ trên nền sáng
+.course-coach-card {
+  display: flex;
+  gap: $space-4;
+  align-items: flex-start;
+  margin-top: $space-5;
+  padding: $space-4;
+  border-radius: $radius-lg;
+  background: $color-bg-elevated;
+  border: 1px solid $color-border;
+  box-shadow: $shadow-sm;
+  max-width: 520px;
+
+  &__avatar { flex-shrink: 0; border: 2px solid $color-border; }
+
+  &__body { display: flex; flex-direction: column; gap: 3px; color: $color-text-primary; min-width: 0; }
+
+  &__name {
+    display: inline-flex;
+    align-items: center;
+    gap: $space-2;
+    font-size: $fs-lead;
+    font-weight: $fw-bold;
+    color: $color-text-primary;
+  }
+
+  &__verified {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 2px 8px;
+    border-radius: $radius-full;
+    background: $color-success-light;
+    color: $color-success;
+    font-size: $fs-xs;
+    font-weight: $fw-semibold;
+  }
+
+  &__meta { font-size: $fs-sm; color: $color-text-secondary; }
+
+  &__rating {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: $fs-sm;
+    color: $color-text-primary;
+
+    span { color: $color-text-secondary; }
+  }
+
+  &__link {
+    margin-top: $space-2;
+    color: $color-brand;
+    font-size: $fs-sm;
+    font-weight: $fw-semibold;
+    text-decoration: none;
+
+    &:hover { text-decoration: underline; }
+  }
+}
+
+// Sidebar additions
+.course-detail-aside {
+  &__seats {
+    display: flex;
+    flex-direction: column;
+    gap: $space-1;
+    margin: $space-3 0;
+
+    small { font-size: $fs-xs; color: $color-text-secondary; }
+  }
+
+  &__bar {
+    height: 8px;
+    border-radius: $radius-full;
+    background: $color-surface-hover;
+    overflow: hidden;
+
+    span { display: block; height: 100%; border-radius: $radius-full; background: $color-accent-green; }
+  }
+
+  &__policy { margin-top: $space-4; }
+
+  &__crosssell {
+    margin-top: $space-4;
+    padding-top: $space-4;
+    border-top: 1px solid $color-border;
+    display: flex;
+    flex-direction: column;
+    gap: $space-1;
+
+    span { font-size: $fs-sm; color: $color-text-secondary; }
+    strong { font-size: $fs-sm; color: $color-text-primary; }
+  }
+
+  &__ghost {
+    margin-top: $space-2;
+    text-align: center;
+    padding: 10px;
+    border-radius: $radius-sm;
+    border: 1px solid $color-brand-subtle;
+    color: $color-brand;
+    font-size: $fs-sm;
+    font-weight: $fw-semibold;
+    text-decoration: none;
+    transition: $transition-button;
+
+    &:hover { background: $color-brand-tint; }
+  }
+}
+
+// Cross-sell card cuối trang (K5)
+.course-crosssell {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: $space-3 $space-4;
+  margin-top: $space-6;
+  padding: $space-5;
+  border-radius: $radius-lg;
+  background: $color-surface;
+  border: 1px solid $color-border;
+
+  &__icon { font-size: 24px; }
+
+  &__body { flex: 1; min-width: 200px; }
+
+  h3 { font-size: $fs-lead; font-weight: $fw-bold; color: $color-text-primary; margin-bottom: 2px; }
+  p { font-size: $fs-sm; color: $color-text-secondary; }
+
+  &__btn {
+    flex-shrink: 0;
+    padding: 10px 18px;
+    border-radius: $radius-sm;
+    border: 1px solid $color-brand-subtle;
+    color: $color-brand;
+    font-size: $fs-sm;
+    font-weight: $fw-semibold;
+    text-decoration: none;
+    transition: $transition-button;
+
+    &:hover { background: $color-brand-tint; }
+  }
+}
+
+// Course reviews (K7)
+.course-reviews {
+  margin-top: $space-8;
+
+  &__head { margin-bottom: $space-5; }
+
+  h2 { font-size: $fs-h3; font-weight: $fw-bold; color: $color-text-primary; }
+
+  &__score {
+    display: inline-flex;
+    align-items: center;
+    gap: $space-2;
+    margin-top: $space-2;
+    font-size: $fs-sm;
+    color: $color-text-secondary;
+
+    strong { color: $color-text-primary; }
+  }
+
+  &__stars { display: inline-flex; gap: 1px; }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: $space-4;
+
+    @include respond-from(md) { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  &__card {
+    padding: $space-4;
+    border-radius: $radius-lg;
+    border: 1px solid $color-border;
+    background: $color-bg-elevated;
+  }
+
+  &__card-head { display: flex; align-items: center; gap: $space-3; margin-bottom: $space-3; }
+  &__card-name { font-weight: $fw-semibold; font-size: $fs-sm; color: $color-text-primary; }
+  &__card-text { font-size: $fs-sm; line-height: 1.55; color: $color-text-secondary; }
+
+  &__all {
+    display: inline-block;
+    margin-top: $space-4;
+    color: $color-brand;
+    font-size: $fs-sm;
+    font-weight: $fw-semibold;
+    text-decoration: none;
+
+    &:hover { text-decoration: underline; }
+  }
+}
+
+// Course FAQ (K8)
+.course-faq {
+  margin-top: $space-8;
+
+  h2 { font-size: $fs-h3; font-weight: $fw-bold; color: $color-text-primary; margin-bottom: $space-4; }
+
+  &__item { border-bottom: 1px solid $color-border; }
+
+  &__btn {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: $space-3;
+    padding: $space-4 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    font-size: $fs-body;
+    font-weight: $fw-semibold;
+    color: $color-text-primary;
+  }
+
+  &__icon { flex-shrink: 0; transition: transform $duration-normal $ease-standard; color: $color-text-muted; }
+
+  &__item--open &__icon { transform: rotate(180deg); }
+
+  &__body {
+    padding: 0 0 $space-4;
+    font-size: $fs-sm;
+    line-height: 1.6;
+    color: $color-text-secondary;
   }
 }

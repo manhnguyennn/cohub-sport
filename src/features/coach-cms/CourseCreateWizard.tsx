@@ -15,6 +15,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Button, Stepper } from '@components/ui';
+import AppIcon from '@components/ui/AppIcon';
 import { ROUTES } from '@config/routes';
 import { useAuth } from '@hooks/useAuth';
 import { useToast } from '@contexts/ToastContext';
@@ -137,7 +138,7 @@ export default function CourseCreateWizard({ sports }: { sports: Sport[] }) {
   function handlePublish() {
     setSubmitting(true);
     setTimeout(() => {
-      toast.success('Đã publish khoá học!', { title: '🎉 Thành công' });
+      toast.success('Đã publish khoá học!', { title: 'Thành công' });
       router.push(ROUTES.coachCourses);
     }, withDelay(1500));
   }
@@ -217,7 +218,7 @@ function Step1ScheduleType({ value, onChange }: { value: Draft; onChange: (p: Pa
             onChange={() => onChange({ scheduleType: 'FIXED' })}
           />
           <div>
-            <strong>📅 Lịch cố định</strong>
+            <strong><AppIcon name="calendar" size={16} /> Lịch cố định</strong>
             <span>Set lịch sẵn (vd: T3-T5 18:00, 8 buổi). Học viên đăng ký trước ngày khai giảng. Phù hợp lớp đông.</span>
           </div>
         </label>
@@ -229,7 +230,7 @@ function Step1ScheduleType({ value, onChange }: { value: Draft; onChange: (p: Pa
             onChange={() => onChange({ scheduleType: 'FLEXIBLE' })}
           />
           <div>
-            <strong>⚡ Linh hoạt</strong>
+            <strong><AppIcon name="flash" size={16} /> Linh hoạt</strong>
             <span>Học viên mua N credit, tự đặt lịch trong thời hạn (vd: 10 buổi trong 3 tháng). Phù hợp 1-1.</span>
           </div>
         </label>
@@ -439,7 +440,7 @@ function Step4Price({ value, onChange }: { value: Draft; onChange: (p: Partial<D
         </div>
         {value.price > 0 && (
           <p className="step-form__hint">
-            💰 Bạn nhận: <strong>{formatVND(net)}</strong> · ~ {formatVND(perSession)}/buổi (trước phí 15%)
+            <AppIcon name="wallet" size={14} /> Bạn nhận: <strong>{formatVND(net)}</strong> · ~ {formatVND(perSession)}/buổi (trước phí 15%)
           </p>
         )}
       </section>
@@ -458,7 +459,7 @@ function Step4Price({ value, onChange }: { value: Draft; onChange: (p: Partial<D
         </div>
         <p className="step-form__hint">
           {value.scheduleType === 'FLEXIBLE' && value.maxParticipants > 1 && (
-            <>⚠ Khoá linh hoạt thường là 1-1. Để 1 nếu là gói riêng.</>
+            <><AppIcon name="warning" size={14} /> Khoá linh hoạt thường là 1-1. Để 1 nếu là gói riêng.</>
           )}
         </p>
       </section>
@@ -488,8 +489,8 @@ function Step5Cover({
               <Image src={value.cover} alt="cover" fill style={{ objectFit: 'cover' }} unoptimized />
             </div>
           ) : (
-            <div style={{ width: 180, height: 120, borderRadius: 8, background: 'var(--bg-subtle)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)', fontSize: 14 }}>
-              📷
+            <div style={{ width: 180, height: 120, borderRadius: 8, background: 'var(--bg-subtle)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>
+              <AppIcon name="camera" size={28} />
             </div>
           )}
           <div>
@@ -509,7 +510,8 @@ function Step5Cover({
           <div className="course-card__media" style={{ background: value.cover ? '' : 'var(--bg-subtle)' }}>
             {value.cover && <Image src={value.cover} alt="" fill style={{ objectFit: 'cover' }} unoptimized />}
             <span className={`course-card__type course-card__type--${value.scheduleType?.toLowerCase()}`}>
-              {value.scheduleType === 'FIXED' ? '📅 Lịch cố định' : '⚡ Linh hoạt'}
+              <AppIcon name={value.scheduleType === 'FIXED' ? 'calendar' : 'flash'} size={13} />
+              {value.scheduleType === 'FIXED' ? 'Lịch cố định' : 'Linh hoạt'}
             </span>
           </div>
           <div className="course-card__body">

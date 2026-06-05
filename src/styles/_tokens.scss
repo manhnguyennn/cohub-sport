@@ -164,7 +164,7 @@ $space-24:  96px;
 $space-32:  128px;
 
 // Semantic aliases
-$spacing-page-x:     24px;    // Horizontal padding (mobile)
+$spacing-page-x:     14px;    // Horizontal padding (mobile) — sát lề, nới rộng nội dung
 $spacing-page-x-lg:  48px;    // Horizontal padding (desktop)
 $spacing-section:    80px;    // Section padding-block
 $spacing-section-sm: 48px;    // Compact section
@@ -268,6 +268,19 @@ $bp-2xl: 1440px;
   padding-block: $section-pad;
   @include respond-to(md) { padding-block: $section-pad-sm; }
   @include respond-to(sm) { padding-block: 40px; }
+}
+
+// Edge-to-edge horizontal scroll trên mobile.
+// Box scroll (tabs/chip rows) chạm sát 2 lề màn hình, nhưng item đầu/cuối
+// vẫn cách lề $pad (mặc định = page padding mobile 14px).
+// Đặt mixin này TRỰC TIẾP trên phần tử overflow-x; phần tử cha phải có
+// padding-inline = $pad (đúng pattern container Cohub).
+@mixin edge-scroll($pad: $spacing-page-x) {
+  @include respond-to(sm) {
+    margin-inline: -$pad;
+    padding-inline: $pad;
+    scroll-padding-inline: $pad;
+  }
 }
 
 

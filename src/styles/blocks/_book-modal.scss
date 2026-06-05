@@ -1,0 +1,326 @@
+// ── Booking calendar modal (đặt lịch 30 ngày) ────────────────
+// Tái dùng .search-modal (backdrop/sheet/head/body/close)
+
+.book-modal__sheet {
+  width: min(640px, calc(100vw - 32px));
+}
+
+.book-modal__body {
+  gap: $space-5;
+}
+
+// Calendar
+.book-cal {
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+
+  &__legend {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: $space-2;
+    font-size: $fs-sm;
+    color: $color-text-secondary;
+
+    span { display: inline-flex; align-items: center; gap: 6px; }
+  }
+  &__dot { width: 8px; height: 8px; border-radius: $radius-full; background: $color-brand; display: inline-block; }
+  &__hint { color: $color-text-muted; font-size: $fs-xs; }
+
+  &__weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    font-size: $fs-xs;
+    font-weight: $fw-semibold;
+    color: $color-text-muted;
+    text-align: center;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+  }
+
+  &__cell {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: $radius-md;
+    border: 1px solid transparent;
+    background: $color-surface;
+    color: $color-text-primary;
+    font-size: $fs-sm;
+    font-weight: $fw-medium;
+    cursor: pointer;
+    transition: $transition-button;
+
+    &:hover:not(.is-out) { border-color: $color-border-hover; }
+
+    &.has-session { background: $color-brand-tint; color: $color-brand; font-weight: $fw-semibold; }
+
+    &.is-selected {
+      border-color: $color-brand;
+      background: $color-brand;
+      color: #fff;
+    }
+
+    &.is-out {
+      background: transparent;
+      color: $color-text-disabled;
+      cursor: default;
+    }
+  }
+
+  &__badge {
+    position: absolute;
+    top: 3px;
+    right: 4px;
+    min-width: 15px;
+    height: 15px;
+    padding: 0 3px;
+    border-radius: $radius-full;
+    background: $color-brand;
+    color: #fff;
+    font-size: 9px;
+    font-weight: $fw-bold;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    .book-cal__cell.is-selected & { background: #fff; color: $color-brand; }
+  }
+}
+
+// Full session list (always visible, grouped by day)
+.book-list {
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+  border-top: 1px solid $color-border;
+  padding-top: $space-4;
+
+  &__title { font-size: $fs-lead; font-weight: $fw-bold; color: $color-text-primary; }
+  &__empty { font-size: $fs-sm; color: $color-text-secondary; }
+
+  &__group { display: flex; flex-direction: column; gap: $space-2; scroll-margin-top: $space-3; }
+
+  &__day {
+    font-size: $fs-xs;
+    font-weight: $fw-semibold;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: $color-text-muted;
+    margin-top: $space-2;
+  }
+}
+
+.book-custom-toggle {
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+  border-top: 1px solid $color-border;
+  padding-top: $space-4;
+}
+
+.book-slot {
+  display: flex;
+  align-items: center;
+  gap: $space-3;
+  padding: $space-3 $space-4;
+  border-radius: $radius-md;
+  border: 1px solid $color-border;
+  background: $color-bg-elevated;
+  cursor: pointer;
+  text-align: left;
+  transition: $transition-button;
+
+  &:hover { border-color: $color-border-hover; }
+
+  &__check {
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+    border-radius: $radius-sm;
+    border: 1.5px solid $color-border-hover;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+  }
+
+  &__info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    strong { font-size: $fs-sm; color: $color-text-primary; }
+    small { font-size: $fs-xs; color: $color-text-secondary; }
+  }
+
+  &__price { font-weight: $fw-bold; color: $color-text-primary; font-size: $fs-sm; }
+
+  &--on {
+    border-color: $color-brand;
+    background: $color-brand-tint;
+
+    .book-slot__check { background: $color-brand; border-color: $color-brand; }
+    .book-slot__price { color: $color-brand; }
+  }
+}
+
+.book-custom {
+  margin-top: $space-2;
+  padding: $space-4;
+  border-radius: $radius-md;
+  border: 1px dashed $color-border-hover;
+  background: $color-surface;
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+
+  &__title {
+    display: inline-flex;
+    align-items: center;
+    gap: $space-2;
+    font-weight: $fw-semibold;
+    font-size: $fs-sm;
+    color: $color-text-primary;
+    svg { color: $color-brand; }
+  }
+
+  &__row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: $space-3;
+
+    label {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: $fs-xs;
+      color: $color-text-secondary;
+
+      input, select {
+        height: 40px;
+        padding: 0 10px;
+        border-radius: $radius-sm;
+        border: 1px solid $color-border;
+        background: $color-bg-elevated;
+        font-family: $font-sans;
+        font-size: $fs-sm;
+        color: $color-text-primary;
+      }
+    }
+  }
+
+  &__est {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    small { font-size: $fs-xs; color: $color-text-muted; }
+    strong { font-size: $fs-body; font-weight: $fw-bold; color: $color-brand; }
+  }
+
+  &__add {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    height: 40px;
+    padding: 0 16px;
+    border-radius: $radius-sm;
+    border: 1px solid $color-brand;
+    background: $color-brand-tint;
+    color: $color-brand;
+    font-weight: $fw-semibold;
+    font-size: $fs-sm;
+    cursor: pointer;
+
+    &:hover { background: $color-brand; color: #fff; }
+  }
+
+  &__note {
+    font-size: $fs-xs;
+    color: $color-text-secondary;
+    strong { color: $color-warning; }
+  }
+}
+
+// Cart + tổng (sticky footer của modal)
+.book-cart {
+  border-top: 1px solid $color-border;
+  background: $color-bg-elevated;
+
+  &__items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: $space-3 $space-6 0;
+    max-height: 88px;
+    overflow-y: auto;
+  }
+
+  &__chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 6px 4px 10px;
+    border-radius: $radius-pill;
+    background: $color-brand-tint;
+    color: $color-brand;
+    font-size: $fs-xs;
+    font-weight: $fw-medium;
+
+    &--custom { background: $color-warning-light; color: $color-warning; }
+
+    button {
+      display: inline-flex;
+      border: none;
+      background: rgba(0, 0, 0, 0.06);
+      border-radius: $radius-full;
+      width: 16px; height: 16px;
+      align-items: center; justify-content: center;
+      cursor: pointer;
+      color: inherit;
+    }
+  }
+
+  &__bar {
+    display: flex;
+    align-items: center;
+    gap: $space-4;
+    padding: $space-4 $space-6;
+  }
+
+  &__total {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+    small { font-size: $fs-xs; color: $color-text-secondary; }
+    strong { font-size: $fs-h3; font-weight: $fw-bold; color: $color-text-primary; }
+  }
+
+  &__cta {
+    flex-shrink: 0;
+    padding: 14px 28px;
+    border: none;
+    border-radius: $radius-sm;
+    cursor: pointer;
+    color: #fff;
+    font-size: $fs-body;
+    font-weight: $fw-semibold;
+    background: linear-gradient(135deg, #5F71FF 0%, #0050FF 100%);
+    box-shadow: $shadow-brand-md;
+
+    &:hover:not(:disabled) { filter: brightness(1.05); }
+    &:disabled { opacity: 0.5; cursor: not-allowed; box-shadow: none; }
+  }
+}

@@ -9,6 +9,7 @@
  * Phân biệt với CoachCoursesSection (gói trọn vẹn).
  */
 import { Button } from '@components/ui';
+import AppIcon from '@components/ui/AppIcon';
 import { formatVND, formatNextSlot } from '@lib/date';
 import { ROUTES } from '@config/routes';
 import { cn } from '@lib/cn';
@@ -52,7 +53,7 @@ export default function CoachOpenSessionsSection({ sessions }: Props) {
             >
               <div className="open-session-card__time-block">
                 <strong className="open-session-card__time">{formatNextSlot(s.startsAt)}</strong>
-                <span className="open-session-card__duration">⏱ {s.durationMinutes} phút</span>
+                <span className="open-session-card__duration"><AppIcon name="clock" size={13} /> {s.durationMinutes} phút</span>
               </div>
 
               <div className="open-session-card__body">
@@ -78,7 +79,7 @@ export default function CoachOpenSessionsSection({ sessions }: Props) {
                   </span>
                 </div>
 
-                {s.note && <p className="open-session-card__note">📝 {s.note}</p>}
+                {s.note && <p className="open-session-card__note"><AppIcon name="note" size={13} /> {s.note}</p>}
               </div>
 
               <div className="open-session-card__foot">

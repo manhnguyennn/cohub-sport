@@ -63,6 +63,12 @@ export type CreateBookingInput = {
   healthNote?: string;
   participants?: number;
   promoCode?: string;
+  /** Giá cụ thể cho buổi này (VND). Open session = giá session; custom = giá tạm tính */
+  price?: number;
+  /** Nếu đến từ Lịch dạy mở */
+  openSessionId?: ID;
+  /** Đặt lịch riêng (không theo lịch mở) — giá tạm tính, chờ coach xác nhận */
+  isCustomRequest?: boolean;
 };
 
 export type TimeSlot = {

@@ -203,6 +203,798 @@
 }
 
 
+// ── Hero V2 additions (Booking V2 §2.2) ───────────────────────
+.feature-hero {
+  &__title--accent {
+    font-family: $font-accent;
+    letter-spacing: -0.02em;
+  }
+
+  &__buttons {
+    .search-container--duo {
+      .search-bar:first-child { flex: 1.4; }
+
+      // Primary CTA nổi bật bằng gradient brand (spec §2.2.3)
+      .search-button {
+        border: none;
+        color: #fff;
+        background: linear-gradient(135deg, #5F71FF 0%, #0050FF 100%);
+        box-shadow: $shadow-sm;
+
+        &:hover { filter: brightness(1.06); color: #fff; background: linear-gradient(135deg, #5F71FF 0%, #0050FF 100%); }
+      }
+    }
+
+    .search-bar--area {
+      flex: 1;
+
+      .search-select {
+        appearance: none;
+        cursor: pointer;
+        color: #fff;
+        font-family: $font-sans;
+        font-size: 15px;
+        font-weight: $fw-medium;
+
+        // Option list render bằng native UI của OS → cần màu tối để đọc được
+        option,
+        optgroup { color: $color-text-primary; background: #fff; }
+
+        &:invalid,
+        & option[value=""] { color: rgba(255, 255, 255, 0.65); }
+      }
+    }
+  }
+
+  &__flow1-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    color: #fff;
+    font-family: $font-sans;
+    font-size: 14px;
+    font-weight: $fw-medium;
+    text-align: left;
+    opacity: 0.92;
+    transition: $transition-color;
+
+    svg { flex-shrink: 0; }
+    &:hover { color: $color-accent-green-bright; opacity: 1; }
+  }
+
+  &__course-link {
+    color: #fff;
+    font-family: $font-sans;
+    font-size: 14px;
+    font-weight: $fw-semibold;
+    text-decoration: none;
+    transition: $transition-color;
+
+    &:hover { color: $color-accent-green-bright; }
+  }
+}
+
+// Flow 1 modal (desktop) / bottom-sheet (mobile)
+.flow1-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(10, 15, 30, 0.55);
+    backdrop-filter: blur(2px);
+  }
+
+  &__sheet {
+    position: relative;
+    width: min(440px, calc(100vw - 32px));
+    background: $color-bg-elevated;
+    border-radius: $radius-xl;
+    box-shadow: $shadow-lg;
+    padding: $space-6;
+    display: flex;
+    flex-direction: column;
+    gap: $space-5;
+
+    @include respond-to(sm) {
+      position: absolute;
+      inset: auto 0 0 0;
+      width: 100%;
+      border-radius: $radius-xl $radius-xl 0 0;
+      padding-bottom: calc(#{$space-6} + env(safe-area-inset-bottom));
+    }
+  }
+
+  &__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    h3 { font-size: $fs-h3; font-weight: $fw-bold; color: $color-text-primary; }
+  }
+
+  &__close {
+    background: none;
+    border: none;
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+    color: $color-text-muted;
+    padding: $space-2;
+
+    &:hover { color: $color-text-primary; }
+  }
+
+  &__field { display: flex; flex-direction: column; gap: $space-3; }
+
+  &__label { font-size: $fs-sm; font-weight: $fw-semibold; color: $color-text-secondary; }
+
+  &__days { display: flex; flex-wrap: wrap; gap: $space-2; }
+
+  &__buckets { display: grid; grid-template-columns: repeat(3, 1fr); gap: $space-2; }
+
+  &__actions {
+    display: flex;
+    gap: $space-3;
+    margin-top: $space-2;
+  }
+
+  &__clear {
+    flex: 1;
+    padding: 12px;
+    border-radius: $radius-sm;
+    border: 1px solid $color-border;
+    background: #fff;
+    cursor: pointer;
+    font-weight: $fw-medium;
+    color: $color-text-secondary;
+
+    &:hover { border-color: $color-border-hover; }
+  }
+
+  &__apply {
+    flex: 2;
+    padding: 12px;
+    border-radius: $radius-sm;
+    border: none;
+    cursor: pointer;
+    color: #fff;
+    font-weight: $fw-semibold;
+    background: linear-gradient(135deg, #5F71FF 0%, #0050FF 100%);
+    box-shadow: $shadow-sm;
+
+    &:hover { filter: brightness(1.05); }
+  }
+}
+
+.flow1-chip {
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0 $space-3;
+  border-radius: $radius-sm;
+  border: 1px solid $color-border;
+  background: #fff;
+  cursor: pointer;
+  font-weight: $fw-semibold;
+  font-size: $fs-sm;
+  color: $color-text-secondary;
+  transition: $transition-button;
+
+  &--on {
+    border-color: $color-brand;
+    background: $color-brand-tint;
+    color: $color-brand;
+  }
+}
+
+.flow1-bucket {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: $space-3 $space-2;
+  min-height: 44px;
+  border-radius: $radius-sm;
+  border: 1px solid $color-border;
+  background: #fff;
+  cursor: pointer;
+  transition: $transition-button;
+
+  strong { font-size: $fs-sm; color: $color-text-primary; }
+  small { font-size: $fs-xs; color: $color-text-muted; }
+
+  &--on {
+    border-color: $color-brand;
+    background: $color-brand-tint;
+    strong { color: $color-brand; }
+  }
+}
+
+// ── Hero search pill (Airbnb-style trigger) ───────────────────
+.hero-search {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  max-width: 620px;
+  padding: 6px 6px 6px 8px;
+  border-radius: $radius-pill;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(10px);
+  cursor: pointer;
+  text-align: left;
+  transition: $transition-button;
+
+  &:hover { border-color: rgba(255, 255, 255, 0.45); background: rgba(255, 255, 255, 0.16); }
+
+  &__seg {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    color: #fff;
+    font-family: $font-sans;
+    font-size: 15px;
+    font-weight: $fw-medium;
+    white-space: nowrap;
+
+    svg { opacity: 0.9; }
+    &--sport { flex: 1.4; min-width: 0; }
+    &--area  { flex: 1; }
+  }
+
+  &__divider {
+    width: 1px;
+    margin: 10px 0;
+    background: rgba(255, 255, 255, 0.25);
+  }
+
+  &__btn {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 22px;
+    border-radius: $radius-pill;
+    color: #fff;
+    font-family: $font-sans;
+    font-size: 15px;
+    font-weight: $fw-semibold;
+    background: linear-gradient(135deg, #5F71FF 0%, #0050FF 100%);
+    box-shadow: $shadow-sm;
+  }
+
+  @include respond-to(sm) {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+    border-radius: $radius-card;
+    padding: 8px;
+
+    .hero-search__divider { width: auto; height: 1px; margin: 2px 12px; }
+    .hero-search__seg { padding: 12px; }
+    .hero-search__btn { justify-content: center; padding: 14px; }
+  }
+}
+
+// ── Search modal (chọn môn + khu vực + lịch) ──────────────────
+.search-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(10, 15, 30, 0.55);
+    backdrop-filter: blur(2px);
+  }
+
+  &__sheet {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: min(580px, calc(100vw - 32px));
+    max-height: min(86vh, 760px);
+    background: $color-bg-elevated;
+    border-radius: $radius-xl;
+    box-shadow: $shadow-lg;
+    overflow: hidden;
+
+    @include respond-to(sm) {
+      position: absolute;
+      inset: auto 0 0 0;
+      width: 100%;
+      max-height: 92vh;
+      border-radius: $radius-xl $radius-xl 0 0;
+    }
+  }
+
+  &__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: $space-5 $space-6;
+    border-bottom: 1px solid $color-border;
+
+    h3 { font-size: $fs-h3; font-weight: $fw-bold; color: $color-text-primary; }
+  }
+
+  &__close {
+    display: inline-flex;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: $color-text-muted;
+    padding: 4px;
+    border-radius: $radius-sm;
+
+    &:hover { color: $color-text-primary; background: $color-surface; }
+  }
+
+  &__body {
+    overflow-y: auto;
+    padding: $space-5 $space-6;
+    display: flex;
+    flex-direction: column;
+    gap: $space-6;
+  }
+
+  &__section { display: flex; flex-direction: column; gap: $space-3; }
+
+  &__label { font-size: $fs-body; font-weight: $fw-semibold; color: $color-text-primary; }
+  &__sublabel { font-size: $fs-sm; font-weight: $fw-medium; color: $color-text-secondary; }
+
+  &__sports {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: $space-2_5;
+  }
+
+  &__select {
+    display: flex;
+    align-items: center;
+    gap: $space-2;
+    padding: 0 $space-3;
+    height: 48px;
+    border-radius: $radius-sm;
+    border: 1px solid $color-border;
+    background: $color-bg-elevated;
+    color: $color-text-muted;
+
+    &:focus-within { border-color: $color-brand; box-shadow: var(--shadow-focus); }
+
+    select {
+      flex: 1;
+      appearance: none;
+      border: none;
+      outline: none;
+      background: transparent;
+      font-family: $font-sans;
+      font-size: $fs-body;
+      font-weight: $fw-medium;
+      color: $color-text-primary;
+      cursor: pointer;
+    }
+  }
+
+  &__toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: $space-4;
+    width: 100%;
+    padding: $space-4;
+    border-radius: $radius-md;
+    border: 1px solid $color-border;
+    background: $color-surface;
+    cursor: pointer;
+    text-align: left;
+  }
+
+  &__toggle-text {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 4px $space-2;
+    font-size: $fs-body;
+    font-weight: $fw-semibold;
+    color: $color-text-primary;
+
+    svg { color: $color-brand; }
+    small { grid-column: 2; font-size: $fs-sm; font-weight: $fw-regular; color: $color-text-secondary; }
+  }
+
+  &__switch {
+    position: relative;
+    flex-shrink: 0;
+    width: 44px;
+    height: 26px;
+    border-radius: $radius-pill;
+    background: $color-border-hover;
+    transition: background $duration-fast $ease-standard;
+
+    &.is-on { background: $color-brand; }
+  }
+
+  &__switch-knob {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 20px;
+    height: 20px;
+    border-radius: $radius-full;
+    background: #fff;
+    box-shadow: $shadow-sm;
+    transition: transform $duration-fast $ease-expo-out;
+
+    .search-modal__switch.is-on & { transform: translateX(18px); }
+  }
+
+  &__schedule {
+    margin-top: $space-3;
+    display: flex;
+    flex-direction: column;
+    gap: $space-4;
+  }
+
+  &__field { display: flex; flex-direction: column; gap: $space-2_5; }
+  &__days { display: flex; flex-wrap: wrap; gap: $space-2; }
+  &__buckets { display: grid; grid-template-columns: repeat(3, 1fr); gap: $space-2; }
+
+  &__footer {
+    padding: $space-4 $space-6;
+    border-top: 1px solid $color-border;
+  }
+
+  &__search {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: $radius-sm;
+    cursor: pointer;
+    color: #fff;
+    font-size: $fs-body;
+    font-weight: $fw-semibold;
+    background: linear-gradient(135deg, #5F71FF 0%, #0050FF 100%);
+    box-shadow: $shadow-brand-md;
+
+    &:hover { filter: brightness(1.05); }
+  }
+}
+
+// Sport chip (thumbnail + tên)
+.sport-chip {
+  display: flex;
+  align-items: center;
+  gap: $space-2_5;
+  padding: 6px 12px 6px 6px;
+  border-radius: $radius-pill;
+  border: 1px solid $color-border;
+  background: $color-bg-elevated;
+  cursor: pointer;
+  transition: $transition-button;
+
+  &__thumb {
+    width: 28px;
+    height: 28px;
+    border-radius: $radius-full;
+    overflow: hidden;
+    flex-shrink: 0;
+    background: $color-surface;
+
+    img { width: 100%; height: 100%; object-fit: cover; }
+  }
+
+  &__name {
+    font-size: $fs-sm;
+    font-weight: $fw-medium;
+    color: $color-text-primary;
+    white-space: nowrap;
+  }
+
+  &:hover { border-color: $color-border-hover; }
+
+  &--on {
+    border-color: $color-brand;
+    background: $color-brand-tint;
+    .sport-chip__name { color: $color-brand; font-weight: $fw-semibold; }
+  }
+}
+
+.day-chip {
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0 $space-3;
+  border-radius: $radius-sm;
+  border: 1px solid $color-border;
+  background: #fff;
+  cursor: pointer;
+  font-weight: $fw-semibold;
+  font-size: $fs-sm;
+  color: $color-text-secondary;
+  transition: $transition-button;
+
+  &--on { border-color: $color-brand; background: $color-brand-tint; color: $color-brand; }
+}
+
+.bucket-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: $space-3 $space-2;
+  min-height: 44px;
+  border-radius: $radius-sm;
+  border: 1px solid $color-border;
+  background: #fff;
+  cursor: pointer;
+  transition: $transition-button;
+
+  strong { font-size: $fs-sm; color: $color-text-primary; }
+  small { font-size: $fs-xs; color: $color-text-muted; }
+
+  &--on {
+    border-color: $color-brand;
+    background: $color-brand-tint;
+    strong { color: $color-brand; }
+  }
+}
+
+// Filter modal extras (chip rows, price, split footer)
+.search-modal {
+  &__chiprow { display: flex; flex-wrap: wrap; gap: $space-2; }
+
+  &__price-val {
+    margin-left: auto;
+    font-weight: $fw-bold;
+    color: $color-brand;
+  }
+
+  &__range {
+    width: 100%;
+    accent-color: $color-brand;
+    cursor: pointer;
+  }
+
+  &__footer--split {
+    display: flex;
+    align-items: center;
+    gap: $space-3;
+
+    .search-modal__search { flex: 2; }
+  }
+
+  &__clear {
+    flex: 1;
+    padding: 14px;
+    border-radius: $radius-sm;
+    border: 1px solid $color-border;
+    background: $color-bg-elevated;
+    cursor: pointer;
+    font-size: $fs-body;
+    font-weight: $fw-medium;
+    color: $color-text-secondary;
+
+    &:hover { border-color: $color-border-hover; color: $color-text-primary; }
+  }
+
+  // label có giá trị bên phải (chi phí)
+  &__label { display: flex; align-items: center; }
+}
+
+.pill-chip {
+  padding: 9px 16px;
+  border-radius: $radius-pill;
+  border: 1px solid $color-border;
+  background: $color-bg-elevated;
+  cursor: pointer;
+  font-size: $fs-sm;
+  font-weight: $fw-medium;
+  color: $color-text-secondary;
+  transition: $transition-button;
+
+  &:hover { border-color: $color-border-hover; }
+
+  &--on {
+    border-color: $color-brand;
+    background: $color-brand-tint;
+    color: $color-brand;
+    font-weight: $fw-semibold;
+  }
+}
+
+// ── Area combobox (Select2-style: search + multi-select) ──────
+.area-select {
+  position: relative;
+
+  &__control {
+    display: flex;
+    align-items: center;
+    gap: $space-2;
+    min-height: 48px;
+    padding: 6px 10px 6px $space-3;
+    border-radius: $radius-sm;
+    border: 1px solid $color-border;
+    background: $color-bg-elevated;
+    cursor: text;
+    color: $color-text-muted;
+
+    &:hover { border-color: $color-border-hover; }
+  }
+
+  &.is-open &__control { border-color: $color-brand; box-shadow: var(--shadow-focus); }
+
+  &__tags {
+    flex: 1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    min-width: 0;
+  }
+
+  &__placeholder { color: $color-text-muted; font-size: $fs-body; align-self: center; }
+
+  &__tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 4px 3px 10px;
+    border-radius: $radius-pill;
+    background: $color-brand-tint;
+    color: $color-brand;
+    font-size: $fs-sm;
+    font-weight: $fw-medium;
+
+    button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 18px;
+      height: 18px;
+      border: none;
+      border-radius: $radius-full;
+      background: rgba(26, 42, 223, 0.10);
+      color: $color-brand;
+      cursor: pointer;
+
+      &:hover { background: $color-brand; color: #fff; }
+    }
+  }
+
+  &__chev {
+    display: inline-flex;
+    color: $color-text-muted;
+    transition: transform $duration-fast $ease-standard;
+    &.is-open { transform: rotate(180deg); }
+  }
+
+  // Inline panel (không clip trong modal cuộn) — vẫn trông như dropdown mở
+  &__panel {
+    margin-top: 6px;
+    background: $color-bg-elevated;
+    border: 1px solid $color-brand-subtle;
+    border-radius: $radius-md;
+    box-shadow: $shadow-md;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    max-height: 300px;
+  }
+
+  &__search {
+    display: flex;
+    align-items: center;
+    gap: $space-2;
+    padding: $space-3;
+    border-bottom: 1px solid $color-border;
+    color: $color-text-muted;
+
+    input {
+      flex: 1;
+      border: none;
+      outline: none;
+      background: transparent;
+      font-family: $font-sans;
+      font-size: $fs-sm;
+      color: $color-text-primary;
+
+      &::placeholder { color: $color-text-placeholder; }
+    }
+  }
+
+  &__options { overflow-y: auto; padding: $space-2; }
+
+  &__optgroup + &__optgroup { margin-top: $space-2; }
+
+  &__optgroup-label {
+    padding: $space-2 $space-2 4px;
+    font-size: $fs-xs;
+    font-weight: $fw-semibold;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: $color-text-muted;
+  }
+
+  &__option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: $space-2;
+    width: 100%;
+    padding: 9px $space-3;
+    border: none;
+    border-radius: $radius-sm;
+    background: none;
+    cursor: pointer;
+    text-align: left;
+    font-size: $fs-sm;
+    color: $color-text-primary;
+
+    &:hover { background: $color-surface; }
+
+    &.is-selected {
+      background: $color-brand-tint;
+      color: $color-brand;
+      font-weight: $fw-semibold;
+    }
+  }
+
+  &__empty {
+    padding: $space-5 $space-3;
+    text-align: center;
+    font-size: $fs-sm;
+    color: $color-text-muted;
+  }
+
+  &__panel-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: $space-3;
+    padding: $space-2_5 $space-3;
+    border-top: 1px solid $color-border;
+
+    button {
+      border: none;
+      background: none;
+      cursor: pointer;
+      font-size: $fs-sm;
+      font-weight: $fw-medium;
+      color: $color-text-secondary;
+      padding: 6px 4px;
+
+      &:hover { color: $color-text-primary; }
+    }
+  }
+
+  &__done {
+    padding: 6px 14px !important;
+    border-radius: $radius-sm;
+    background: $color-brand !important;
+    color: #fff !important;
+    font-weight: $fw-semibold !important;
+
+    &:hover { filter: brightness(1.05); }
+  }
+}
+
 // ── Swiper pagination chung ───────────────────────────────────
 .swiper--pagination {
   display: flex;

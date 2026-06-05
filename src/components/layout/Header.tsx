@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import { useState, useEffect, useRef } from 'react';
 import { MAIN_NAV, ROUTES } from '@config/routes';
 import { Button } from '@components/ui';
+import AppIcon from '@components/ui/AppIcon';
 import { cn } from '@lib/cn';
 import { usePersona } from '@contexts/PersonaContext';
 import { useDemoMode } from '@contexts/DemoModeContext';
@@ -89,7 +90,7 @@ export default function Header() {
             aria-label="Mở Demo Mode panel"
             title="Demo Mode (Ctrl+Shift+D)"
           >
-            ⚙
+            <AppIcon name="setting" size={18} />
           </button>
 
           {isLoggedIn && user ? (
@@ -324,7 +325,7 @@ export default function Header() {
           className="header__mobile-demo-trigger"
           onClick={() => { openPanel(); setOpen(false); }}
         >
-          <span>⚙</span> Demo Mode panel
+          <AppIcon name="setting" size={16} /> Demo Mode panel
         </button>
       </div>
 

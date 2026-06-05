@@ -11,10 +11,10 @@ type CategoriesSectionProps = {
 
 const TABS: { value: SportCategory | 'all'; label: string }[] = [
   { value: 'all',      label: 'Tất cả' },
-  { value: 'sport',    label: '⚽ Thể thao' },
-  { value: 'tech',     label: '💻 Công nghệ' },
-  { value: 'language', label: '🌐 Ngôn ngữ' },
-  { value: 'hr',       label: '👥 HR' },
+  { value: 'sport',    label: 'Thể thao' },
+  { value: 'tech',     label: 'Công nghệ' },
+  { value: 'language', label: 'Ngôn ngữ' },
+  { value: 'hr',       label: 'HR' },
 ];
 
 export default function CategoriesSection({ sports }: CategoriesSectionProps) {

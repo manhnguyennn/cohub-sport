@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@components/ui';
+import AppIcon, { type AppIconName } from '@components/ui/AppIcon';
 import { ROUTES } from '@config/routes';
 
 export const metadata = {
@@ -8,34 +9,34 @@ export const metadata = {
   description: 'Tham gia mạng lưới 500+ HLV chuyên nghiệp. Tự tay xây dựng nguồn thu nhập từ chuyên môn của bạn.',
 };
 
-const BENEFITS = [
+const BENEFITS: { icon: AppIconName; title: string; description: string }[] = [
   {
-    icon: '💰',
+    icon: 'wallet',
     title: 'Thu nhập từ 15-30tr/tháng',
     description: 'HLV active trung bình kiếm 22tr/tháng. Top coach Pickleball/Golf đạt 50tr+/tháng.',
   },
   {
-    icon: '📅',
+    icon: 'calendar',
     title: 'Linh hoạt 100% thời gian',
     description: 'Tự cài lịch trống, tự chọn học viên. Dạy ngoài giờ chính, cuối tuần — tuỳ bạn.',
   },
   {
-    icon: '🎯',
+    icon: 'target',
     title: 'Tệp học viên chất lượng',
     description: 'Học viên đã xem profile, chứng chỉ, review trước khi book. Không còn "lùa gà" qua Zalo.',
   },
   {
-    icon: '🛡',
+    icon: 'shield',
     title: 'Thu phí an toàn qua escrow',
     description: 'CoHub giữ tiền hộ tới khi buổi tập hoàn thành. Coach nhận tiền T+3, không lo lừa đảo.',
   },
   {
-    icon: '📊',
+    icon: 'chart',
     title: 'Dashboard quản lý chuyên nghiệp',
     description: 'Theo dõi GMV, học viên, lịch tập, review — như HubSpot mini cho coach cá nhân.',
   },
   {
-    icon: '🏆',
+    icon: 'cup',
     title: 'Verified badge → tăng booking 1.3x',
     description: 'KYC + chứng chỉ pass → badge xanh. HLV verified xuất hiện top trong search.',
   },
@@ -126,7 +127,7 @@ export default function BecomeCoachPage() {
           <div className="become-coach__benefits-grid">
             {BENEFITS.map((b) => (
               <div key={b.title} className="become-coach__benefit">
-                <span className="become-coach__benefit-icon" aria-hidden>{b.icon}</span>
+                <span className="become-coach__benefit-icon" aria-hidden><AppIcon name={b.icon} size={26} /></span>
                 <h3>{b.title}</h3>
                 <p>{b.description}</p>
               </div>

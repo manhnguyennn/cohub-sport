@@ -10,6 +10,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Button } from '@components/ui';
+import AppIcon from '@components/ui/AppIcon';
 import { ROUTES } from '@config/routes';
 import { useAuth } from '@hooks/useAuth';
 import { useToast } from '@contexts/ToastContext';
@@ -57,7 +58,7 @@ export default function OnboardingPreview() {
         setStage('approved');
         clearDraft();
         toast.success('Profile của bạn đã online! Tạo khoá học để thu hút học viên.', {
-          title: '🎉 Đã duyệt',
+          title: 'Đã duyệt',
           duration: 6000,
         });
         // Auto redirect dashboard sau 1.5s
@@ -92,15 +93,15 @@ export default function OnboardingPreview() {
         <div className="onboarding-preview__banner-inner">
           <Link href={ROUTES.coachOnboarding} className="onboarding-preview__edit">← Sửa thông tin</Link>
           <div className="onboarding-preview__banner-status">
-            {stage === 'preview' && <span>👀 Đây là cách học viên thấy profile của bạn</span>}
-            {stage === 'submitting' && <span>📤 Đang gửi review...</span>}
+            {stage === 'preview' && <span><AppIcon name="eye" size={15} /> Đây là cách học viên thấy profile của bạn</span>}
+            {stage === 'submitting' && <span><AppIcon name="send" size={15} /> Đang gửi review...</span>}
             {stage === 'pending' && (
               <span className="onboarding-preview__pending">
-                ⏳ Đang chờ Admin duyệt (Tầng 1, SLA ≤24h)
+                <AppIcon name="clock" size={15} /> Đang chờ Admin duyệt (Tầng 1, SLA ≤24h)
               </span>
             )}
             {stage === 'approved' && (
-              <span className="onboarding-preview__approved">✅ Đã duyệt — đang chuyển dashboard...</span>
+              <span className="onboarding-preview__approved"><AppIcon name="check" size={15} /> Đã duyệt — đang chuyển dashboard...</span>
             )}
           </div>
         </div>
@@ -114,16 +115,16 @@ export default function OnboardingPreview() {
             {step1.avatar ? (
               <Image src={step1.avatar} alt={step1.fullName ?? ''} width={120} height={120} unoptimized />
             ) : (
-              <div className="onboarding-preview__avatar-placeholder">👤</div>
+              <div className="onboarding-preview__avatar-placeholder"><AppIcon name="user" size={44} /></div>
             )}
           </div>
           <h1>{step1.fullName}</h1>
           {step3.tagline && <p className="onboarding-preview__tagline">{step3.tagline}</p>}
 
           <div className="onboarding-preview__meta">
-            {step1.city && <span>📍 {step1.city}</span>}
-            {step2.experienceYears && <span>🏆 {step2.experienceYears} năm kinh nghiệm</span>}
-            {step2.level && <span>🎓 {labelLevel(step2.level)}</span>}
+            {step1.city && <span><AppIcon name="location" size={14} /> {step1.city}</span>}
+            {step2.experienceYears && <span><AppIcon name="cup" size={14} /> {step2.experienceYears} năm kinh nghiệm</span>}
+            {step2.level && <span><AppIcon name="teacher" size={14} /> {labelLevel(step2.level)}</span>}
           </div>
         </div>
       </section>
@@ -207,7 +208,7 @@ export default function OnboardingPreview() {
 
               {stage === 'preview' && (
                 <Button variant="primary" size="lg" block onClick={handleSubmit}>
-                  📤 Gửi review để online
+                  <AppIcon name="send" size={16} /> Gửi review để online
                 </Button>
               )}
               {(stage === 'submitting' || stage === 'pending') && (

@@ -17,6 +17,7 @@ import { useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { Button, EmptyState, SkeletonList } from '@components/ui';
+import AppIcon from '@components/ui/AppIcon';
 import { ROUTES } from '@config/routes';
 import { formatVND, formatNextSlot } from '@lib/date';
 import { openSessionService } from '@services/openSession.service';
@@ -158,7 +159,7 @@ function SessionRow({ session, onCancel }: { session: OpenSession; onCancel: () 
             {session.title ?? 'Lịch dạy mở'}
           </strong>
           <span className="cms-session-card__time">
-            ⏱ {formatNextSlot(session.startsAt)} · {session.durationMinutes} phút
+            <AppIcon name="clock" size={14} /> {formatNextSlot(session.startsAt)} · {session.durationMinutes} phút
           </span>
         </div>
         <span className={cn('cms-badge', `cms-badge--${badgeKind(session)}`)}>

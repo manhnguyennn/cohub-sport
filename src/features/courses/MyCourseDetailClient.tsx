@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Button, SkeletonDetail } from '@components/ui';
+import AppIcon from '@components/ui/AppIcon';
 import { ROUTES } from '@config/routes';
 import { formatDate, formatTime, formatVND } from '@lib/date';
 import { cn } from '@lib/cn';
@@ -111,7 +112,7 @@ export default function MyCourseDetailClient({ enrollmentId }: { enrollmentId: s
                             </span>
                             <span className="course-detail-main__sess-dur">
                               {isCompleted ? 'Hoàn thành'
-                                : isNext      ? '⏭ Buổi tiếp theo'
+                                : isNext      ? <><AppIcon name="next" size={13} /> Buổi tiếp theo</>
                                 : 'Sắp tới'}
                             </span>
                           </li>
@@ -158,7 +159,7 @@ export default function MyCourseDetailClient({ enrollmentId }: { enrollmentId: s
                   block
                   onClick={() => toast.info('Demo: chat với coach sẽ có ở tuần 7.')}
                 >
-                  💬 Nhắn tin coach
+                  <AppIcon name="message" size={16} /> Nhắn tin coach
                 </Button>
 
                 {canCancel && (

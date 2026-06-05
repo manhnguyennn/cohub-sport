@@ -1,6 +1,7 @@
 import type { Coach, CoachListQuery, CoachCourse, RatingDistribution } from '@app-types/coach';
 import type { Paginated } from '@app-types/common';
 import { registerMock } from '@lib/mockRegistry';
+import { matchesArea, cityKey } from '@lib/area-match';
 
 // ── Helpers ────────────────────────────────────────────────────
 
@@ -25,9 +26,9 @@ const DEFAULT_CERTIFICATES = [
 ];
 
 const DEFAULT_SHORT_VIDEOS = [
-  { id: 'sv1', title: 'How to work on swing changes', thumbnail: '/images/Container.webp' },
-  { id: 'sv2', title: 'Chicken wing', thumbnail: '/images/Container-_1_.webp' },
-  { id: 'sv3', title: 'How your pivot may be causing your slice. Sample lesson', thumbnail: '/images/Container-_2_.webp' },
+  { id: 'sv1', title: 'How to work on swing changes', thumbnail: '/images/golf-3.webp' },
+  { id: 'sv2', title: 'Chicken wing', thumbnail: '/images/tennis-3.webp' },
+  { id: 'sv3', title: 'How your pivot may be causing your slice. Sample lesson', thumbnail: '/images/yoga-5.webp' },
 ];
 
 // ── Coaches ────────────────────────────────────────────────────
@@ -37,8 +38,8 @@ export const coachesMock: Coach[] = [
     id: 'c1',
     slug: 'nguyen-van-an',
     fullName: 'Nguyễn Văn An',
-    avatar: '/images/Container.webp',
-    coverImage: '/images/Container-_1_.webp',
+    avatar: '/images/nguyen-van-huy.svg',
+    coverImage: '/images/pickleball-4.webp',
     bio: 'HLV Pickleball với 8 năm kinh nghiệm thi đấu, đã đào tạo hơn 200 học viên.',
     title: 'Pickleball Coach',
     sports: ['pickleball', 'tennis'],
@@ -74,8 +75,8 @@ export const coachesMock: Coach[] = [
     id: 'c2',
     slug: 'tran-minh-hoa',
     fullName: 'Trần Minh Hoà',
-    avatar: '/images/Container-_1_.webp',
-    coverImage: '/images/Yoga.webp',
+    avatar: '/images/do-thi-phuong.svg',
+    coverImage: '/images/yoga-2.webp',
     bio: 'Anna Nguyễn là huấn luyện viên Yoga và Fitness chuyên nghiệp, với nhiều năm kinh nghiệm trong việc giảng dạy các lớp cá nhân và nhóm. Anna chú trọng đến sự cân bằng giữa thể chất – tinh thần – hơi thở, giúp học viên đạt được sự dẻo dai, giảm căng thẳng và duy trì lối sống lành mạnh.',
     title: 'Yoga Coach',
     sports: ['yoga', 'pilates'],
@@ -93,6 +94,7 @@ export const coachesMock: Coach[] = [
     isFeatured: true,
     gender: 'female',
     teachingFormats: ['1on1', 'group'],
+    responseRateMinutes: 120,
     tags: ['Top Rated', 'Certified'],
     teachingFocus: DEFAULT_TEACHING_FOCUS,
     skills: DEFAULT_SKILLS,
@@ -105,8 +107,8 @@ export const coachesMock: Coach[] = [
     id: 'c3',
     slug: 'le-quoc-thai',
     fullName: 'Lê Quốc Thái',
-    avatar: '/images/Container-_2_.webp',
-    coverImage: '/images/Fitness.webp',
+    avatar: '/images/phan-tuan-kiet.svg',
+    coverImage: '/images/running-3.webp',
     bio: 'Strength & conditioning coach, từng làm việc với VĐV chuyên nghiệp.',
     title: 'Strength Coach',
     sports: ['gym-fitness'],
@@ -141,7 +143,8 @@ export const coachesMock: Coach[] = [
     id: 'c4',
     slug: 'pham-thuy-linh',
     fullName: 'Phạm Thuỳ Linh',
-    avatar: '/images/Container-_3_.webp',
+    avatar: '/images/pham-thi-linh.svg',
+    coverImage: '/images/tennis-4.webp',
     bio: 'Tennis coach, vô địch giải trẻ quốc gia 2018.',
     title: 'Tennis Coach',
     sports: ['tennis'],
@@ -170,8 +173,8 @@ export const coachesMock: Coach[] = [
     id: 'c5',
     slug: 'do-anh-tuan',
     fullName: 'Đỗ Anh Tuấn',
-    avatar: '/images/Container.webp',
-    coverImage: '/images/Golf.webp',
+    avatar: '/images/vo-quoc-dat.svg',
+    coverImage: '/images/golf-4.webp',
     bio: 'Golf instructor PGA Class A. Sân tập riêng tại Long Biên.',
     title: 'Golf Instructor',
     sports: ['golf'],
@@ -206,7 +209,8 @@ export const coachesMock: Coach[] = [
     id: 'c6',
     slug: 'vu-ngoc-mai',
     fullName: 'Vũ Ngọc Mai',
-    avatar: '/images/Container-_1_.webp',
+    avatar: '/images/hoang-thi-hanh.svg',
+    coverImage: '/images/Boxing.webp',
     bio: 'Boxing coach, hỗ trợ giảm cân & rèn luyện thể chất cho người mới.',
     title: 'Boxing Coach',
     sports: ['boxing'],
@@ -235,7 +239,8 @@ export const coachesMock: Coach[] = [
     id: 'c7',
     slug: 'hoang-nam-son',
     fullName: 'Hoàng Nam Sơn',
-    avatar: '/images/Container-_2_.webp',
+    avatar: '/images/le-minh-hoang.svg',
+    coverImage: '/images/Coding.webp',
     bio: 'Senior engineer @ Big Tech. Coaching cho dev Junior-Mid lên Senior.',
     title: 'Tech Mentor',
     sports: ['coding', 'ai'],
@@ -265,7 +270,8 @@ export const coachesMock: Coach[] = [
     id: 'c8',
     slug: 'bui-thu-ha',
     fullName: 'Bùi Thu Hà',
-    avatar: '/images/Container-_3_.webp',
+    avatar: '/images/nguyen-thi-an.svg',
+    coverImage: '/images/Ux.webp',
     bio: 'UI/UX Designer, 7 năm sản phẩm B2C. Mentor portfolio review.',
     title: 'UX Mentor',
     sports: ['ux'],
@@ -300,7 +306,7 @@ function defaultCourses(coachId: string): CoachCourse[] {
       title: 'Yoga Cơ Bản',
       subtitle: 'Khởi đầu cho sức khỏe & cân bằng',
       description: 'Khóa học nền tảng cho người mới bắt đầu Yoga. Để giúp bạn cải thiện sức khỏe và giảm căng thẳng.',
-      thumbnail: '/images/Container.webp',
+      thumbnail: '/images/yoga-5.webp',
       oldPrice: 4_500_000,
       newPrice: 3_999_000,
     },
@@ -308,7 +314,7 @@ function defaultCourses(coachId: string): CoachCourse[] {
       title: 'Vinyasa Flow',
       subtitle: 'Năng Lượng & Cân Bằng (Trung cấp)',
       description: 'Khóa học Vinyasa nâng cao sức bền và độ dẻo dai, giúp bạn cải thiện thể chất và cân bằng tinh thần.',
-      thumbnail: '/images/Container-_1_.webp',
+      thumbnail: '/images/golf-5.webp',
       oldPrice: 8_500_000,
       newPrice: 5_999_000,
     },
@@ -316,7 +322,7 @@ function defaultCourses(coachId: string): CoachCourse[] {
       title: 'Power Yoga',
       subtitle: 'Sức Mạnh & Sức Bền (Cao cấp)',
       description: 'Khóa học thử thách giới hạn bản thân với các động tác cường độ cao, tăng sức mạnh và cải thiện vóc dáng.',
-      thumbnail: '/images/Container-_2_.webp',
+      thumbnail: '/images/swiming-3.webp',
       oldPrice: 9_500_000,
       newPrice: 6_999_000,
     },
@@ -354,7 +360,8 @@ function filterCoaches(list: Coach[], q: CoachListQuery): Coach[] {
   if (q.sport)     out = out.filter((c) => c.sports.includes(q.sport!));
   if (q.language)  out = out.filter((c) => c.languages.includes(q.language!));
   if (q.minRating) out = out.filter((c) => c.rating >= q.minRating!);
-  if (q.city)      out = out.filter((c) => c.location.city === q.city);
+  if (q.city)      out = out.filter((c) => cityKey(c.location.city) === cityKey(q.city!));
+  if (q.area)      out = out.filter((c) => matchesArea(q.area!, c.location));
   if (q.gender)    out = out.filter((c) => c.gender === q.gender);
   if (q.format)    out = out.filter((c) => c.teachingFormats?.includes(q.format!));
   if (q.priceMin !== undefined) out = out.filter((c) => c.pricePerHour.amount >= q.priceMin!);

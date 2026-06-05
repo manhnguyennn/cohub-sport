@@ -209,7 +209,34 @@ export default function CoachCard({ coach, variant = 'default', onSelect }: Coac
 
 ### 6.4. Responsive
 - Mobile-first: viết base style cho mobile, dùng `@media (min-width: ...)` cho desktop.
-- Breakpoints: dùng SCSS variables từ `_tokens.scss` (`$bp-sm`, `$bp-md`…).
+- Breakpoints: dùng SCSS variables từ `_tokens.scss` (`$bp-sm`, `$bp-md`…) hoặc mixin `respond-to($bp)` / `respond-from($bp)`.
+
+### 6.5. Container padding (CRITICAL)
+- **Mobile** = `$spacing-page-x` = **14px** (sát lề, nới rộng nội dung). **Desktop** = `$spacing-page-x-lg` = 48px.
+- Pattern container chuẩn — **luôn có override desktop**, không hardcode số:
+
+```scss
+&__container {
+  max-width: var(--container);
+  margin-inline: auto;
+  padding-inline: $spacing-page-x;                 // mobile 14px
+  @include respond-from(md) { padding-inline: $spacing-page-x-lg; } // desktop 48px
+}
+```
+
+### 6.6. Box overflow-x (tabs / chip rows) trên mobile
+- Box cuộn ngang phải **chạm sát 2 lề** màn hình, item đầu/cuối cách lề **14px**.
+- Dùng mixin **`edge-scroll`** (`_tokens.scss`) đặt trực tiếp trên phần tử `overflow-x: auto` (cha là container có `padding-inline: $spacing-page-x`):
+
+```scss
+&__tabs {
+  display: flex;
+  overflow-x: auto;
+  scrollbar-width: none;
+  &::-webkit-scrollbar { display: none; }
+  @include edge-scroll;   // full-bleed mobile, item inset 14px
+}
+```
 
 ---
 
@@ -385,6 +412,34 @@ Trước khi mở PR:
 - [ ] Component mới có TypeScript props.
 - [ ] Không hardcode color/spacing/route.
 - [ ] Nếu thêm service → có mock data tương ứng + DTO type.
+
+---
+
+## 14b. Icon — KHÔNG dùng emoji (CRITICAL)
+
+> ⛔ **Tuyệt đối không dùng emoji trong UI** (📅 ⚡ 🔥 🎓 👥 💰 🎉 …). Emoji render bằng glyph màu của OS, lệch khỏi palette Cohub và làm sản phẩm trông rẻ tiền / "templated".
+
+**Thay vào đó:** dùng `AppIcon` (`src/components/ui/AppIcon.tsx`) — wrapper trên bộ **iconsax-reactjs**.
+
+```tsx
+import AppIcon from '@components/ui/AppIcon';
+
+// inline cùng text — icon thừa hưởng màu chữ (currentColor), đã căn dòng sẵn
+<span className="meta"><AppIcon name="location" size={14} /> {city}</span>
+
+// data-driven: lưu key semantic, render qua AppIcon
+const ITEMS = [{ icon: 'wallet', label: 'Học phí' }] as const;
+<AppIcon name={item.icon} size={16} />
+```
+
+**Quy tắc dùng icon (đúng chỗ, không bừa bãi):**
+- Chỉ thêm icon khi **làm rõ nghĩa**: metadata (vị trí, thời lượng, sĩ số), trạng thái (đã huỷ, chờ xác nhận), hành động (nhắn tin, gửi).
+- **KHÔNG** rải icon vào mọi tiêu đề/đoạn văn. Một khối thông tin chỉ cần 1 icon dẫn.
+- `size`: 14 cho meta/caption, 16 cho body, 18–20 cho nhấn mạnh. Màu mặc định `currentColor`; chỉ override bằng **token** khi cần (vd badge trạng thái).
+- Mũi tên CTA (`→`) là ký tự typographic, **được phép** giữ — không phải emoji.
+- Cần icon mới → thêm vào `MAP` trong `AppIcon.tsx`, KHÔNG import iconsax rải rác từng file.
+
+**Reviewer**: thấy emoji trong diff UI → request changes.
 
 ---
 

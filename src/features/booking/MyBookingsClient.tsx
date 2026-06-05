@@ -8,6 +8,7 @@ import { useEffect, useState, useCallback } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { EmptyState, Button, SkeletonList } from '@components/ui';
+import AppIcon, { type AppIconName } from '@components/ui/AppIcon';
 import { ROUTES } from '@config/routes';
 import { formatDateTime, formatVND } from '@lib/date';
 import { bookingService } from '@services/booking.service';
@@ -117,12 +118,12 @@ export default function MyBookingsClient() {
 
 function BookingRow({ booking, onCancel }: { booking: Booking; onCancel: () => void }) {
   const canCancel = booking.status === 'pending' || booking.status === 'confirmed';
-  const statusBadge =
-    booking.status === 'pending'   ? { label: '⏳ Chờ xác nhận', tone: 'warn' } :
-    booking.status === 'confirmed' ? { label: '✓ Đã xác nhận',   tone: 'info' } :
-    booking.status === 'completed' ? { label: '✓ Hoàn thành',    tone: 'success' } :
-    booking.status === 'cancelled' ? { label: '✕ Đã huỷ',         tone: 'danger' } :
-                                     { label: '⚠ Vắng mặt',       tone: 'danger' };
+  const statusBadge: { icon: AppIconName; label: string; tone: string } =
+    booking.status === 'pending'   ? { icon: 'clock', label: 'Chờ xác nhận', tone: 'warn' } :
+    booking.status === 'confirmed' ? { icon: 'check', label: 'Đã xác nhận',  tone: 'info' } :
+    booking.status === 'completed' ? { icon: 'check', label: 'Hoàn thành',   tone: 'success' } :
+    booking.status === 'cancelled' ? { icon: 'close', label: 'Đã huỷ',       tone: 'danger' } :
+                                     { icon: 'warning', label: 'Vắng mặt',    tone: 'danger' };
 
   return (
     <article className="my-booking-row">
@@ -138,15 +139,15 @@ function BookingRow({ booking, onCancel }: { booking: Booking; onCancel: () => v
             {booking.coachName}
           </Link>
           <span className={`my-booking-row__badge my-booking-row__badge--${statusBadge.tone}`}>
-            {statusBadge.label}
+            <AppIcon name={statusBadge.icon} size={13} /> {statusBadge.label}
           </span>
         </div>
 
         <div className="my-booking-row__meta">
-          ⏱ {formatDateTime(booking.startsAt)} · {booking.durationMinutes} phút
+          <AppIcon name="clock" size={14} /> {formatDateTime(booking.startsAt)} · {booking.durationMinutes} phút
         </div>
         {booking.note && (
-          <div className="my-booking-row__note">📝 {booking.note}</div>
+          <div className="my-booking-row__note"><AppIcon name="note" size={14} /> {booking.note}</div>
         )}
       </div>
 

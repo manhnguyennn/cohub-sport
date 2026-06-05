@@ -5,7 +5,7 @@ export const metadata = { title: 'Admin CRM' };
 export default function AdminPage() {
   return (
     <PlaceholderPage
-      icon="🛡️"
+      icon="shield"
       title="Admin CRM"
       description="Quản lý users, coaches, orders, approval. Cần auth role=admin."
     />

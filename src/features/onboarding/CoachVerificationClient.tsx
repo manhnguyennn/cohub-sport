@@ -13,6 +13,7 @@ import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { Button } from '@components/ui';
+import AppIcon, { type AppIconName } from '@components/ui/AppIcon';
 import { ROUTES } from '@config/routes';
 import { useAuth } from '@hooks/useAuth';
 import { useToast } from '@contexts/ToastContext';
@@ -22,10 +23,10 @@ import { cn } from '@lib/cn';
 
 type Cert = { id: string; name: string; org?: string; year: number; file?: string };
 
-const EKYC_STEPS = [
-  { id: 1, label: 'OCR thông tin CCCD', icon: '📋' },
-  { id: 2, label: 'Face match với selfie', icon: '🔍' },
-  { id: 3, label: 'Cross-check chứng chỉ', icon: '✓' },
+const EKYC_STEPS: { id: number; label: string; icon: AppIconName }[] = [
+  { id: 1, label: 'OCR thông tin CCCD', icon: 'clipboard' },
+  { id: 2, label: 'Face match với selfie', icon: 'search' },
+  { id: 3, label: 'Cross-check chứng chỉ', icon: 'check' },
 ];
 
 export default function CoachVerificationClient() {
@@ -97,7 +98,7 @@ export default function CoachVerificationClient() {
 
       setStage('done');
       toast.success('Bạn đã được xác minh — badge Verified xuất hiện trên profile.', {
-        title: '🎉 Verified Coach',
+        title: 'Verified Coach',
         duration: 6000,
       });
       setTimeout(() => router.push(ROUTES.coachCms), 1500);
@@ -138,7 +139,7 @@ export default function CoachVerificationClient() {
               </div>
 
               <p className="step-form__hint">
-                🔒 Tài liệu được mã hoá at-rest theo Nghị định 13/2023. Không chia sẻ bên thứ 3 ngoài eKYC vendor.
+                <AppIcon name="lock" size={14} /> Tài liệu được mã hoá at-rest theo Nghị định 13/2023. Không chia sẻ bên thứ 3 ngoài eKYC vendor.
               </p>
             </section>
 
@@ -224,7 +225,7 @@ function UploadSlot({ label, url, onChange }: { label: string; url: string | nul
         <Image src={url} alt={label} fill sizes="200px" style={{ objectFit: 'cover' }} unoptimized />
       ) : (
         <span className="verification-card__slot-placeholder">
-          📷 <strong>{label}</strong>
+<AppIcon name="camera" size={15} /> <strong>{label}</strong>
         </span>
       )}
       <input ref={inputRef} type="file" accept="image/*" hidden onChange={onChange} />
@@ -235,7 +236,7 @@ function UploadSlot({ label, url, onChange }: { label: string; url: string | nul
 function EkycProgress({ currentStep }: { currentStep: number }) {
   return (
     <div className="ekyc-progress">
-      <h2>🔄 Đang xử lý eKYC...</h2>
+      <h2><AppIcon name="refresh" size={20} /> Đang xử lý eKYC...</h2>
       <p>Vui lòng giữ trang mở. Quá trình mất khoảng 4-5 giây.</p>
 
       <ol className="ekyc-progress__steps">
@@ -244,7 +245,7 @@ function EkycProgress({ currentStep }: { currentStep: number }) {
           const isActive = i === currentStep;
           return (
             <li key={s.id} className={cn(isDone && 'is-done', isActive && 'is-active')}>
-              <span className="ekyc-progress__icon">{isDone ? '✓' : s.icon}</span>
+              <span className="ekyc-progress__icon"><AppIcon name={isDone ? 'check' : s.icon} size={16} /></span>
               <span className="ekyc-progress__label">{s.label}</span>
               {isActive && <span className="ekyc-progress__spinner" aria-hidden />}
             </li>
@@ -254,7 +255,7 @@ function EkycProgress({ currentStep }: { currentStep: number }) {
 
       {currentStep >= EKYC_STEPS.length && (
         <div className="ekyc-progress__success">
-          <strong>✅ Xác minh thành công!</strong>
+          <strong><AppIcon name="check" size={18} /> Xác minh thành công!</strong>
           <p>Badge <span style={{ color: 'var(--success)' }}>✓ Verified Coach</span> đã được kích hoạt. Đang chuyển dashboard...</p>
         </div>
       )}

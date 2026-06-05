@@ -18,6 +18,7 @@ import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Button, Stepper } from '@components/ui';
+import AppIcon from '@components/ui/AppIcon';
 import { ROUTES } from '@config/routes';
 import { useAuth } from '@hooks/useAuth';
 import { useToast } from '@contexts/ToastContext';
@@ -189,7 +190,7 @@ export default function OpenSessionCreateWizard({ sports }: { sports: Sport[] })
         const input: CreateOpenSessionInput = { ...common, startsAt };
         await openSessionService.create(input);
         setTimeout(() => {
-          toast.success('Đã mở 1 lịch dạy!', { title: '✨ Thành công' });
+          toast.success('Đã mở 1 lịch dạy!', { title: 'Thành công' });
           router.push(ROUTES.coachSessions);
         }, withDelay(800));
       } else {
@@ -202,7 +203,7 @@ export default function OpenSessionCreateWizard({ sports }: { sports: Sport[] })
         };
         const created = await openSessionService.createRecurring(input);
         setTimeout(() => {
-          toast.success(`Đã mở ${created.length} lịch dạy!`, { title: '✨ Thành công' });
+          toast.success(`Đã mở ${created.length} lịch dạy!`, { title: 'Thành công' });
           router.push(ROUTES.coachSessions);
         }, withDelay(800));
       }
@@ -285,7 +286,7 @@ function Step1Mode({ value, onChange }: { value: Draft; onChange: (p: Partial<Dr
             onChange={() => onChange({ mode: 'single' })}
           />
           <div>
-            <strong>🎯 Đơn lẻ</strong>
+            <strong><AppIcon name="calendarSingle" size={16} /> Đơn lẻ</strong>
             <span>1 buổi cụ thể (vd: T7 15/06, 18:00). Mở nhanh khi có khung giờ rảnh bất chợt.</span>
           </div>
         </label>
@@ -297,7 +298,7 @@ function Step1Mode({ value, onChange }: { value: Draft; onChange: (p: Partial<Dr
             onChange={() => onChange({ mode: 'recurring' })}
           />
           <div>
-            <strong>🔁 Lặp lại theo tuần</strong>
+            <strong><AppIcon name="refresh" size={16} /> Lặp lại theo tuần</strong>
             <span>Loạt nhiều buổi cùng giờ-giá (vd: T2+T4+T6 lúc 18:00 trong 4 tuần → 12 lịch). Tiết kiệm thời gian.</span>
           </div>
         </label>
@@ -590,7 +591,7 @@ function Step3PricePreview({ value, onChange, sports }: { value: Draft; onChange
         </div>
         {value.price > 0 && (
           <p className="step-form__hint">
-            💰 Bạn nhận: <strong>{formatVND(net)}</strong>/buổi (sau phí 15%)
+            <AppIcon name="wallet" size={14} /> Bạn nhận: <strong>{formatVND(net)}</strong>/buổi (sau phí 15%)
             {isGroup && (
               <>
                 {' '}· Doanh thu tối đa: <strong>{formatVND(net * value.capacity)}</strong>/buổi
@@ -608,7 +609,7 @@ function Step3PricePreview({ value, onChange, sports }: { value: Draft; onChange
           <div className="cms-preview-list">
             {previewSessions.slice(0, 6).map((s, i) => (
               <div key={s.startsAt + i} className="cms-preview-list__item">
-                <strong>⏱ {formatNextSlot(s.startsAt)}</strong>
+                <strong><AppIcon name="clock" size={14} /> {formatNextSlot(s.startsAt)}</strong>
                 <span>· {value.durationMinutes} phút</span>
                 <span>· {isGroup ? `Nhóm tối đa ${value.capacity}` : '1-1'}</span>
                 <span className="cms-preview-list__price">{value.price > 0 ? formatVND(value.price) : '—'}</span>
@@ -622,7 +623,7 @@ function Step3PricePreview({ value, onChange, sports }: { value: Draft; onChange
           </div>
           {value.mode === 'recurring' && (
             <p className="step-form__hint">
-              💡 Các lịch sẽ được mở với cùng giá, sĩ số, địa điểm. Sau khi mở, bạn vẫn có thể sửa giá riêng từng buổi.
+              <AppIcon name="lamp" size={14} /> Các lịch sẽ được mở với cùng giá, sĩ số, địa điểm. Sau khi mở, bạn vẫn có thể sửa giá riêng từng buổi.
             </p>
           )}
         </section>
