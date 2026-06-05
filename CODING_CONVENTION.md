@@ -443,6 +443,21 @@ const ITEMS = [{ icon: 'wallet', label: 'Học phí' }] as const;
 
 ---
 
+## 14c. Layout — Site chrome vs Dashboard shell (CRM)
+
+Hệ thống có **2 lớp layout** tách biệt, quyết định bằng `isDashboardRoute(pathname)` (`src/lib/dashboard-routes.ts`):
+
+- **Site chrome** (`SiteChrome.tsx` → `Header` + `<main>` + `Footer`): toàn bộ route learner-facing + `/coach/onboarding`, `/coach/verification`.
+- **Dashboard shell** (`DashboardShell.tsx` — sidebar SaaS + topbar, KHÔNG header/footer site): các route CRM `/coach/*` (trừ onboarding/verification) và `/admin/*`. Có 2 variant `coach` ("Coach Studio") và `admin` ("Admin Console").
+
+Quy tắc:
+- Root `app/layout.tsx` chỉ bọc `<SiteChrome>` — shell tự render trong `app/coach/layout.tsx` + `app/admin/layout.tsx`.
+- Thêm route CRM mới → update `isDashboardRoute` + `NAV` trong `DashboardShell.tsx` + link trong dropdown `Header.tsx` (cả desktop + mobile menu).
+- Trang CRM render wrapper `.coach-cms`; shell đã neutralize nền/min-height của nó (`.dash-shell .coach-cms`) — KHÔNG tự thêm nền site vào trang CRM.
+- Entry vào CRM/admin: **chỉ** qua user dropdown ở main header (không có nav site trong shell; có link "Về trang chủ").
+
+---
+
 ## 15. Khi nào break convention?
 
 Convention là để giúp team work nhanh hơn — không phải law of physics.
@@ -452,4 +467,4 @@ Nếu một quy ước cản trở việc deliver giá trị → mở Discussion
 
 ---
 
-_Last updated: 2026-05-27_
+_Last updated: 2026-06-05_

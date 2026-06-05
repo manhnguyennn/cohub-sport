@@ -4,7 +4,7 @@
  * /coach/dashboard — Tổng quan HLV (FSD §4.14).
  *
  * Layout:
- *  - Banner welcome "🎉 Profile online! Tạo khoá học..."
+ *  - Banner welcome "Profile đang online! Tạo khoá học..."
  *  - 4 stat cards (GMV, sessions, learners, rating)
  *  - Revenue line chart 30d (Recharts)
  *  - Recent bookings table 5 rows

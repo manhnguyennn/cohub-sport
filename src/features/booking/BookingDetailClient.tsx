@@ -2,7 +2,7 @@
 
 /**
  * /booking/[id] — Booking detail.
- * - Nếu mới checkout (?status=success) → hero "🎉 Đặt buổi thành công" + timeline live
+ * - Nếu mới checkout (?status=success) → hero "Đặt buổi thành công" + timeline live
  * - Sau 3s tự đổi PENDING → CONFIRMED + toast (trừ khi Demo Mode `coachAutoConfirmOff`)
  * - CTA: Nhắn coach, Huỷ booking
  */

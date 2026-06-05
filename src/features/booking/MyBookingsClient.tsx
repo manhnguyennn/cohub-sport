@@ -15,6 +15,7 @@ import { bookingService } from '@services/booking.service';
 import { useAuth } from '@hooks/useAuth';
 import { cn } from '@lib/cn';
 import CancelBookingModal from './CancelBookingModal';
+import ReviewModal from './ReviewModal';
 import type { Booking, BookingStatus } from '@app-types/booking';
 
 type Tab = 'upcoming' | 'past' | 'cancelled';
@@ -30,6 +31,8 @@ export default function MyBookingsClient() {
   const [tab, setTab] = useState<Tab>('upcoming');
   const [items, setItems] = useState<Booking[] | null>(null);
   const [cancelTarget, setCancelTarget] = useState<Booking | null>(null);
+  const [reviewTarget, setReviewTarget] = useState<Booking | null>(null);
+  const [reviewedIds, setReviewedIds] = useState<Set<string>>(new Set());
 
   const fetchList = useCallback(async (currentTab: Tab) => {
     if (!user) return;
@@ -97,7 +100,9 @@ export default function MyBookingsClient() {
               <BookingRow
                 key={b.id}
                 booking={b}
+                reviewed={reviewedIds.has(b.id)}
                 onCancel={() => setCancelTarget(b)}
+                onReview={() => setReviewTarget(b)}
               />
             ))
           )}
@@ -112,12 +117,24 @@ export default function MyBookingsClient() {
           onCancelled={handleCancelled}
         />
       )}
+
+      {reviewTarget && (
+        <ReviewModal
+          booking={reviewTarget}
+          onClose={() => setReviewTarget(null)}
+          onSubmitted={(id) => {
+            setReviewedIds((prev) => new Set(prev).add(id));
+            setReviewTarget(null);
+          }}
+        />
+      )}
     </div>
   );
 }
 
-function BookingRow({ booking, onCancel }: { booking: Booking; onCancel: () => void }) {
+function BookingRow({ booking, reviewed, onCancel, onReview }: { booking: Booking; reviewed: boolean; onCancel: () => void; onReview: () => void }) {
   const canCancel = booking.status === 'pending' || booking.status === 'confirmed';
+  const canReview = booking.status === 'completed';
   const statusBadge: { icon: AppIconName; label: string; tone: string } =
     booking.status === 'pending'   ? { icon: 'clock', label: 'Chờ xác nhận', tone: 'warn' } :
     booking.status === 'confirmed' ? { icon: 'check', label: 'Đã xác nhận',  tone: 'info' } :
@@ -161,6 +178,15 @@ function BookingRow({ booking, onCancel }: { booking: Booking; onCancel: () => v
             <Button variant="ghost" size="sm" onClick={onCancel}>
               Huỷ
             </Button>
+          )}
+          {canReview && (
+            reviewed ? (
+              <span className="my-booking-row__reviewed"><AppIcon name="check" size={14} /> Đã đánh giá</span>
+            ) : (
+              <Button variant="primary" size="sm" onClick={onReview}>
+                <AppIcon name="star" size={14} color="#fff" /> Đánh giá
+              </Button>
+            )
           )}
         </div>
       </div>

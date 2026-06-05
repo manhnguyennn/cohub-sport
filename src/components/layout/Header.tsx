@@ -7,6 +7,11 @@ import { useState, useEffect, useRef } from 'react';
 import { MAIN_NAV, ROUTES } from '@config/routes';
 import { Button } from '@components/ui';
 import AppIcon from '@components/ui/AppIcon';
+import NotificationBell from './NotificationBell';
+import HeaderChatButton from './HeaderChatButton';
+import SportSearchModal from '@features/home/sections/SportSearchModal';
+import { sportService } from '@services/sport.service';
+import type { Sport } from '@app-types/sport';
 import { cn } from '@lib/cn';
 import { usePersona } from '@contexts/PersonaContext';
 import { useDemoMode } from '@contexts/DemoModeContext';
@@ -16,7 +21,16 @@ export default function Header() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [sports, setSports] = useState<Sport[]>([]);
   const userMenuRef = useRef<HTMLDivElement | null>(null);
+
+  // Mở modal tìm HLV (giống hero) — lazy-fetch sports lần đầu
+  function openSearch() {
+    setOpen(false);
+    if (sports.length === 0) sportService.list().then(setSports).catch(() => {});
+    setSearchOpen(true);
+  }
 
   const { persona, user, role, isLoggedIn, switchRole, logout } = usePersona();
   const { openPanel } = useDemoMode();
@@ -93,6 +107,9 @@ export default function Header() {
             <AppIcon name="setting" size={18} />
           </button>
 
+          {isLoggedIn && <HeaderChatButton />}
+          {isLoggedIn && <NotificationBell />}
+
           {isLoggedIn && user ? (
             <div className="header__user-wrap" ref={userMenuRef}>
               <button
@@ -147,6 +164,9 @@ export default function Header() {
                         <Link href={ROUTES.coachDashboard} className="header__user-menu-item" role="menuitem">
                           Coach Dashboard
                         </Link>
+                        <Link href={ROUTES.coachBookings} className="header__user-menu-item" role="menuitem">
+                          Booking
+                        </Link>
                         <Link href={ROUTES.coachSessions} className="header__user-menu-item" role="menuitem">
                           Lịch dạy mở
                         </Link>
@@ -159,12 +179,23 @@ export default function Header() {
                       </>
                     )}
                     {role === 'admin' && (
-                      <Link href={ROUTES.admin} className="header__user-menu-item" role="menuitem">
-                        Admin Console
-                      </Link>
+                      <>
+                        <Link href={ROUTES.admin} className="header__user-menu-item" role="menuitem">
+                          Admin Console
+                        </Link>
+                        <Link href={ROUTES.adminReviews} className="header__user-menu-item" role="menuitem">
+                          Duyệt HLV
+                        </Link>
+                      </>
                     )}
                     <Link href="/my/bookings" className="header__user-menu-item" role="menuitem">
                       Buổi tập của tôi
+                    </Link>
+                    <Link href={role === 'coach' ? ROUTES.coachMessages : ROUTES.messages} className="header__user-menu-item" role="menuitem">
+                      Tin nhắn
+                    </Link>
+                    <Link href={ROUTES.notifications} className="header__user-menu-item" role="menuitem">
+                      Thông báo
                     </Link>
                   </div>
 
@@ -185,10 +216,22 @@ export default function Header() {
               <Button href={ROUTES.login} variant="secondary" size="sm">
                 Đăng nhập
               </Button>
-              <Button href={ROUTES.register} variant="primary" size="sm">
-                Bắt đầu miễn phí
+              <Button variant="primary" size="sm" onClick={openSearch}>
+                <AppIcon name="search" size={16} color="#fff" /> Tìm kiếm HLV
               </Button>
             </div>
+          )}
+
+          {/* Mobile: nút tìm HLV icon-only, cạnh burger (chỉ khi chưa login) */}
+          {!isLoggedIn && (
+            <button
+              type="button"
+              className="header__search-mobile show-mobile-only-flex"
+              onClick={openSearch}
+              aria-label="Tìm kiếm HLV"
+            >
+              <AppIcon name="search" size={20} />
+            </button>
           )}
 
           <button
@@ -255,10 +298,19 @@ export default function Header() {
             <Link href="/my/courses" className="header__mobile-nav-item">
               Khoá học của tôi
             </Link>
+            <Link href={role === 'coach' ? ROUTES.coachMessages : ROUTES.messages} className="header__mobile-nav-item">
+              Tin nhắn
+            </Link>
+            <Link href={ROUTES.notifications} className="header__mobile-nav-item">
+              Thông báo
+            </Link>
             {role === 'coach' && (
               <>
                 <Link href={ROUTES.coachDashboard} className="header__mobile-nav-item">
                   Coach Dashboard
+                </Link>
+                <Link href={ROUTES.coachBookings} className="header__mobile-nav-item">
+                  Booking
                 </Link>
                 <Link href={ROUTES.coachSessions} className="header__mobile-nav-item">
                   Lịch dạy mở
@@ -272,9 +324,14 @@ export default function Header() {
               </>
             )}
             {role === 'admin' && (
-              <Link href={ROUTES.admin} className="header__mobile-nav-item">
-                Admin Console
-              </Link>
+              <>
+                <Link href={ROUTES.admin} className="header__mobile-nav-item">
+                  Admin Console
+                </Link>
+                <Link href={ROUTES.adminReviews} className="header__mobile-nav-item">
+                  Duyệt HLV
+                </Link>
+              </>
             )}
 
             {canSwitchRole && (
@@ -307,7 +364,9 @@ export default function Header() {
           {!isLoggedIn ? (
             <>
               <Button href={ROUTES.login} variant="secondary" block>Đăng nhập</Button>
-              <Button href={ROUTES.register} variant="primary" block>Bắt đầu miễn phí</Button>
+              <Button variant="primary" block onClick={openSearch}>
+                <AppIcon name="search" size={16} color="#fff" /> Tìm kiếm HLV
+              </Button>
             </>
           ) : (
             <button
@@ -331,6 +390,9 @@ export default function Header() {
 
       {/* Backdrop khi mobile menu mở */}
       {open && <div className="header__mobile-backdrop" onClick={() => setOpen(false)} aria-hidden />}
+
+      {/* Modal tìm HLV (giống hero) */}
+      {searchOpen && <SportSearchModal sports={sports} onClose={() => setSearchOpen(false)} />}
     </header>
   );
 }

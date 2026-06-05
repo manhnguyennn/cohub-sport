@@ -3,7 +3,7 @@
 /**
  * Preview profile như learner thấy + button Submit.
  * Submit → status 'pending_basic_review' → 5s background auto-approve
- * → toast "🎉 Profile online" → redirect /coach/dashboard (mock)
+ * → toast "Profile đang online" → redirect /coach/dashboard (mock)
  */
 import { useEffect, useState } from 'react';
 import Image from 'next/image';

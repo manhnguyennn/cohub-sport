@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
-import Header from '@components/layout/Header';
-import Footer from '@components/layout/Footer';
+import SiteChrome from '@components/layout/SiteChrome';
 import AppProviders from '@components/providers/AppProviders';
 
 // Side-effect import — registers all mock handlers into apiClient registry.
@@ -28,9 +27,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body>
         <AppProviders>
-          <Header />
-          <main>{children}</main>
-          <Footer />
+          <SiteChrome>{children}</SiteChrome>
         </AppProviders>
       </body>
     </html>

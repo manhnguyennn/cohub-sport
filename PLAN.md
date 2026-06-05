@@ -18,7 +18,7 @@
 |---|---|
 | **Mock layer** | Giữ `apiClient` + `mockRegistry` (đã chuẩn DTO, swap BE chỉ đổi flag `isMock`). KHÔNG migrate MSW. |
 | **State management** | React Context + manual `localStorage` (KHÔNG Zustand) |
-| **Deploy** | **Netlify** (không phải Vercel như FSD đề xuất) |
+| **Deploy** | Đã deploy (ngoài scope plan — không quản lý ở đây) |
 | **Thứ tự build** | Bắt đầu từ tuần 1 Foundation → đi tuần tự |
 | **Path aliases** | `@components @features @services @lib @hooks @config @app-types @mocks @styles @contexts` |
 | **Date/Form** | dayjs + locale vi · react-hook-form + zod |
@@ -36,9 +36,10 @@
 | **H2** Landing → Course → Detail → Enroll → Payment → My courses | Course flow | ✅ DONE | 3 |
 | **H3** Sign up → Coach onboarding 5 bước → Submit → Approval | Coach onboarding | ✅ DONE | 4 |
 | **H4** Coach dashboard → Tạo course → Public | Coach side dynamic | ✅ DONE | 5 |
-| **H5** Coach inbox booking → Confirm | Coach ops | 🔴 0% | 6 |
-| **H6** Admin queue → Approve coach | Admin quality control | 🔴 0% | 6 |
-| **Polish + Deploy** | a11y, perf, demo script, Netlify | 🔴 0% | 7-8 |
+| **H5** Coach inbox booking → Confirm | Coach ops | ✅ DONE | 6 |
+| **H6** Admin queue → Approve coach | Admin quality control | ✅ DONE | 6 |
+| **Communication** Chat 2 chiều + Notifications + Review form | Messaging/notif/review | ✅ DONE | 7 |
+| **Polish + Docs** | a11y, responsive, 404/empty states, demo script, README | ✅ DONE | 8 |
 
 ---
 
@@ -48,9 +49,12 @@
 
 | Route | Mô tả | Trạng thái |
 |---|---|---|
-| `/` | Home — port từ Features page CRA, 12 sections refactored | ✅ |
-| `/coaches` | Search & filter coach list (URL state) | ✅ |
-| `/coaches/[id]` | Coach Profile Detail (tabs, sidebar booking panel, similar, FAQ, CTA) | ✅ |
+| `/` | Home — Hero search-bar (Airbnb-style) mở `SportSearchModal` (môn + khu vực + toggle lịch cá nhân hoá) → `/coaches` filtered. 12 sections. | ✅ |
+| `/coaches` | Coach list **redesign V2**: `CoachToolbar` inline (search + sort + nút Bộ lọc) + `CoachFilterModal` (hero-style, KHÔNG sidebar) + grid 3-per-row vertical card + "Tải thêm" load-more. URL state. | ✅ |
+| `/coaches/[id]` | Coach Profile Detail. Booking panel **tối giản** (bỏ ready/policy, badge "lịch gần nhất" nhỏ, focus nút Đặt lịch). `CoachBookingModal` = calendar 30 ngày multi-select + toggle "Đặt lịch riêng" (custom request). Section "Lịch dạy mở", similar, FAQ. | ✅ |
+| `/courses`, `/courses/[id]` | Course list + detail (50 course, load-more). | ✅ |
+| `/coach/*` | CRM coach — **Dashboard Shell SaaS** (sidebar+topbar riêng): dashboard, bookings, sessions, courses, calendar. | ✅ |
+| `/admin/*` | Admin Console — Dashboard Shell SaaS: dashboard, reviews. | ✅ |
 | `/showcase` | Legacy home v1 (parked) | ✅ |
 
 ### 2.2 Foundation đã có (tuần 1)
@@ -71,9 +75,10 @@
 ### 2.3 Service layer + Mock
 
 - `src/lib/apiClient.ts` — single switch: `isMock ? mockCall : realCall`
-- `src/lib/mockRegistry.ts` — pattern `registerMock('GET /coaches', handler)`, support `:param`
-- Services: `coach.service.ts`, `sport.service.ts`, `review.service.ts`, `booking.service.ts`, `auth.service.ts`
-- Mocks: `coaches.mock.ts` (8 coach), `sports.mock.ts` (17 sport), `reviews.mock.ts`, `bookings.mock.ts`, `auth.mock.ts`, `personas.mock.ts`
+- `src/lib/mockRegistry.ts` — pattern `registerMock('GET /coaches', handler)`, support `:param`. **Chạy cả server + client** với state in-memory RIÊNG (không persist; full nav reset).
+- Services: `coach`, `sport`, `review`, `booking`, `auth`, `openSession`, `dashboard`, `admin`, `payment`, `promo`, `onboarding`, `course`
+- Mocks (14 file): `coaches.mock.ts` (**50 coach** = 8 literal + `genCoaches` 42), `courses.mock.ts` (**50 course / 13 template**), `sports.mock.ts` (17 sport), `reviews.mock.ts`, `bookings.mock.ts`, `openSession.mock.ts`, `dashboard.mock.ts`, `admin.mock.ts` (4 hồ sơ duyệt), `payment.mock.ts`, `promo.mock.ts`, `onboarding.mock.ts`, `auth.mock.ts`, `personas.mock.ts`
+- Lib matching: `src/lib/area-match.ts` (`matchesArea`/`cityKey` — normalize diacritic), `src/lib/dashboard-routes.ts` (`isDashboardRoute`)
 
 ### 2.4 Design system
 
@@ -182,7 +187,7 @@ Xem §2.2.
 
 **Mock behavior:**
 - Auto-save 5s vào `localStorage['coach_onboarding_draft']` (NFR SRS)
-- Submit → status `PENDING_BASIC_REVIEW` → 5s background → auto-approve → notification "🎉 Profile online!" → redirect dashboard
+- Submit → status `PENDING_BASIC_REVIEW` → 5s background → auto-approve → notification "Profile đã online!" (KHÔNG emoji — §14b) → redirect dashboard
 - Investor mode tăng tốc 5s → 1s (theo `withDelay()`)
 
 ---
@@ -192,7 +197,7 @@ Xem §2.2.
 **Output:** Coach Khoa có dashboard data đẹp, tạo course mới, manage calendar.
 
 **Routes:**
-- `/coach/dashboard` — banner "🎉 Profile online!", 4 stat cards, graph revenue 30d (Recharts), recent bookings 5 dòng, inbox preview 3 chat
+- `/coach/dashboard` — banner "Profile đang online", 4 stat cards, graph revenue 30d (Recharts), recent bookings 5 dòng, inbox preview 3 chat
 - `/coach/courses` — list course cards của coach + enrollment count
 - `/coach/courses/new` — wizard 5 bước:
   - Loại lịch (FIXED/FLEXIBLE) visual chọn lớn
@@ -239,6 +244,36 @@ Xem §2.2.
 
 ---
 
+### ✅ Sprint chen — Booking V2 Hybrid + UI/UX overhaul — **DONE** (2026-06-05)
+
+**Vì:** Sau khi có Open Sessions, giao diện booking/landing/coach list cần làm lại theo `Flow_update_booking_v2_implement` (hybrid: lịch mở + đặt lịch riêng), tuân thủ design token hiện tại, KHÔNG làm mới token.
+
+- **Hero V2:** single search-bar Airbnb-style → `SportSearchModal` (`features/home/sections/`) chọn môn (chips) + khu vực (`AreaMultiSelect`) + toggle "Lọc theo lịch cá nhân hoá" → `/coaches` đã filter.
+- **`/coaches` redesign:** bỏ sidebar filter → `CoachToolbar` (search + sort + nút Bộ lọc) inline trong content + `CoachFilterModal` (hero-style, full filter) + card vertical 3-per-row + "Tải thêm" (cumulative paging pageSize=page×12). `features/coaches/components/`.
+- **`AreaMultiSelect`** (`components/ui/`): combobox kiểu Select2 — search + autocomplete + multi-select. Matching backend: `lib/area-match.ts` (`matchesArea`/`cityKey`) + schedule (days/time) matching qua open sessions.
+- **Coach detail tối giản:** booking panel bỏ "sẵn sàng nhận học viên" + cancellation policy (chuyển sang checkout), "lịch gần nhất" → badge nhỏ. `CoachBookingModal` (`features/coaches/components/`, `createPortal` → body): calendar 30 ngày, multi-select trực tiếp từ calendar, danh sách buổi hiển thị full, **toggle "Đặt lịch riêng"** = custom request (giá tạm tính riêng, status `pending` chờ coach).
+- **Custom booking:** `CreateBookingInput.isCustomRequest?: boolean` + `price`/`openSessionId`. Mock honor giá + gắn note "Đặt lịch riêng — chờ coach xác nhận giá". (KHÔNG có status riêng `PENDING_COACH` — dùng flag + `pending`.)
+- **Universal components** (`components/shared/`): `TrustStrip`, `CoachMiniBadge`, `CancellationPolicy`.
+- **Dense mock:** 50 coach + 50 course (generator) + load-more.
+- **iconsax / no-emoji (CRITICAL §14b):** cấm emoji UI toàn hệ thống, thay bằng `AppIcon` (wrapper iconsax-reactjs, semantic name→icon). Convention §14b.
+- **Mobile:** container padding 14px L/R (`$spacing-page-x`), overflow-x boxes sát lề + child first/last inset 14px (edge-scroll mixin). Convention §6.5/§6.6.
+
+**SCSS:** home-hero, coach-list, coach-detail update; book-modal; sport-search-modal; area-select; toolbar/filter-modal blocks.
+
+---
+
+### ✅ Sprint chen — Dashboard Shell (CRM SaaS layout) — **DONE** (2026-06-05)
+
+**Vì:** CRM Coach + Admin nên là layout SaaS riêng (sidebar + topbar), KHÔNG dùng Header/Footer site; vào từ user dropdown main header.
+
+- `lib/dashboard-routes.ts` → `isDashboardRoute(pathname)`: true cho `/admin/*` + `/coach/*` TRỪ onboarding/verification (giữ chrome site).
+- `components/layout/SiteChrome.tsx` (client): root layout bọc → render Header+main+Footer trừ dashboard route.
+- `components/layout/DashboardShell.tsx`: sidebar navy + topbar, variant `coach` ("Coach Studio") / `admin` ("Admin Console"), nav AppIcon active longest-prefix, user mini + "Về trang chủ".
+- `app/coach/layout.tsx` (conditional) + `app/admin/layout.tsx`. SCSS `blocks/_dash-shell.scss` (neutralize `.coach-cms` trong shell). Header dropdown + mobile menu thêm Booking + Duyệt HLV.
+- **Convention §14c.** Verified Chrome cả 2 variant.
+
+---
+
 ### 🔴 Tuần 6 — Coach Operations + Admin (H5 + H6)
 
 **Output:** Coach confirm booking real-time, Admin duyệt coach.
@@ -252,9 +287,19 @@ Xem §2.2.
 
 ---
 
-### 🔴 Tuần 7 — Communication + Polish
+### 🟡 Tuần 7 — Communication + Polish (Communication ✅ DONE 2026-06-05)
 
-**Output:** Chat 2 chiều, notifications, review form.
+**Output:** Chat 2 chiều, notifications, review form. ✅ 3 phần Communication đã build + verified Chrome (persona Linh). Polish còn lại (404, empty states sweep) → cuốn vào Tuần 8.
+
+**Đã build (2026-06-05):**
+- **`/messages` + `/messages/[threadId]`** (`features/messages/MessagesClient.tsx`): 2-pane (list + khung chat), mobile ẩn list khi mở thread + nút back. Bubble me/them, timestamp, typing indicator. Gửi tin optimistic → auto-reply 2s (`POST /messages/threads/:id/auto-reply`, bot xoay 5 câu). Content filter `detectPii()` chặn gửi SĐT/link/Zalo + warning đỏ. Mock `chats.mock.ts` (3 thread persona Linh: Coach Khoa verified, Coach Hoà, Trợ lý CoHub). Service `message.service.ts`. Routes `messages`/`messageThread`. Learner-facing → site chrome.
+- **`/notifications` + bell dropdown** (`features/notifications/NotificationsClient.tsx` + `components/layout/NotificationBell.tsx`): bell ở header (badge unread, 5 gần nhất, click→mark read+điều hướng), trang full filter theo type + "Đánh dấu tất cả đã đọc". Mock `notifications.mock.ts` (per persona: Linh 8 / Khoa 6 / Admin 4). Service `notification.service.ts`. Route `notifications`. Icon `bell`/`chat` thêm vào AppIcon.
+- **Review modal** (`features/booking/ReviewModal.tsx`, createPortal): nút "Đánh giá" trên booking completed ở `/my/bookings` → modal 1-5 sao + 6 tag chips + comment + double-blind hint 7 ngày. Submit → `POST /reviews` (set `visibleAt = +7d`), badge "Đã đánh giá". Types `CreateReviewInput` + `REVIEW_TAGS`.
+- Header dropdown + mobile menu thêm Tin nhắn + Thông báo.
+
+**Lưu ý bug đã fix:** `aliveRef` pattern phải set `true` trong mount effect (`useEffect(() => { ref.current = true; return () => { ref.current = false } }, [])`) — nếu không, StrictMode mount→unmount→remount để ref = false vĩnh viễn → state update bị nuốt (skeleton kẹt).
+
+**Spec gốc (tham khảo):**
 
 **Routes:**
 - `/messages` — thread list sidebar + main pane
@@ -262,7 +307,8 @@ Xem §2.2.
 - `/notifications` — full page list + filter, bell icon dropdown header 5 notif gần nhất + badge unread
 
 **Chat features:**
-- Content filter regex SDT VN / Zalo/Telegram/Messenger link → warning đỏ "Không chia sẻ thông tin liên hệ ngoài Cohub" (PRD A2)
+- Content filter regex SDT VN / Zalo/Telegram/Messenger link → warning đỏ "Không chia sẻ thông tin liên hệ ngoài Cohub" (PRD A2). **Reuse `detectPii()` đã có** từ tuần 4 (`lib/onboarding-draft.ts` / hoặc tách ra `lib/pii.ts`).
+- Icon: thêm `bell` vào `AppIcon` MAP (no-emoji §14b).
 
 **Review:**
 - Form modal trong /my/bookings sau completed (1-5 sao + comment + tags)
@@ -275,31 +321,33 @@ Xem §2.2.
 
 ---
 
-### 🔴 Tuần 8 — Quality bar + Deploy
+### ✅ Tuần 8 — Polish + Quality + Docs — DONE (2026-06-05; deploy đã xong ngoài plan)
+
+> Deploy đã được thực hiện riêng → KHÔNG nằm trong scope plan nữa.
+
+**Đã làm:**
+- **A11y:** xác nhận `:focus-visible` ring toàn cục đã có (`globals.scss`) + `prefers-reduced-motion`. ARIA/label/role đầy đủ. Fix alt rỗng ở `MyCoursesClient` cover image. Audit (subagent): empty states + skeleton đã 100% coverage mọi async list, không thiếu.
+- **404:** `app/not-found.tsx` đã có (verified Chrome) — icon + title + CTA về home/tìm HLV, dùng site chrome.
+- **Responsive:** width cứng đều dùng `min()`/media query; `_responsive.scss` có util `.hide-mobile`, safe-area, scroll-snap.
+- **Docs:** `README.md` (viết lại — setup, env, cấu trúc, personas, Demo Mode), `DEMO_SCRIPT.md` (storyboard 10 phút theo persona), `src/mocks/README.md` (spec mock layer + bảng endpoint).
+
+**Polish (FSD §7):**
+- 404 page custom (đã có `app/not-found.tsx`)
+- Empty states cho mọi list rỗng (đã 100% coverage)
+- Loading skeleton cho async fetch (đã đủ)
 
 **Quality (FSD §8):**
-- Performance: Lighthouse ≥ 85, LCP ≤ 2.5s desktop
-- Accessibility: Tab navigate, ARIA, contrast ≥4.5:1
-- Cross-browser: Chrome / Safari / Firefox / Edge
-- Responsive: 360 / 768 / 1024 / 1440px
+- Accessibility: Tab navigate, **`:focus-visible` ring toàn cục**, ARIA, alt text, contrast ≥4.5:1
+- Responsive: 360 / 768 / 1024 / 1440px — verify không tràn/overlap
+- Cross-browser: Chrome / Safari / Firefox / Edge (manual)
 
-**Demo Mode complete (FSD §5):**
-- Time travel (set time = T-1h before booking)
-- Investor mode toggle (đã có) — verify accelerate 5× hoạt động
-- Trigger events: "Trigger booking notification", "Auto-approve pending reviews"
+**Docs (deliverables cuối):**
+- `DEMO_SCRIPT.md` — investor storyboard 10 phút theo persona (FSD §6)
+- `README.md` — setup + Demo Mode docs
+- `src/mocks/README.md` — mock data spec
 
-**Investor demo script** (FSD §6) — 10 phút storyboard, mỗi phút ứng với scene.
-
-**Deploy Netlify:**
-- `netlify.toml` config Next.js plugin
-- Preview branch tự động cho mỗi PR
-- 3 demo accounts preset (Linh / Khoa / Admin) — skip signup
-
-**Deliverables cuối:**
-- Live URL Netlify
-- README setup + Demo Mode docs
-- Mock data spec `mocks/README.md`
-- 5-min investor demo video (record screen backup)
+**Demo Mode (FSD §5) — để lại, không bắt buộc cho MVP demo:**
+- Time travel, trigger events, verify investor 5× (đã có khung trong DemoModeContext)
 
 ---
 
@@ -316,16 +364,18 @@ Xem §2.2.
 
 ### Cần expand cho tuần 2-7
 
-| File mock | Mục tiêu | Tuần |
-|---|---|---|
-| `bookings.mock.ts` | Sinh booking đầy đủ cho 3 persona, status đa dạng | 2 |
-| `payment.mock.ts` | Fake gateway response, force-fail toggle | 2 |
-| `promo.mock.ts` | `DEMO50`, `INVALID` | 2 |
-| `courses.mock.ts` (mới) | 12 course standalone (8 FIXED + 4 FLEXIBLE) | 3 |
-| `enrollments.mock.ts` (mới) | Enrollment cho persona Linh | 3 |
-| `chats.mock.ts` (mới) | 3 thread cho persona Linh, 1 thread auto-reply bot | 7 |
-| `notifications.mock.ts` (mới) | 8-12 notif per persona | 7 |
-| `admin-queue.mock.ts` (mới) | Pending review Tầng 1/2 cho persona Admin | 6 |
+| File mock | Mục tiêu | Tuần | Trạng thái |
+|---|---|---|---|
+| `bookings.mock.ts` | Sinh booking đầy đủ cho 3 persona, status đa dạng + custom request | 2 | ✅ |
+| `payment.mock.ts` | Fake gateway response, force-fail toggle | 2 | ✅ |
+| `promo.mock.ts` | `DEMO50`, `INVALID` | 2 | ✅ |
+| `courses.mock.ts` | **50 course** (13 template, 8 FIXED + flexible) | 3 | ✅ (vượt mục tiêu 12) |
+| `coaches.mock.ts` | **50 coach** (8 literal + 42 generated) | — | ✅ (vượt mục tiêu 8) |
+| `openSession.mock.ts` | Lịch dạy mở + recurring expansion | sprint | ✅ |
+| `dashboard.mock.ts` | Coach dashboard stats persona Khoa | 5 | ✅ |
+| `admin.mock.ts` (≈ admin-queue) | 4 hồ sơ duyệt (3 Tier1 + 1 Tier2) | 6 | ✅ |
+| `chats.mock.ts` | 3 thread persona Linh (Khoa/Hoà/Bot) + auto-reply | 7 | ✅ |
+| `notifications.mock.ts` | per persona (Linh 8 / Khoa 6 / Admin 4) | 7 | ✅ |
 
 ---
 
@@ -351,7 +401,6 @@ Xem §2.2.
 | # | Quyết định | Khi nào cần |
 |---|---|---|
 | Q1 | Investor có cần Stripe test mode payment "thật-ish" hay fake hoàn toàn đủ? | Tuần 2 trước build /checkout |
-| Q2 | Demo cho investor: offline backup video hay chỉ online Netlify? | Tuần 8 |
 | Q3 | User testing có record screen (Hotjar/OBS)? Cần consent form? | Trước test |
 | Q4 | Mobile responsive đủ hay cần native preview? | Tuần 8 polish |
 | Q5 | Cover image fake nào — Unsplash CDN URL hay download host static? | Tuần 3 (course cover) |
@@ -363,7 +412,20 @@ Xem §2.2.
 
 > Khi bắt đầu session mới, đọc section này trước.
 
-**Đang ở:** Cuối tuần 5 — H4 Coach CMS (dashboard + courses + course wizard + calendar) complete, build pass.
+**Đang ở:** **MVP 8 tuần FEATURE-COMPLETE** (2026-06-05). Tuần 7 Communication + Tuần 8 Polish/Docs đã xong; deploy đã thực hiện ngoài plan. Trước đó: tuần 1–6 + 2 sprint chen (Booking V2 Hybrid/UI overhaul, Dashboard Shell). Build pass (tsc/lint/sass), verified Chrome. Docs: README, DEMO_SCRIPT, mocks/README.
+
+**Reconciliation 2026-06-05 (tránh conflict plan ↔ code):**
+- §2.1 pages: `/coaches` đã redesign (toolbar+modal, no sidebar, grid 3col), coach detail booking panel tối giản + CoachBookingModal calendar, thêm `/courses`, `/coach/*` + `/admin/*` dùng Dashboard Shell.
+- §2.3: mock 50 coach / 50 course / 14 file; thêm `area-match.ts`, `dashboard-routes.ts`.
+- §4: admin-queue = `admin.mock.ts` ✅, coaches/courses vượt mục tiêu ✅. Còn lại Tuần 7: `chats.mock.ts`, `notifications.mock.ts`.
+- §14b no-emoji + §14c dashboard shell đã vào CODING_CONVENTION.md.
+- Custom booking dùng `isCustomRequest` flag + status `pending` (KHÔNG field `PENDING_COACH`/`estimatedPrice`).
+
+**Đã build tuần 6 (H5 + H6):**
+- H5 `/coach/bookings` (`CoachBookingsClient`): inbox booking coach nhận từ học viên, tab Chờ xác nhận (badge)/Sắp tới/Đã hoàn thành. Confirm = optimistic + toast. Decline = dialog (`.cms-dialog`) + lý do dropdown + cảnh báo "giảm 1 điểm uy tín, hoàn 100%". `BookingListQuery` thêm `coachId`; `Booking` thêm `userName` (denormLearner). coachId='c1' (persona Khoa).
+- H6 `/admin` (`AdminDashboardClient`): 4 stat card + CTA queue. `/admin/reviews` (`AdminReviewsClient`): queue sort theo SLA, badge tier (Hồ sơ cơ bản/Xác minh KYC), SLA countdown đỏ khi <6h; drawer phải (`.admin-drawer`) = profile + chứng chỉ + checklist 7 tiêu chí + Duyệt/Từ chối/Yêu cầu sửa. Mock mới `admin.mock.ts` (4 hồ sơ: 3 Tier1 + 1 Tier2) + `admin.service.ts` + `types/admin.ts`. Route `ROUTES.adminReviews`. Guard role admin (switch persona Admin qua Demo panel).
+
+**Đã build tuần 5:**
 
 **Đã build tuần 5:**
 - Types: `CoachDashboardStats`, `RevenuePoint`, `RecentBookingItem`, `InboxThreadPreview`, `CoachDashboard`
@@ -392,13 +454,25 @@ Xem §2.2.
   - `CoachVerificationClient` — 3 KYC slots (CCCD front/back + selfie) + cert list max 10 + eKYC progress 3-step (OCR → Face match → Cross-check)
 - Legacy `/register/coach` redirect sang `/become-coach`
 
-**Next session làm gì:**
-1. Mở `PLAN.md` này
-2. Chạy `npx tsc --noEmit && npx next lint` để confirm clean baseline
-3. Bắt đầu **Tuần 6 — Coach Operations + Admin (H5 + H6)** theo §3 tuần 6
-4. Task #1 sẽ build: `/coach/bookings` inbox với tabs Chờ xác nhận / Sắp tới / Đã hoàn thành
+**Đã build Tuần 7 — Communication (2026-06-05, verified Chrome persona Linh):**
+- `/messages` + `/messages/[threadId]` chat 2 chiều + auto-reply 2s + PII filter (chặn gửi SĐT/link/Zalo).
+- `/notifications` + bell dropdown header (badge unread, mark read, filter theo type).
+- Review modal sau buổi completed (`/my/bookings`): sao + tag + comment + double-blind 7 ngày → badge "Đã đánh giá".
+- Mock mới: `chats.mock.ts`, `notifications.mock.ts`; POST /reviews. Routes `messages`/`messageThread`/`notifications`. Icon `bell`/`chat` vào AppIcon.
 
-**Trigger câu lệnh đề xuất:** "tiếp tục tuần 6"
+**Next session làm gì → Tuần 8 (Polish + Docs; deploy đã xong ngoài plan):**
+1. Mở `PLAN.md`, chạy `npx tsc --noEmit && npx next lint` confirm clean.
+2. A11y: `:focus-visible` ring toàn cục, fix alt text, kiểm contrast.
+3. Responsive verify 360/768/1024/1440 — fix tràn/overlap nếu có.
+4. Docs: `DEMO_SCRIPT.md`, `README.md`, `src/mocks/README.md`.
+(Demo Mode time-travel/trigger events: optional, để lại nếu cần.)
+
+**Trigger câu lệnh đề xuất:** "tiếp tục tuần 8"
+
+**Lưu ý khi build Tuần 7 (đã reconcile):**
+- `/messages`, `/notifications` là route **learner-facing** → dùng site chrome (KHÔNG dashboard shell). Nếu muốn coach cũng có inbox trong CRM thì thêm route `/coach/*` riêng sau.
+- Routes `messages`/`messageThread`/`notifications` CHƯA có trong `ROUTES` → thêm vào `config/routes.ts`.
+- Chưa có sẵn bell/dropdown/thread component → build mới; tái dùng pattern modal + `useToast`.
 
 ---
 
@@ -415,5 +489,5 @@ Xem §2.2.
 
 ---
 
-**Last updated:** 2026-06-02 (tuần 5 done)
-**Next milestone:** Tuần 6 — H5 Coach Operations (/coach/bookings inbox) + H6 Admin (/admin dashboard + /admin/reviews queue)
+**Last updated:** 2026-06-05 (tuần 8 Polish + Docs done — a11y/responsive/404 + README/DEMO_SCRIPT/mocks README. MVP 8 tuần hoàn tất; deploy đã xong ngoài plan.)
+**Next milestone:** Không còn milestone bắt buộc — MVP feature-complete. Tùy chọn: Demo Mode time-travel/trigger events, hoặc ghép backend thật (`DATA_SOURCE=api`).

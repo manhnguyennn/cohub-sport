@@ -17,8 +17,9 @@ function toQuery(searchParams: PageProps['searchParams']): CourseListQuery {
     scheduleType: searchParams.scheduleType as CourseScheduleType | undefined,
     status: (searchParams.status as 'available' | 'all') ?? 'all',
     sort: (searchParams.sort as CourseListQuery['sort']) || undefined,
-    page: searchParams.page ? Number(searchParams.page) : 1,
-    pageSize: 12,
+    // Cumulative paging (Tải thêm)
+    page: 1,
+    pageSize: (searchParams.page ? Number(searchParams.page) : 1) * 12,
   };
 }
 

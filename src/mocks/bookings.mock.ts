@@ -57,6 +57,16 @@ function denormCoach(coachId: string) {
   };
 }
 
+const LEARNER_NAMES: Record<string, string> = {
+  u_linh: 'Trần Thu Linh',
+  u_other_1: 'Lê Thị Hằng',
+  u_other_2: 'Phạm Quốc Bảo',
+  u_other_3: 'Nguyễn Mỹ Anh',
+};
+export function denormLearner(userId: string): string {
+  return LEARNER_NAMES[userId] ?? 'Học viên';
+}
+
 function mkBooking(args: {
   id: string;
   userId: string;
@@ -70,6 +80,7 @@ function mkBooking(args: {
   return {
     id: args.id,
     userId: args.userId,
+    userName: denormLearner(args.userId),
     coachId: args.coachId,
     coachName: meta.coachName,
     coachAvatar: meta.coachAvatar,
@@ -103,6 +114,7 @@ export const bookingsMock: Booking[] = [
 function filterBookings(list: Booking[], q: BookingListQuery): Booking[] {
   let out = [...list];
   if (q.userId) out = out.filter((b) => b.userId === q.userId);
+  if (q.coachId) out = out.filter((b) => b.coachId === q.coachId);
 
   if (q.status) {
     const statuses = Array.isArray(q.status) ? q.status : [q.status];
@@ -178,6 +190,7 @@ registerMock('POST /bookings', ({ body }): Booking => {
   const booking: Booking = {
     id: `b_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
     userId: input.userId ?? 'u_linh',           // default current learner = Linh
+    userName: denormLearner(input.userId ?? 'u_linh'),
     coachId: input.coachId,
     coachName: meta.coachName,
     coachAvatar: meta.coachAvatar,

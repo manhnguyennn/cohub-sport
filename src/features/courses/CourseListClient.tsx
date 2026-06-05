@@ -190,11 +190,27 @@ export default function CourseListClient({ sports, initialResult, initialQuery }
                   description="Thử bỏ bớt bộ lọc hoặc đổi từ khoá tìm."
                 />
               ) : (
-                <div className="courses-grid">
-                  {initialResult.items.map((c) => (
-                    <CourseCard key={c.id} course={c} />
-                  ))}
-                </div>
+                <>
+                  <div className="courses-grid">
+                    {initialResult.items.map((c) => (
+                      <CourseCard key={c.id} course={c} />
+                    ))}
+                  </div>
+                  {initialResult.total > initialResult.items.length && (
+                    <div className="coach-list__more">
+                      <button
+                        type="button"
+                        className="coach-list__more-btn"
+                        onClick={() => {
+                          const cur = Number(params.get('page') ?? 1);
+                          commit({ page: String(cur + 1) });
+                        }}
+                      >
+                        Tải thêm (còn {initialResult.total - initialResult.items.length})
+                      </button>
+                    </div>
+                  )}
+                </>
               )}
             </div>
           </div>

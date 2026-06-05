@@ -25,6 +25,8 @@ export type BookingLocation = {
 export type Booking = {
   id: ID;
   userId: ID;
+  /** Denormalize tên học viên — cho coach inbox */
+  userName?: string;
   coachId: ID;
   coachName: string;          // denormalize cho UI list
   coachAvatar?: string;       // denormalize
@@ -77,9 +79,11 @@ export type TimeSlot = {
   isAvailable: boolean;
 };
 
-/** Filter cho /my/bookings */
+/** Filter cho /my/bookings + /coach/bookings */
 export type BookingListQuery = {
   userId?: ID;
+  /** Coach inbox — bookings của 1 coach */
+  coachId?: ID;
   status?: BookingStatus | BookingStatus[];
   /** "upcoming" = pending + confirmed sắp tới */
   scope?: 'upcoming' | 'past' | 'cancelled';

@@ -1,13 +1,7 @@
-import PlaceholderPage from '@components/layout/PlaceholderPage';
+import AdminDashboardClient from '@features/admin/AdminDashboardClient';
 
-export const metadata = { title: 'Admin CRM' };
+export const metadata = { title: 'Admin · Tổng quan' };
 
 export default function AdminPage() {
-  return (
-    <PlaceholderPage
-      icon="shield"
-      title="Admin CRM"
-      description="Quản lý users, coaches, orders, approval. Cần auth role=admin."
-    />
-  );
+  return <AdminDashboardClient />;
 }

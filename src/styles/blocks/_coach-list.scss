@@ -714,3 +714,26 @@
   @include respond-to(lg) { grid-template-columns: repeat(2, 1fr); }
   @include respond-to(sm) { grid-template-columns: 1fr; gap: 16px; }
 }
+
+// "Tải thêm" (dùng chung coaches + courses)
+.coach-list__more {
+  display: flex;
+  justify-content: center;
+  margin-top: 28px;
+
+  &-btn {
+    padding: 12px 28px;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--border-hover);
+    background: var(--bg-elevated);
+    color: var(--text-primary);
+    font-family: $font-sans;
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    cursor: pointer;
+    transition: $transition-button;
+
+    &:hover:not(:disabled) { border-color: var(--brand); color: var(--brand); background: var(--brand-tint); }
+    &:disabled { opacity: 0.6; cursor: default; }
+  }
+}

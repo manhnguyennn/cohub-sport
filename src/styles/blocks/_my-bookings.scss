@@ -1,3 +1,82 @@
+// ── Review modal (sau buổi completed) ─────────────────────────
+.my-booking-row__reviewed {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 13px; font-weight: $fw-medium; color: var(--success, #1E8E4E);
+}
+
+.review-modal {
+  position: fixed; inset: 0; z-index: 1000;
+  display: flex; align-items: center; justify-content: center;
+  padding: 16px;
+
+  &__backdrop { position: absolute; inset: 0; background: rgba(10, 15, 30, 0.5); }
+  &__box {
+    position: relative;
+    width: 100%; max-width: 440px;
+    background: var(--bg-elevated);
+    border-radius: $radius-card-lg;
+    box-shadow: $shadow-xl;
+    padding: 26px 24px 22px;
+    max-height: calc(100vh - 32px); overflow-y: auto;
+  }
+  &__close {
+    position: absolute; top: 14px; right: 14px;
+    background: none; border: 0; cursor: pointer; color: var(--text-secondary);
+    display: inline-flex; padding: 4px;
+    &:hover { color: var(--text-primary); }
+  }
+  &__title { font-size: 19px; font-weight: $fw-bold; color: var(--text-primary); text-align: center; }
+  &__sub { font-size: 14px; color: var(--text-secondary); text-align: center; margin-top: 2px; }
+
+  &__textarea {
+    width: 100%; margin-top: 14px;
+    padding: 11px 13px;
+    border: 1px solid var(--border); border-radius: $radius-md;
+    font-size: 14px; font-family: inherit; resize: vertical;
+    background: var(--bg-base); color: var(--text-primary);
+    &:focus { outline: none; border-color: var(--brand); box-shadow: $shadow-focus; }
+  }
+  &__hint {
+    display: flex; align-items: flex-start; gap: 6px;
+    font-size: 12px; color: var(--text-secondary); margin-top: 12px; line-height: 1.45;
+  }
+  &__actions { display: flex; gap: 10px; margin-top: 18px; }
+  &__cancel, &__submit {
+    flex: 1; padding: 11px; border-radius: $radius-md;
+    font-size: 14px; font-weight: $fw-semibold; cursor: pointer;
+    border: 1px solid var(--border);
+  }
+  &__cancel { background: var(--bg-elevated); color: var(--text-secondary); &:hover { background: var(--bg-subtle); } }
+  &__submit {
+    background: var(--brand); color: #fff; border-color: var(--brand);
+    &:hover:not(:disabled) { background: var(--brand-hover); }
+    &:disabled { opacity: 0.5; cursor: not-allowed; }
+  }
+}
+
+.review-stars {
+  display: flex; justify-content: center; gap: 6px; margin-top: 18px;
+  &__btn {
+    background: none; border: 0; cursor: pointer; padding: 2px;
+    color: var(--border-strong, #C9CDD6); transition: color 0.12s ease, transform 0.12s ease;
+    &.is-on { color: #F5A623; }
+    &:hover { transform: scale(1.12); }
+  }
+  &__label { text-align: center; font-size: 13.5px; font-weight: $fw-medium; color: var(--text-secondary); margin-top: 6px; }
+}
+
+.review-tags {
+  display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 16px;
+  &__chip {
+    padding: 7px 13px; font-size: 13px; font-weight: $fw-medium;
+    color: var(--text-secondary); background: var(--bg-base);
+    border: 1px solid var(--border); border-radius: 999px; cursor: pointer;
+    transition: all 0.14s ease;
+    &:hover { border-color: var(--brand-subtle); }
+    &.is-on { background: var(--brand-tint); color: var(--brand); border-color: var(--brand); }
+  }
+}
+
 // ── /my/bookings ──────────────────────────────────────────────
 .my-bookings-page {
   background: var(--bg-base);

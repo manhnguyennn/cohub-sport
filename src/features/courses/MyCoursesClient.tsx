@@ -63,7 +63,7 @@ function EnrollmentCard({ enrollment }: { enrollment: Enrollment }) {
   return (
     <Link href={ROUTES.myCourseDetail(enrollment.id)} className="my-course-card">
       <div className="my-course-card__media">
-        <Image src={enrollment.courseCover} alt="" fill sizes="200px" style={{ objectFit: 'cover' }} />
+        <Image src={enrollment.courseCover} alt={`Ảnh bìa khoá học ${enrollment.courseTitle ?? ''}`.trim()} fill sizes="200px" style={{ objectFit: 'cover' }} />
       </div>
       <div className="my-course-card__body">
         <span className={`my-booking-row__badge my-booking-row__badge--${statusBadge.tone}`} style={{ alignSelf: 'flex-start' }}>

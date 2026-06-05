@@ -1,5 +1,5 @@
-import type { Review } from '@app-types/review';
-import { registerMock } from '@lib/mockRegistry';
+import type { Review, CreateReviewInput } from '@app-types/review';
+import { registerMock, type MockContext } from '@lib/mockRegistry';
 
 const REVIEW_TEMPLATE_C2 =
   'Anna hướng dẫn chi tiết, sửa tư thế nhẹ nhàng, giúp tôi thấy cơ thể dẻo dai hơn chỉ sau 2 tháng.';
@@ -47,3 +47,25 @@ export const reviewsMock: Review[] = [
 registerMock('GET /coaches/:coachId/reviews', ({ pathParams }) =>
   reviewsMock.filter((r) => r.coachId === pathParams.coachId),
 );
+
+let reviewSeq = 0;
+
+// Tạo đánh giá mới (sau buổi completed) — double-blind: công khai sau 7 ngày
+registerMock('POST /reviews', (ctx: MockContext) => {
+  const input = ctx.body as CreateReviewInput;
+  const now = Date.now();
+  const review: Review = {
+    id: `r_new_${++reviewSeq}`,
+    coachId: input.coachId,
+    userId: 'u_linh',
+    userName: 'Trần Thu Linh',
+    userAvatar: '/images/do-thi-phuong.svg',
+    rating: input.rating,
+    comment: input.comment,
+    tags: input.tags,
+    createdAt: new Date(now).toISOString(),
+    visibleAt: new Date(now + 7 * 24 * 60 * 60 * 1000).toISOString(),
+  };
+  reviewsMock.unshift(review);
+  return review;
+});

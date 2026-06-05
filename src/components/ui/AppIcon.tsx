@@ -6,7 +6,8 @@ import {
   Clock, Wallet, Coin, Teacher, Flag, Routing, ShieldTick, Cup, Chart, Cpu, Global,
   SearchNormal1, Bank, Card, MessageText, Note1, Camera, Lock, RefreshCircle, TickCircle,
   CloseCircle, Warning2, InfoCircle, Eye, Send2, Book, Briefcase, Star1, ClipboardText,
-  Setting2, Sms, Lamp, Activity, Magicpen, MedalStar, ArrowRight2, Personalcard, People,
+  Setting2, Sms, Lamp, Activity, Magicpen, MedalStar, ArrowRight2, ArrowLeft2, Personalcard, People,
+  Notification, Messages, EmojiHappy,
 } from 'iconsax-reactjs';
 
 /**
@@ -75,7 +76,11 @@ const MAP = {
   magic: Magicpen,
   medal: MedalStar,
   next: ArrowRight2,
+  back: ArrowLeft2,
   idcard: Personalcard,
+  bell: Notification,
+  chat: Messages,
+  emoji: EmojiHappy,
 } satisfies Record<string, ComponentType<SaxProps>>;
 
 export type AppIconName = keyof typeof MAP;

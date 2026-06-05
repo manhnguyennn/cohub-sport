@@ -116,6 +116,9 @@ button { font: inherit; cursor: pointer; }
 @import './blocks/courses';
 @import './blocks/become-coach';
 @import './blocks/onboarding';
+@import './blocks/dash-shell';
+@import './blocks/messages';
+@import './blocks/notifications';
 
 // Legacy Features sections — ported nguyên trạng làm Home mới
 @import './feature';

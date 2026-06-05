@@ -15,4 +15,7 @@ import './openSession.mock';   // ← Lịch dạy mở (sau bookings để có 
 import './courses.mock';
 import './onboarding.mock';
 import './dashboard.mock';
+import './admin.mock';
+import './chats.mock';
+import './notifications.mock';
 import './auth.mock';

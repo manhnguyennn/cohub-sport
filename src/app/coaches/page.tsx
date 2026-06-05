@@ -4,6 +4,7 @@ import { openSessionService } from '@services/openSession.service';
 import CoachHero from '@features/coaches/components/CoachHero';
 import CoachToolbar from '@features/coaches/components/CoachToolbar';
 import CoachCard from '@features/coaches/components/CoachCard';
+import CoachLoadMore from '@features/coaches/components/CoachLoadMore';
 import CoachCtaStrip from '@features/coaches/components/CoachCtaStrip';
 import { EmptyState } from '@components/ui';
 import type { Coach, CoachListQuery, Gender, TeachingFormat } from '@app-types/coach';
@@ -29,8 +30,9 @@ function toQuery(searchParams: PageProps['searchParams']): CoachListQuery {
     priceMin: searchParams.priceMin ? Number(searchParams.priceMin) : undefined,
     priceMax: searchParams.priceMax ? Number(searchParams.priceMax) : undefined,
     sort: (searchParams.sort as CoachListQuery['sort']) || undefined,
-    page: searchParams.page ? Number(searchParams.page) : 1,
-    pageSize: 12,
+    // Cumulative paging: page=1 luôn, pageSize = pageNum*12 (Tải thêm → tăng pageNum)
+    page: 1,
+    pageSize: (searchParams.page ? Number(searchParams.page) : 1) * 12,
   };
 }
 
@@ -66,6 +68,7 @@ async function coachIdsMatchingSchedule(days?: string, time?: string): Promise<S
 
 export default async function CoachesPage({ searchParams }: PageProps) {
   const query = toQuery(searchParams);
+  const pageNum = searchParams.page ? Number(searchParams.page) : 1;
 
   // Song song — server fetch qua service layer (mock vs API tự động)
   const [sports, result, scheduleIds] = await Promise.all([
@@ -103,9 +106,12 @@ export default async function CoachesPage({ searchParams }: PageProps) {
               }
             />
           ) : (
-            <div className="coach-list__cards">
-              {items.map((coach) => <CoachCard key={coach.id} coach={coach} />)}
-            </div>
+            <>
+              <div className="coach-list__cards">
+                {items.map((coach) => <CoachCard key={coach.id} coach={coach} />)}
+              </div>
+              <CoachLoadMore page={pageNum} remaining={total - items.length} />
+            </>
           )}
         </div>
       </div>

@@ -20,6 +20,11 @@ export const ROUTES = {
   myCourses: '/my/courses',
   myCourseDetail: (id: string) => `/my/courses/${id}`,
 
+  // Communication (Tuần 7)
+  messages: '/messages',
+  messageThread: (threadId: string) => `/messages/${threadId}`,
+  notifications: '/notifications',
+
   // Auth
   login: '/auth/login',
   register: '/auth/signup',
@@ -37,6 +42,8 @@ export const ROUTES = {
   coachCourseNew: '/coach/courses/new',
   coachCalendar: '/coach/calendar',
   coachBookings: '/coach/bookings',
+  coachMessages: '/coach/messages',
+  coachMessageThread: (threadId: string) => `/coach/messages/${threadId}`,
 
   // Lịch dạy mở (Open Sessions) — coach pre-publish single bookable sessions
   coachSessions: '/coach/sessions',
@@ -55,6 +62,7 @@ export const ROUTES = {
   adminUsers: '/admin/users',
   adminCoaches: '/admin/coaches',
   adminBookings: '/admin/bookings',
+  adminReviews: '/admin/reviews',
 
   // Marketing
   about: '/about',
